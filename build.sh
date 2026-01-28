@@ -5,4 +5,4 @@ export SRC="src/*.cpp    \
             src/**/*.cpp"
 export INCLUDE="-Iinclude -Ideps"
 
-/usr/bin/g++ -g src/main.cpp ${INCLUDE} -L${LIBS_DIR} ${LIBS}
+/usr/bin/g++ -g ${SRC} ${INCLUDE} -L${LIBS_DIR} ${LIBS}

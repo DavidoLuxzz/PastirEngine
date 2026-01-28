@@ -4,6 +4,7 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_audio.h>
+#include <game.hpp>
 
 void assertInit(int ret, const char* name){
     if (!ret){
@@ -24,16 +25,24 @@ void init(){
 }
 
 void uninstall(){
+    std::cout << "Uninstalling allegro addons\n";
     al_uninstall_mouse();
     al_uninstall_keyboard();
     al_uninstall_audio();
+    al_uninstall_system();
 }
 
 // ovo allegro sranje ne da mi da prdnem bez ovih parametara. jebiga
 int main(int argc, char** argv) {
     std::cout << "hallo\n";
     init();
-
+    if (!game::init()) {
+        std::cerr << "Ne moze da ucita gejm >:(\n";
+        uninstall();
+        return 0;
+    }
+    game::run();
+    game::clean();
     uninstall();
 
     return 0;
