@@ -2,7 +2,8 @@
 #ifndef __DISPLAY_HPP
 #define __DISPLAY_HPP
 
-#include <allegro5/allegro.h>
+#include <allegro5/display.h>
+#include <eventqueue.hpp>
 
 /**
  * Display object that uses ALLEGRO_DISPLAY as base
@@ -10,11 +11,12 @@
 class Display {
 private:
     ALLEGRO_DISPLAY* _display = NULL;
+    EventQueue _evqueue;
 public:
     /**
      * Empty constructor. Need to call create()
      */
-    Display();
+    Display() = default;
     /**
      * @short Calls create(w,h)
      */
@@ -32,7 +34,6 @@ public:
      * @returns error code
      */
     int create(int width, int height);
-
     /**
      * Destroys this display object.
      * After this function, the display object could be created again without created a new variable.
@@ -40,8 +41,15 @@ public:
      */
     void destroy();
 
-    ALLEGRO_DISPLAY* getAllegroDisplay();
-    bool isCreated();
+    /**
+     * @returns @code{ALLEGRO_DISPLAY* _display}
+     */
+    ALLEGRO_DISPLAY* getAllegroDisplay() const;
+    /**
+     * @returns Pointer to @code{EventQueue _evqueue}
+     */
+    EventQueue* getEventQueue();
+    bool isCreated() const;
 };
 
 

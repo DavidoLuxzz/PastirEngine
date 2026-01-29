@@ -1,7 +1,6 @@
 #include <display.hpp>
 #include <logger.hpp>
 
-Display::Display() {}
 Display::~Display() {
     destroy();
 }
@@ -20,16 +19,23 @@ int Display::create(int w, int h) {
         logger::err("display zeza");
         return -1;
     }
+    if (!al_get_new_display_option(ALLEGRO_VSYNC, NULL)) logger::info("VSync is off");
+
     return 0;
 }
 void Display::destroy() {
     al_destroy_display(_display);
+    _display = NULL;
 }
 
-ALLEGRO_DISPLAY* Display::getAllegroDisplay(){
+ALLEGRO_DISPLAY* Display::getAllegroDisplay() const {
     return _display;
 }
 
-bool Display::isCreated(){
+bool Display::isCreated() const {
     return _display!=NULL;
+}
+
+EventQueue* Display::getEventQueue() {
+    return &_evqueue;
 }

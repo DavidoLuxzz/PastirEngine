@@ -32,9 +32,13 @@ void uninstall(){
     al_uninstall_system();
 }
 
-// ovo allegro sranje ne da mi da prdnem bez ovih parametara. jebiga
+/**
+ * ovo allegro sranje ne da mi da prdnem bez ovih parametara. jebiga.
+ * napravljeno samo za Mac tako da postujem.
+ * mislio sam da cu da ga odradim na majmuna tako sto stavim @code{#define ALLEGRO_NO_MAGIC_MAIN},
+ * medjutim on meni vrati sa greskom. mangup
+ */
 int main(int argc, char** argv) {
-    std::cout << "hallo\n";
     init();
     if (!game::init()) {
         std::cerr << "Ne moze da ucita gejm >:(\n";
