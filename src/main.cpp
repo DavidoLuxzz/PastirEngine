@@ -40,13 +40,16 @@ void uninstall(){
  */
 int main(int argc, char** argv) {
     init();
-    if (!game::init()) {
+    std::cout << "--> game::init()\n";
+    if (game::init()) {
         std::cerr << "Ne moze da ucita gejm >:(\n";
+        game::clean();
         uninstall();
         return 0;
     }
     std::cout << "--> game::run()\n";
     game::run();
+    std::cout << "--> game::clean()\n";
     game::clean();
     uninstall();
 
