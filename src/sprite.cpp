@@ -1,12 +1,9 @@
 #include <sprite.hpp>
 
-using float2 = simd::float2;
-
-
 
 void Sprite::setPosition(float x, float y) {
-    position[0] = x;
-    position[1] = y;
+    position.x = x;
+    position.y = y;
 }
 
 float2 Sprite::getPosition() const {
@@ -15,10 +12,10 @@ float2 Sprite::getPosition() const {
 
 
 
-void Sprite::setTexture(const Texture& tex) {
-    texture = tex;
+void Sprite::setTextureID(TextureID tex) {
+    textureID = tex;
 }
 
-const Texture& Sprite::getTexture() const {
-    return texture;
+TextureID Sprite::getTextureID() const {
+    return textureID;
 }

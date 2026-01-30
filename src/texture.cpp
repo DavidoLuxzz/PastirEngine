@@ -4,6 +4,10 @@
 #include <iostream>
 #include <logger.hpp>
 
+Texture::Texture(const char* fnm, int flgs) {
+    load(fnm,flgs);
+}
+
 int Texture::create(int w, int h) {
     _bitmap = al_create_bitmap(w,h);
     return _bitmap==NULL; // 1 = error, 0 = success

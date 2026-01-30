@@ -3,12 +3,14 @@
 #define __SPRITE_HPP
 
 #include <texture.hpp>
-#include <simd/simd.h>
+#include <bank.hpp>
+#include <data_types.hpp>
 
 class Sprite {
-    using float2 = simd::float2;
 private:
-    Texture texture;
+    // cannot have its own private texture
+    // but instead can have a bank texture id :)
+    TextureID textureID;
     float2 position;
 public:
     Sprite() = default;
@@ -27,10 +29,10 @@ public:
 
     /// @brief Speficy texture
     /// @param texture
-    void setTexture(const Texture&);
-    /// @brief Returns the currently used texture @code{Texture texture}
-    /// @return texture
-    const Texture& getTexture() const;
+    void setTextureID(TextureID texture);
+    /// @brief Returns the currently used texture's bank ID @code{TextureID textureID}
+    /// @return bank texture ID
+    TextureID getTextureID() const;
 };
 
 

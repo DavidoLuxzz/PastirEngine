@@ -11,6 +11,12 @@ private:
 public:
     Texture() = default;
     ~Texture() = default;
+    // remove copy constructor (allegro bitmap pointer should not be copied)
+    Texture(const Texture&) = delete;
+    Texture& operator=(const Texture&) = delete;
+
+    /// @brief Calls load(filepath, allegro_flags)
+    Texture(const char* filepath, int allegro_flags=0x0);
 
     /**
      * *Creates* new texture.
@@ -19,12 +25,13 @@ public:
     /**
      * *Loads* texture from file with given flags
      */
-    int load(const char* filename, int allegro_flags=0x0);
+    int load(const char* filepath, int allegro_flags=0x0);
     /**
      * Frees this texture.
      */
     void destroy();
 
+    /// @returns @code{ALLEGRO_BITMAP* _bitmap}
     ALLEGRO_BITMAP* getAllegroBitmap();
     /**
      * @returns OpenGL Texture ID (use for manual bindings ili tako nekako)
