@@ -1,4 +1,4 @@
-#include <texture.hpp>
+#include <sprite/texture.hpp>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 #include <iostream>

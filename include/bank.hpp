@@ -3,7 +3,7 @@
 #define __BANK_HPP
 
 #pragma region Texture Bank
-#include <texture.hpp>
+#include <sprite/texture.hpp>
 
 typedef int TextureID;
 

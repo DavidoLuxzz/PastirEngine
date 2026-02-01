@@ -1,18 +1,23 @@
 #include <game.hpp>
 #include <iostream>
-#include <display.hpp>
+#include <components/display.hpp>
 #include <logger.hpp>
 #include <bank.hpp>
 #include <asset_manager.hpp>
-#include <Drawable.hpp>
+#include <sprite/Drawable.hpp>
+#include <input.hpp>
 
 // TODO: Bank<T> class
 
 #define WINDOW_WIDTH  800
 #define WINDOW_HEIGHT 640
+#define PIXEL_SCALE 4.0f
 
 Display display;
 Drawable drawable;
+
+
+#pragma region game::run
 
 int game::run(){
     unsigned int frames = 0;
@@ -33,6 +38,8 @@ int game::run(){
             frames = 0;
         }
 
+        // ## UPDATE ## //
+        update();
 
         /* DRAWING */ {
             Display::clear(100,0,0);
@@ -43,6 +50,24 @@ int game::run(){
 
     return 0;
 }
+
+#pragma endregion
+
+#pragma region game::update
+
+void game::update() {
+    keyboard::fetchKeyboardState();
+    float dx = (keyboard::keyDown(ALLEGRO_KEY_RIGHT)-keyboard::keyDown(ALLEGRO_KEY_LEFT)) * 2.0f;
+    float dy = (keyboard::keyDown(ALLEGRO_KEY_DOWN)-keyboard::keyDown(ALLEGRO_KEY_UP)) * 2.0f;
+    float2 pos = drawable.getPosition();
+    // drawable.setPosition(pos.x+dx, pos.y+dy);
+    drawable.move(dx,dy);
+}
+
+#pragma endregion
+
+
+#pragma region game::init
 
 #define LUKA_ASSERT0(x) if (x) return -1;
 #define LUKA_ASSERT1(x) if (x<0) return -1;
@@ -56,7 +81,7 @@ int game::init(){
 
 
     LUKA_ASSERT0(display.create(WINDOW_WIDTH, WINDOW_HEIGHT, "DEMO"));
-    display.useScale(4.0f, 4.0f);
+    display.useScale(PIXEL_SCALE, PIXEL_SCALE);
     bank::init(1);
     TextureBank textureBank;
     LUKA_ASSERT0(textureBank.init(Drawable::DRAWABLE_TEXTURE_COUNT));
@@ -67,6 +92,8 @@ int game::init(){
 
     return 0;
 }
+#pragma endregion
+#pragma region game::clean
 void game::clean(){
     logger::info("Cleaning game components...");
 
@@ -75,3 +102,4 @@ void game::clean(){
 
     display.destroy();
 }
+#pragma endregion

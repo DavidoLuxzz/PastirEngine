@@ -1,4 +1,4 @@
-#include <Drawable.hpp>
+#include <sprite/Drawable.hpp>
 
 const char* Drawable::TEXTURES[] = {
     "block","stone", "grass","water", "plank","plank_on_water", "cobweb","plum","fence_full",

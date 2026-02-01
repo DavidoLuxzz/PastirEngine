@@ -3,5 +3,6 @@
     "code-runner.showRunIconInEditorTitleMenu": true,
     "code-runner.executorMap": {
         "cpp": "echo $workspaceRoot && cd $workspaceRoot && ./build.sh && ./a.out",
-    }
+    },
+    "C_Cpp.errorSquiggles": "enabled"
 }

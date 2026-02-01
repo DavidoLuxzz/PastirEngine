@@ -2,7 +2,7 @@
 #ifndef __DRAWABLE_HPP
 #define __DRAWABLE_HPP
 
-#include <sprite.hpp>
+#include <sprite/sprite.hpp>
 
 /**
  * @class Drawable

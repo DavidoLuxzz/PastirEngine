@@ -17,6 +17,10 @@ namespace game {
      */
     int run();
 
+
+    // used localy
+    void update();
+
 } // namespace game
 
 #endif

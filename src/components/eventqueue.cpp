@@ -1,4 +1,4 @@
-#include <eventqueue.hpp>
+#include <components/eventqueue.hpp>
 #include <logger.hpp>
 
 // initalization

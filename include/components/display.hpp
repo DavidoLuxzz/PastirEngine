@@ -3,7 +3,7 @@
 #define __DISPLAY_HPP
 
 #include <allegro5/display.h>
-#include <eventqueue.hpp>
+#include <components/eventqueue.hpp>
 
 /**
  * Display object that uses ALLEGRO_DISPLAY as base

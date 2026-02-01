@@ -8,6 +8,8 @@ struct vec2 {
 };
 typedef vec2<float> float2;
 
+// for some reason defined in sprite.cpp
+float2 operator+(float2 a, float2 b);
 
 
 #endif
