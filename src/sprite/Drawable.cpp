@@ -53,6 +53,7 @@ void Drawable::drawData(const DrawableData& data, float2 translate) {
                                 .getTexture()
                                 .getAllegroBitmap();
     if (!bitmap) return;
+    Rectu rect = bank::tileset::getBank(0).getTile(data[COMP_TEXTURE_ID]);
 
     float PIXEL_SCALE = game::getPixelScale();
 
@@ -76,7 +77,8 @@ void Drawable::drawData(const DrawableData& data, float2 translate) {
     if (pos.x*PIXEL_SCALE >= __winw || pos.y*PIXEL_SCALE >= __winh) return; // clip (won't be visible on screen anyway)
 
     static const float2 imageCenter = {0.0f, 0.0f};
-    al_draw_tinted_scaled_rotated_bitmap(bitmap,
+    al_draw_tinted_scaled_rotated_bitmap_region(bitmap,
+                                        (float)rect.min.x,(float)rect.min.y,(float)rect.size.x,(float)rect.size.y,
                                         al_color_hsl(hsb.x, hsb.y, hsb.z),
                                         // al_map_rgb(100,100,100),
                                         imageCenter.x, imageCenter.y,

@@ -24,7 +24,7 @@ std::vector<Rectu> util::loadTiles(const char* relativefilepath) {
             continue;
         }
         std::istringstream _l(line);
-        unsigned int data[4];
+        unsigned int data[4] = {0,0,16,16}; // default
         int index=0;
         std::string token;
         while (std::getline(_l, token, ' ')) {
