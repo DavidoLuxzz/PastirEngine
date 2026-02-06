@@ -10,6 +10,7 @@
  */
 class Display {
 private:
+    static float PIXEL_SCALE;
     ALLEGRO_DISPLAY* _display = NULL;
     EventQueue _evqueue;
 public:
@@ -31,9 +32,11 @@ public:
      * Use al_set_new_display_[option/flags](...) before calling creating to configure.
      * @param width - Width of the display
      * @param height - Height of the display
+     * @param title - Title of the display
+     * @param use_scale - Describes if to use the global static scale defined by Display::setPixelScale(float)
      * @returns error code
      */
-    int create(int width, int height, const char* title=NULL);
+    int create(int width, int height, const char* title=NULL, bool use_scale=false);
     /**
      * Destroys this display object.
      * After this function, the display object could be created again without created a new variable.
@@ -53,7 +56,11 @@ public:
     /**
      * Scales everything
      */
-    static void useScale(float sx, float sy);
+    static void useCustomScale(float sx, float sy);
+    /**
+     * Use the static scale set up by Display::setPixelScale(float).
+     */
+    static void useScale();
     static void dontUseScale();
 
     /**
@@ -68,8 +75,13 @@ public:
     /**
      * @returns Pointer to @code{EventQueue _evqueue}
      */
-    EventQueue* getEventQueue();
+    const EventQueue& getEventQueue() const;
     bool isCreated() const;
+
+    /// @brief Sets the global static pixel scale
+    static void setPixelScale(float);
+    /// @returns The global static pixel scale 
+    static float getPixelScale();
 };
 
 

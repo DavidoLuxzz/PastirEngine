@@ -9,8 +9,7 @@
 #define DEFAULT_PIXEL_SCALE 4.0f
 
 namespace game {
-
-    float getPixelScale();
+    
     /**
      * Initializes game components and variables.
      * @returns error code

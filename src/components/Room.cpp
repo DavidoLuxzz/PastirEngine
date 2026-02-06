@@ -13,9 +13,11 @@ void Room::move(float dx, float dy) {
 }
 
 void Room::draw() {
+    al_hold_bitmap_drawing(true);
     for (Drawable::DrawableData& data : objects) {
         Drawable::drawData(data, translate);
     }
+    al_hold_bitmap_drawing(false);
 }
 
 

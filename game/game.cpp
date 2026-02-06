@@ -12,7 +12,8 @@
 Display display;
 Drawable drawable;
 Room room;
-float PIXEL_SCALE;
+
+#define TEST_DRAW_SAMPLES 1
 
 #pragma region game::run
 
@@ -22,7 +23,7 @@ int game::run(){
     while (true) {
         /* handle events: */ {
             ALLEGRO_EVENT evt;
-            while (display.getEventQueue()->popNext(&evt)) {
+            while (display.getEventQueue().popNext(&evt)) {
                 if (evt.type==ALLEGRO_EVENT_DISPLAY_CLOSE) return 0;
                 if (evt.type==ALLEGRO_EVENT_KEY_DOWN && evt.keyboard.keycode == ALLEGRO_KEY_ESCAPE) return 0;
             }
@@ -31,7 +32,7 @@ int game::run(){
         frames++;
         if (al_get_time()-lastTime >= 1.0) {
             lastTime = al_get_time();
-            display.setTitle(  (std::string("DEMO FPS: ")+std::to_string(frames)).c_str()  );
+            display.setTitle(  (std::string("DEMO FPS: ")+std::to_string(frames)+" Sprites: "+std::to_string(TEST_DRAW_SAMPLES*room.objects.size())).c_str()  );
             frames = 0;
         }
 
@@ -40,7 +41,8 @@ int game::run(){
 
         /* DRAWING */ {
             Display::clear(100,0,0);
-            room.draw();
+            for (int i=0; i<TEST_DRAW_SAMPLES; i++)
+                room.draw();
             Display::swapBuffers();
         }
     }
@@ -77,11 +79,10 @@ int game::init(){
     __assets_path += "/eclipse-workspace/Pastir-igrica/assets";
     printf("> Setting resources path to %s [errors=%d, %d]\n", __assets_path.c_str(), __assets_path_err, assman::setcwd(__assets_path));
 
-    PIXEL_SCALE = 4.0f;
+    Display::setPixelScale(4.0f);
 
-
-    LUKA_ASSERT0(display.create(WINDOW_WIDTH*PIXEL_SCALE, WINDOW_HEIGHT*PIXEL_SCALE, "DEMO"));
-    display.useScale(PIXEL_SCALE, PIXEL_SCALE);
+    LUKA_ASSERT0(display.create(WINDOW_WIDTH, WINDOW_HEIGHT, "DEMO", true));
+    display.getEventQueue().registerKeyboardEventSource();
     /* Bank loading */{
         bank::tileset::init(1);
         TilesetBank tbank;
@@ -112,8 +113,3 @@ void game::clean(){
     display.destroy();
 }
 #pragma endregion
-
-
-float game::getPixelScale() {
-    return PIXEL_SCALE;
-}

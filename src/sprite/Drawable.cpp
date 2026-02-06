@@ -47,6 +47,7 @@ float degreesToRadians(float degrees) {
 }
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_color.h>
+#include <components/display.hpp>
 #include <game.hpp>
 void Drawable::drawData(const DrawableData& data, float2 translate) {
     ALLEGRO_BITMAP* bitmap = bank::tileset::getBank(0)
@@ -55,7 +56,7 @@ void Drawable::drawData(const DrawableData& data, float2 translate) {
     if (!bitmap) return;
     Rectu rect = bank::tileset::getBank(0).getTile(data[COMP_TEXTURE_ID]);
 
-    float PIXEL_SCALE = game::getPixelScale();
+    float PIXEL_SCALE = Display::getPixelScale();
 
     // full translated position
     float2 pos = {  static_cast<float>(data[COMP_X])/DEFAULT_PIXEL_SCALE + translate.x,
