@@ -91,15 +91,15 @@ int game::init(){
         bank::tileset::makeGlobal(tbank, 0);
     }
 
-    std::cout << "Phase 2:\n";
-
     drawable.init(Drawable::TEXTURE_GRASS, 100.0f, 100.0f);
 
 
     room_loader::load(0); // .txt
-    room_loader::swapObjects(room);
+    room_loader::swapData(room);
 
-    std::cout << "Room memory usage: " << __memsizeToString(room.getMemoryUsage()) << std::endl;
+    printf("Room %s [%d,%d]\n",room.areaName.c_str(),room.bounds.size.x,room.bounds.size.y);
+
+    // std::cout << "Room memory usage: " << __memsizeToString(room.getMemoryUsage()) << std::endl;
 
     return 0;
 }

@@ -9,6 +9,8 @@ class Room {
     float2 translate = {0,0};
 public:
     std::vector<Drawable::DrawableData> objects;
+    Rectu bounds;
+    std::string areaName;
 
     void draw();
 

@@ -26,6 +26,8 @@ template<typename T>
 struct Rect {
     vec2<T> min;
     vec2<T> size;
+    // for some reason defined in RoomLoader.cpp
+    T& operator[](int index);
 };
 typedef Rect<float> Rectf;
 typedef Rect<int> Recti;

@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <colors.h>
 
 std::vector<Rectu> util::loadTiles(const char* relativefilepath) {
     std::vector<Rectu> tiles;
@@ -10,10 +11,10 @@ std::vector<Rectu> util::loadTiles(const char* relativefilepath) {
     filepath += ("/eclipse-workspace/Pastir-Igrica/assets/");
     filepath += relativefilepath;
     if (!std::filesystem::exists(filepath)) {
-        fprintf(stderr, "{UTILITY} File doesn't exists %s\n", filepath.c_str());
+        fprintf(stderr, "{%sUTILITY%s} File doesn't exists %s\n",TERMINAL_COLOR_RED_BOLD,TERMINAL_COLOR_RESET, filepath.c_str());
         return tiles;
     }
-    printf("{UTILITY} Loading tileset data file path=%s\n", filepath.c_str());
+    // printf("{UTILITY} Loading tileset data file path=%s\n", filepath.c_str());
 
     std::ifstream file(filepath);
     

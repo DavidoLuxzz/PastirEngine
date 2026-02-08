@@ -1,0 +1,15 @@
+#pragma once
+#ifndef __COLORS_H
+#define __COLORS_H
+
+#define TERMINAL_COLOR_RESET        "\033[0m"
+#define TERMINAL_COLOR_BLACK_BOLD   "\033[30;1m"
+#define TERMINAL_COLOR_RED_BOLD     "\033[31;1m"
+#define TERMINAL_COLOR_GREEN_BOLD   "\033[32;1m"
+#define TERMINAL_COLOR_YELLOW_BOLD  "\033[33;1m"
+#define TERMINAL_COLOR_BLUE_BOLD    "\033[34;1m"
+#define TERMINAL_COLOR_MAGENTA_BOLD "\033[35;1m"
+#define TERMINAL_COLOR_CYAN_BOLD    "\033[36;1m"
+#define TERMINAL_COLOR_WHITE_BOLD   "\033[37;1m"
+
+#endif

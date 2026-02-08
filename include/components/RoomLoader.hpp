@@ -21,7 +21,7 @@ namespace room_loader {
      * 
      * @param room - specified room object
      */
-    void swapObjects(Room& room);
+    void swapData(Room& room);
     
 
 } // namespace room_loader

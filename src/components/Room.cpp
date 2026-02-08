@@ -8,6 +8,23 @@ float2 Room::getTranslate() const {
     return translate;
 }
 void Room::move(float dx, float dy) {
+    /*
+    // camera coordinates
+    double x = player.getRequestedX()-root.getWidth()/2;
+    double y = player.getRequestedY()-root.getHeight()/2;
+    // Fix x coords
+    if ((x+root.getWidth())>LEVEL_WIDTH) x=LEVEL_WIDTH-root.getWidth();
+    if (x<=0) x=0;
+    // Fix y coords
+    if ((y+root.getHeight())>LEVEL_HEIGHT) y=LEVEL_HEIGHT-root.getHeight();
+    if (y<=0) y=0;
+    
+    camX = x;
+    camY = y;
+    player.setCameraPos(x, y);
+    player.relocate(player.getRequestedX() - x, player.getRequestedY() - y);
+    for (DynamicObject o : dynamicObjects) o.updatePos(-x, -y);
+    DialogBox.updatePos(this, 0, 0);*/
     translate.x += dx;
     translate.y += dy;
 }

@@ -1,58 +1,62 @@
 #include <components/RoomLoader.hpp>
-/*
-public boolean successLoad(){
-        System.out.println(file);
-        try {
-        // System.out.println(myObj.getAbsolutePath());
-            Scanner myReader = new Scanner(file);
-            while (myReader.hasNextLine()) {
-            	String line = myReader.nextLine();
-                String[] data = line.split(" ");
-                if (data[0].equalsIgnoreCase("box")) continue; // automaticly added (no need for loading)
-                if (line.length()<3) continue; // invalid
-                if (!Character.isDigit(line.charAt(0))) {
-                	additionalCommands += line+"\n";
-                	continue;
-                }
-                // parse
-                int[] obj = new int[Drawable.MAX_COMPONENTS];
-                int index = 0;
-                for (String comp : data) {
-                	if (comp.length()<1) continue;
-                	obj[index++] = Integer.parseInt(comp);
-                }
-                l.add(obj);
-            }
-            myReader.close();
-            return true;
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
-        }
-        return false;
-    }
-        */
-
 #include <fstream>
 #include <string>
 #include <sstream>
 #include <filesystem>
 #include <iostream>
 #include <components/Room.hpp>
+#include <colors.h>
+
+template<typename T>
+T& Rect<T>::operator[](int index) {
+    if (index<0 || index>3) throw "Rect<T> index out of bounds\n";
+    switch (index) {
+        case 0: return min.x;
+        case 1: return min.y;
+        case 2: return size.x;
+        case 3: return size.y;
+        default:
+            throw "Rect<T> index out of bounds\n";
+    }
+    // null
+    return min.x;
+}
 
 namespace room_loader {
-    std::vector<Drawable::DrawableData> objects;
+    Room room;
 } // namespace room_loader
 
+
+void __lvl_loader_nonobject(const std::string& line) {
+    if (line.starts_with("box ")) {
+        std::istringstream _l(line);
+        int index=0;
+        std::string token;
+        std::getline(_l, token, ' '); // skip first
+        while (std::getline(_l, token, ' ')) {
+            room_loader::room.bounds[2+index++] = std::stoi(token);
+            if (index>=2) break;
+        }
+    } else if (line.starts_with("area ")) {
+        int index = 3;
+        while (line[++index]==' ');
+        room_loader::room.areaName = line.substr(index);
+        index = room_loader::room.areaName.size();
+        while (room_loader::room.areaName[--index]==' ');
+        room_loader::room.areaName = room_loader::room.areaName.substr(0,index+1);
+    }
+}
 
 int __lvl_loader_load(const std::string& filepath) {
     std::ifstream file(filepath);
 
-    room_loader::objects.clear();
+    room_loader::room.objects.clear();
     
     std::string line;
     while (std::getline(file, line)) {
         if (!std::isdigit(line[0])){
             std::cout << line << std::endl;
+            __lvl_loader_nonobject(line);
             continue;
         }
         std::istringstream _l(line);
@@ -62,7 +66,7 @@ int __lvl_loader_load(const std::string& filepath) {
             data[index++] = std::stoi(token);
             if (index>=Drawable::COMPONENT_COUNT) break;
         }
-        room_loader::objects.push_back(data);
+        room_loader::room.objects.push_back(data);
     }
 
     file.close();
@@ -78,15 +82,17 @@ int room_loader::load(unsigned int roomID) {
     filepath += std::to_string(roomID);
     filepath += ".txt";
     if (!std::filesystem::exists(filepath)) {
-        fprintf(stderr, "<LVLLOADER> Room %u doesn't exists. path=%s\n", roomID, filepath.c_str());
+        fprintf(stderr, "<%sLVLLOADER%s> Room %u doesn't exists. path=%s\n",TERMINAL_COLOR_RED_BOLD,TERMINAL_COLOR_RESET, roomID, filepath.c_str());
         return -1;
     }
-    printf("<LVLLOADER> Loading room %u path=%s\n", roomID, filepath.c_str());
+    // printf("<LVLLOADER> Loading room %u path=%s\n", roomID, filepath.c_str());
     return __lvl_loader_load(filepath);
 }
 
 
 
-void room_loader::swapObjects(Room& room) {
-    objects.swap(room.objects);
+void room_loader::swapData(Room& _room) {
+    _room.objects.swap(room.objects);
+    _room.areaName = room.areaName;
+    _room.bounds = room.bounds;
 }
