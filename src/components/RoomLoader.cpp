@@ -7,21 +7,6 @@
 #include <components/Room.hpp>
 #include <colors.h>
 
-template<typename T>
-T& Rect<T>::operator[](int index) {
-    if (index<0 || index>3) throw "Rect<T> index out of bounds\n";
-    switch (index) {
-        case 0: return min.x;
-        case 1: return min.y;
-        case 2: return size.x;
-        case 3: return size.y;
-        default:
-            throw "Rect<T> index out of bounds\n";
-    }
-    // null
-    return min.x;
-}
-
 namespace room_loader {
     Room room;
 } // namespace room_loader
@@ -33,10 +18,11 @@ void __lvl_loader_nonobject(const std::string& line) {
         int index=0;
         std::string token;
         std::getline(_l, token, ' '); // skip first
-        while (std::getline(_l, token, ' ')) {
-            room_loader::room.bounds[2+index++] = std::stoi(token);
-            if (index>=2) break;
-        }
+        
+        std::getline(_l, token, ' ');
+        room_loader::room.bounds.size.x = std::stoi(token);
+        std::getline(_l, token, ' ');
+        room_loader::room.bounds.size.y = std::stoi(token);
     } else if (line.starts_with("area ")) {
         int index = 3;
         while (line[++index]==' ');

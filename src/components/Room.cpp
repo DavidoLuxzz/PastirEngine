@@ -1,4 +1,5 @@
 #include <components/Room.hpp>
+#include <components/display.hpp>
 
 void Room::setTranslate(float x, float y) {
     translate.x = x;
@@ -25,8 +26,18 @@ void Room::move(float dx, float dy) {
     player.relocate(player.getRequestedX() - x, player.getRequestedY() - y);
     for (DynamicObject o : dynamicObjects) o.updatePos(-x, -y);
     DialogBox.updatePos(this, 0, 0);*/
-    translate.x += dx;
-    translate.y += dy;
+    vec2<int> winSize;
+    winSize.x = Display::getCurrentDisplay()->getWidth();
+    winSize.y = Display::getCurrentDisplay()->getHeight();
+    float newx = translate.x + dx; // new translate x
+    float newy = translate.y + dy; // -||-
+    if (newx>bounds.min.x) newx=bounds.min.x;
+    if (newy>bounds.min.y) newy=bounds.min.y;
+
+    if (newx+bounds.size.x < winSize.x) newx=bounds.min.x;
+    if (newy+bounds.size.y < winSize.y) newy=bounds.min.y;
+    translate.x = newx;
+    translate.y = newy;
 }
 
 void Room::draw() {

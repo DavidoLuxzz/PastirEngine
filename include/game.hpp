@@ -9,7 +9,7 @@
 #define DEFAULT_PIXEL_SCALE 4.0f
 
 namespace game {
-    
+
     /**
      * Initializes game components and variables.
      * @returns error code

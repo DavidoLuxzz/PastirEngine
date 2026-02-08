@@ -16,10 +16,6 @@ float Sprite::getY() const {
     return position.y;
 }
 
-float2 operator+(float2 a, float2 b) {
-    return {a.x+b.x, a.y+b.y};
-}
-
 float2 Sprite::getFullPosition() const {
     return getPosition() + getTranslate();
 }

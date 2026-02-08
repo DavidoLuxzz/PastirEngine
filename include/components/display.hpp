@@ -10,7 +10,10 @@
  */
 class Display {
 private:
+    // static things
     static float PIXEL_SCALE;
+    static Display* _currentDisplay;
+    // for this object
     ALLEGRO_DISPLAY* _display = NULL;
     EventQueue _evqueue;
 public:
@@ -68,6 +71,10 @@ public:
      */
     void setTitle(const char* title);
 
+    const char* getTitle() const;
+    int getWidth() const;
+    int getHeight() const;
+
     /**
      * @returns @code{ALLEGRO_DISPLAY* _display}
      */
@@ -82,6 +89,11 @@ public:
     static void setPixelScale(float);
     /// @returns The global static pixel scale 
     static float getPixelScale();
+
+
+    /// the next calls will be used on this display
+    static void makeCurrent(Display*);
+    static Display* getCurrentDisplay();
 };
 
 

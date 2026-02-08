@@ -60,7 +60,7 @@ void game::update() {
     float dx = (keyboard::keyDown(ALLEGRO_KEY_RIGHT)-keyboard::keyDown(ALLEGRO_KEY_LEFT)) * speed;
     float dy = (keyboard::keyDown(ALLEGRO_KEY_DOWN)-keyboard::keyDown(ALLEGRO_KEY_UP)) * speed;
     // drawable.setPosition(pos.x+dx, pos.y+dy);
-    room.move(dx,dy);
+    room.move(-dx,-dy);
 }
 
 #pragma endregion

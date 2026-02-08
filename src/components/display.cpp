@@ -2,6 +2,7 @@
 #include <logger.hpp>
 
 float Display::PIXEL_SCALE = 1.0f;
+Display* Display::_currentDisplay = NULL;
 
 
 Display::Display(int w, int h, const char* title) {
@@ -53,7 +54,15 @@ void Display::swapBuffers(){
 void Display::setTitle(const char* title){
     al_set_window_title(_display, title);
 }
-
+const char* Display::getTitle() const {
+    return "TODO jbg";
+}
+int Display::getWidth() const {
+    return al_get_display_width(_display);
+}
+int Display::getHeight() const {
+    return al_get_display_width(_display);
+}
 
 ALLEGRO_DISPLAY* Display::getAllegroDisplay() const {
     return _display;
@@ -88,4 +97,13 @@ void Display::setPixelScale(float s) {
 }
 float Display::getPixelScale() {
     return PIXEL_SCALE;
+}
+void Display::makeCurrent(Display* disp) {
+    _currentDisplay = disp;
+    if (disp && disp->getAllegroDisplay()) {
+        al_set_target_backbuffer(disp->getAllegroDisplay());
+    }
+}
+Display* Display::getCurrentDisplay() {
+    return _currentDisplay;
 }
