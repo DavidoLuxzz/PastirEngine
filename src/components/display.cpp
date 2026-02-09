@@ -22,6 +22,9 @@ int Display::create(int _w, int _h, const char* title, bool use_scale) {
         logger::err("display zeza");
         return -1;
     }
+    if (!Display::_currentDisplay) {
+        Display::makeCurrent(this);
+    }
     _evqueue.create();
     _evqueue.registerDisplayEventSource(_display);
 
@@ -61,7 +64,7 @@ int Display::getWidth() const {
     return al_get_display_width(_display);
 }
 int Display::getHeight() const {
-    return al_get_display_width(_display);
+    return al_get_display_height(_display);
 }
 
 ALLEGRO_DISPLAY* Display::getAllegroDisplay() const {

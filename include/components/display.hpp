@@ -91,7 +91,18 @@ public:
     static float getPixelScale();
 
 
-    /// the next calls will be used on this display
+    /**
+     * Makes the display current. Next display calls
+     * will be redirected to the current display.
+     * Does:
+     *  al_set_target_backbuffer(display)
+     * 
+     * Note: Display create(2) function will by default set
+     *       itself as the current display if the current
+     *       display is NULL.
+     *       This also applies to constructors with same
+     *       parameters, for they call create(2).
+     */
     static void makeCurrent(Display*);
     static Display* getCurrentDisplay();
 };

@@ -34,8 +34,11 @@ void Room::move(float dx, float dy) {
     if (newx>bounds.min.x) newx=bounds.min.x;
     if (newy>bounds.min.y) newy=bounds.min.y;
 
-    if (newx+bounds.size.x < winSize.x) newx=bounds.min.x;
-    if (newy+bounds.size.y < winSize.y) newy=bounds.min.y;
+    float desna_strana = (bounds.min.x+bounds.size.x-winSize.x) / Display::getPixelScale();
+    if (-newx > desna_strana) newx = -desna_strana;
+    desna_strana = (bounds.min.y+bounds.size.y-winSize.y) / Display::getPixelScale();
+    if (-newy > desna_strana) newy = -desna_strana;
+
     translate.x = newx;
     translate.y = newy;
 }
