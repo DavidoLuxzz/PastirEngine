@@ -8,10 +8,11 @@
 #include <input.hpp>
 #include <components/RoomLoader.hpp>
 #include <components/utility.hpp>
+#include <sprite/Player.hpp>
 
 Display display;
-Drawable drawable;
 Room room;
+Player player;
 
 #define TEST_DRAW_SAMPLES 1
 
@@ -39,15 +40,25 @@ int game::run(){
         // ## UPDATE ## //
         update();
 
-        /* DRAWING */ {
-            Display::clear(100,0,0);
-            for (int i=0; i<TEST_DRAW_SAMPLES; i++)
-                room.draw();
-            Display::swapBuffers();
-        }
+        /* DRAWING */
+        draw();
     }
 
     return 0;
+}
+
+#pragma endregion
+
+#pragma region game::draw
+
+void game::draw() {
+    Display::clear(100,0,0);
+
+    for (int i=0; i<TEST_DRAW_SAMPLES; i++)
+        room.draw();
+    player.draw();
+    
+    Display::swapBuffers();
 }
 
 #pragma endregion
@@ -71,31 +82,40 @@ void game::update() {
 #define LUKA_ASSERT0(x) if (x) return -1;
 #define LUKA_ASSERT1(x) if (x<0) return -1;
 
+
+int game::loadAssets() {
+    /* Bank loading */{
+        bank::tileset::init(bank::tileset::NUM_KNOWN_BANKS);
+        // TilesetBank tbank;
+        bank::tileset::getBank(bank::tileset::MAP_DRAWABLES).loadTexture("drawables.png");
+        bank::tileset::getBank(bank::tileset::MAP_DRAWABLES).loadTileRects("drawable_rects.txt");
+        // bank::tileset::makeGlobal(tbank, 0);
+        bank::tileset::getBank(bank::tileset::PLAYER).loadTexture("player.png");
+        bank::tileset::getBank(bank::tileset::PLAYER).loadTileRects("player_rects.txt");
+    }
+    return 0;
+}
+
 int game::init(){
     int __assets_path_err = 0;
     std::string __assets_path;
-    //__assets_path = assman::getallegropathstr(ALLEGRO_RESOURCES_PATH, &__assets_path_err);
-    __assets_path = std::getenv("HOME");
-    __assets_path += "/eclipse-workspace/Pastir-igrica/assets";
+    __assets_path = assman::getallegropathstr(ALLEGRO_RESOURCES_PATH, &__assets_path_err);
+    //__assets_path = std::getenv("HOME");
+    __assets_path += "assets";
     printf("> Setting resources path to %s [errors=%d, %d]\n", __assets_path.c_str(), __assets_path_err, assman::setcwd(__assets_path));
 
     Display::setPixelScale(4.0f);
 
     LUKA_ASSERT0(display.create(WINDOW_WIDTH, WINDOW_HEIGHT, "DEMO", true));
     display.getEventQueue().registerKeyboardEventSource();
-    /* Bank loading */{
-        bank::tileset::init(1);
-        TilesetBank tbank;
-        tbank.loadTexture("drawables.png");
-        tbank.loadTileRects("drawableTiles.txt");
-        bank::tileset::makeGlobal(tbank, 0);
-    }
-
-    drawable.init(Drawable::TEXTURE_GRASS, 100.0f, 100.0f);
-
+    
+    LUKA_ASSERT0(loadAssets());
 
     room_loader::load(0); // .txt
     room_loader::swapData(room);
+
+    player.setTexturesBankType(bank::TILESET);
+    player.setTexturesBankID(bank::tileset::PLAYER);
 
     printf("Room %s [%d,%d]\n",room.areaName.c_str(),room.bounds.size.x,room.bounds.size.y);
 

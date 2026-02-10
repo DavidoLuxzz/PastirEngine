@@ -138,6 +138,12 @@ namespace bank {
         const MultiTextureBank& getBank(unsigned int index);
     }
     namespace tileset {
+        enum tileset_banks {
+            MAP_DRAWABLES,
+            PLAYER,
+
+            NUM_KNOWN_BANKS
+        };
         /**
          * Initializes the TextureBank bank with given bank count.
          */
@@ -146,6 +152,7 @@ namespace bank {
          * Destroys all banks in list.
          */
         void destroyAll();
+        void destroy(unsigned int index);
         /**
          * Frees whole bank list. Should be now initializable again (ofc not recommended)
          */
@@ -153,13 +160,15 @@ namespace bank {
         /**
          * Makes bank global at given index. [copy] done with operator=
          * Bank will be accessible with getBank(index).
+         * 
+         * (Old bank gets overwritten and destroyed.)
          */
         void makeGlobal(TilesetBank& bank, unsigned int index);
 
         /**
          * @returns TilesetBank at index
          */
-        const TilesetBank& getBank(unsigned int index);
+        TilesetBank& getBank(unsigned int index);
     }
 
 

@@ -4,12 +4,11 @@
 #include <iostream>
 #include <sstream>
 #include <colors.h>
+#include <asset_manager.hpp>
 
 std::vector<Rectu> util::loadTiles(const char* relativefilepath) {
     std::vector<Rectu> tiles;
-    std::string filepath(std::getenv("HOME"));
-    filepath += ("/eclipse-workspace/Pastir-Igrica/assets/");
-    filepath += relativefilepath;
+    std::string filepath = assman::getasset(relativefilepath);
     if (!std::filesystem::exists(filepath)) {
         fprintf(stderr, "{%sUTILITY%s} File doesn't exists %s\n",TERMINAL_COLOR_RED_BOLD,TERMINAL_COLOR_RESET, filepath.c_str());
         return tiles;
@@ -38,7 +37,7 @@ std::vector<Rectu> util::loadTiles(const char* relativefilepath) {
 
     file.close();
 
-    std::cout << "done\n";
+    std::cout << "done " << relativefilepath << "\n";
 
     return tiles;
 }

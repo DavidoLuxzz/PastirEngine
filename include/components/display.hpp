@@ -85,7 +85,7 @@ public:
     const EventQueue& getEventQueue() const;
     bool isCreated() const;
 
-    /// @brief Sets the global static pixel scale
+    /// @brief Sets the global static pixel scale. This value is equal to Map Drawable pixel scale. (<=>)
     static void setPixelScale(float);
     /// @returns The global static pixel scale 
     static float getPixelScale();

@@ -5,6 +5,9 @@
 #include <string>
 
 namespace assman {
+    std::string getcwd();
+    std::string getasset(std::string&&);
+    std::string getasset(const char*);
     /**
      * Sets the current working directory path.
      * @param path the path to directory

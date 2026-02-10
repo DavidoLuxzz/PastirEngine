@@ -174,6 +174,9 @@ void tileset::destroyAll() {
         banks[i].destroy();
     }
 }
+void tileset::destroy(unsigned int index) {
+    banks[index].destroy();
+}
 void tileset::free(){
     if (banks) {
         delete[] banks;
@@ -183,9 +186,10 @@ void tileset::free(){
 }
 void tileset::makeGlobal(TilesetBank& bank, unsigned int id) {
     //std::cout << "Texture bank made global at " << id << std::endl;
+    banks[id].destroy();
     banks[id] = bank;
 }
-const TilesetBank& tileset::getBank(unsigned int id) {
+TilesetBank& tileset::getBank(unsigned int id) {
     // static_assert(std::is_same_v<T, int> || std::is_same_v<T, float>, "Type must be a bank");
     return banks[id];
 }

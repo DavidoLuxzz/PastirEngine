@@ -13,8 +13,25 @@
 #define ASSMAN_LOG(errorstr) printf("%s%s\n",ASSMAN_LOG_PREFIX,errorstr)
 #define ASSMAN_LOG_PATH(errorstr,path) printf("%s%s [%s]\n",ASSMAN_LOG_PREFIX,errorstr,path)
 
+namespace assman {
+    std::string cwd;
+}
+
+std::string assman::getcwd() {
+    return cwd;
+}
+std::string assman::getasset(std::string&& file) {
+    if (file.starts_with('/')) return cwd+file.substr(1);
+    return cwd+file;
+}
+std::string assman::getasset(const char* file) {
+    return getasset(std::string(file));
+}
+
 int assman::setcwd(const char* path) {
     if (!std::filesystem::exists(path)) ASSMAN_LOG_PATH(ASSMAN_DIR_DOESNT_EXISTS_STR, path);
+    cwd = path;
+    if (!cwd.ends_with('/')) cwd.append("/");
     return !al_change_directory(path);
 }
 int assman::setcwd(const std::string& path) {
