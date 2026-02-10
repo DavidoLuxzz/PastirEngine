@@ -4,9 +4,16 @@
 
 #include <sprite/sprite.hpp>
 #include <sprite/texture.hpp>
+#include <animation.hpp>
 
 class Player : public Sprite {
+private:
+    unsigned int currentFrame = 0;
+    // int currentDirection = DIR_UP;
+    Animation animation;
 public:
+    Player();
+    void _animTick(int frame);
     enum directions {
         DIR_UP,
         DIR_DOWN,
@@ -20,6 +27,7 @@ public:
      * Changes players texture tile according to the current direction.
      */
     void orientate(float dx, float dy);
+    void setTileByDirection(directions);
 
     void useNikes(bool);
 

@@ -66,6 +66,12 @@ void Sprite::setTile(uint mx, uint my, uint w, uint h) {
 Rectu Sprite::getTile() const {
     return texInfo.tileRect;
 }
+void Sprite::setTileID(TextureID id) {
+    texInfo.tileID = id;
+}
+TextureID Sprite::getTileID() const {
+    return texInfo.tileID;
+}
 
 
 #include <allegro5/allegro.h>

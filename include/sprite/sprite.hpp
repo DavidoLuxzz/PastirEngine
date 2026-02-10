@@ -24,6 +24,8 @@ public:
     void setTile(const Rectu&);
     void setTile(uint minx, uint miny, uint width, uint height);
     Rectu getTile() const;
+    void setTileID(TextureID);
+    TextureID getTileID() const;
 
     /**
      * Sets the position of the sprite.
