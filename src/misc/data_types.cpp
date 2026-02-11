@@ -3,6 +3,9 @@
 float2 operator+(float2 a, float2 b) {
     return {a.x+b.x, a.y+b.y};
 }
+float2 operator-(float2 a, float2 b) {
+    return {a.x-b.x, a.y-b.y};
+}
 
 template <typename T>
 inline bool Rect<T>::contains(const vec2<T>& a) const {

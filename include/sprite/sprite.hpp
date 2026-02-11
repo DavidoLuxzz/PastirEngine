@@ -16,6 +16,7 @@ protected:
 
     float2 position = {0,0};
     float2 translate = {0,0};
+    float scale = 1.0f;
 public:
     Sprite() = default;
     ~Sprite() = default;
@@ -26,6 +27,9 @@ public:
     Rectu getTile() const;
     void setTileID(TextureID);
     TextureID getTileID() const;
+
+    void setScale(float);
+    float getScale() const;
 
     /**
      * Sets the position of the sprite.
@@ -44,6 +48,9 @@ public:
     float2 getFullPosition() const;
     float getX() const;
     float getY() const;
+
+
+    void setCenter(float x, float y);
 
     /// @brief Like offset
     /// @param tx 

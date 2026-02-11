@@ -20,6 +20,7 @@ typedef vec3<unsigned int> uint3;
 
 // defined in misc/
 float2 operator+(float2 a, float2 b);
+float2 operator-(float2 a, float2 b);
 
 
 template<typename T>

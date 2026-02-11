@@ -65,14 +65,17 @@ void game::draw() {
 
 #pragma region game::update
 
+void __game_move(float dx, float dy) {
+    room.move(-dx,-dy, &player);
+    player.orientate(dx,dy);
+}
+
 void game::update() {
     keyboard::fetchKeyboardState();
-    static const float speed = 1.0f;
-    float dx = (keyboard::keyDown(ALLEGRO_KEY_RIGHT)-keyboard::keyDown(ALLEGRO_KEY_LEFT)) * speed;
-    float dy = (keyboard::keyDown(ALLEGRO_KEY_DOWN)-keyboard::keyDown(ALLEGRO_KEY_UP)) * speed;
+    float dx = (keyboard::keyDown(ALLEGRO_KEY_RIGHT)-keyboard::keyDown(ALLEGRO_KEY_LEFT)) * player.getSpeed();
+    float dy = (keyboard::keyDown(ALLEGRO_KEY_DOWN)-keyboard::keyDown(ALLEGRO_KEY_UP)) * player.getSpeed();
     // drawable.setPosition(pos.x+dx, pos.y+dy);
-    room.move(-dx,-dy);
-    player.orientate(dx,dy);
+    __game_move(dx,dy);
 }
 
 #pragma endregion
@@ -117,6 +120,9 @@ int game::init(){
 
     player.setTexturesBankType(bank::TILESET);
     player.setTexturesBankID(bank::tileset::PLAYER);
+    player.setScale(0.5f);
+    player.setCenter(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f);
+    player.useNikes(true);
 
     printf("Room %s [%d,%d]\n",room.areaName.c_str(),room.bounds.size.x,room.bounds.size.y);
 

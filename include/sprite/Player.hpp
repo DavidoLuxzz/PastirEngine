@@ -7,13 +7,15 @@
 #include <animation.hpp>
 
 class Player : public Sprite {
-private:
-    unsigned int currentFrame = 0;
+protected:
     // int currentDirection = DIR_UP;
     Animation animation;
+    bool usingNikes = false;
+    /// @brief Speed [pixel(s)/60FPS]
+    static constexpr float speed = 0.5f;
+    float speedmul=1.0f;
 public:
     Player();
-    void _animTick(int frame);
     enum directions {
         DIR_UP,
         DIR_DOWN,
@@ -21,6 +23,9 @@ public:
         DIR_RIGHT,
         NUM_ANIMATION_FRAMES // stoji ovde eto jbg posto ce dobiti value 4, pa da sacuvam prostora
     };
+
+    void setSpeedMul(float mul);
+    float getSpeed() const;
 
     void move(float dx, float dy);
     /**

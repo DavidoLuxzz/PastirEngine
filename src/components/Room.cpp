@@ -8,7 +8,11 @@ void Room::setTranslate(float x, float y) {
 float2 Room::getTranslate() const {
     return translate;
 }
-void Room::move(float dx, float dy) {
+void Room::move(float dx, float dy, Player* player) {
+    float2 ptrans = {0.0f, 0.0f}; // player translate
+    if (player) ptrans = player->getTranslate();
+    ptrans.x -= dx;
+    ptrans.y -= dy;
     /*
     // camera coordinates
     double x = player.getRequestedX()-root.getWidth()/2;
@@ -31,16 +35,44 @@ void Room::move(float dx, float dy) {
     winSize.y = Display::getCurrentDisplay()->getHeight();
     float newx = translate.x + dx; // new translate x
     float newy = translate.y + dy; // -||-
-    if (newx>bounds.min.x) newx=bounds.min.x;
-    if (newy>bounds.min.y) newy=bounds.min.y;
 
     float desna_strana = (bounds.min.x+bounds.size.x-winSize.x) / Display::getPixelScale();
-    if (-newx > desna_strana) newx = -desna_strana;
+
+    if (newx>bounds.min.x) {
+        newx=bounds.min.x;
+        if (player) player->move(-dx,0.0f);
+    } else if (player && player->getTranslate().x<0.0f) {
+        player->move(-dx,0.0f);
+        newx = translate.x;
+    } else if (-newx > desna_strana) {
+        newx = -desna_strana;
+        if (player) player->move(-dx,0.0f);
+    } else if (player && player->getTranslate().x>0.0f) {
+        player->move(-dx,0.0f);
+        newx = translate.x;
+    }
     desna_strana = (bounds.min.y+bounds.size.y-winSize.y) / Display::getPixelScale();
-    if (-newy > desna_strana) newy = -desna_strana;
+    if (newy>bounds.min.y) {
+        newy=bounds.min.y;
+        if (player) player->move(0.0f,-dy);
+    } else if (player && player->getTranslate().y<0.0f) {
+        player->move(0.0f,-dy);
+        newy = translate.y;
+    } else if (-newy > desna_strana) {
+        newy = -desna_strana;
+        if (player) player->move(0.0f, -dy);
+    } else if (player && player->getTranslate().y>0.0f) {
+        player->move(0.0f, -dy);
+        newy = translate.y;
+    }
+
+    ptrans.x = newx-translate.x;
+    ptrans.y = newy-translate.y;
+
 
     translate.x = newx;
     translate.y = newy;
+    // if (player) player->move(ptrans.x,ptrans.y);
 }
 
 void Room::draw() {

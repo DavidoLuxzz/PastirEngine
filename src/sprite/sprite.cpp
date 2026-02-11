@@ -20,6 +20,18 @@ float2 Sprite::getFullPosition() const {
     return getPosition() + getTranslate();
 }
 
+void Sprite::setCenter(float x, float y) {
+    float tileWidth, tileHeight;
+    if (texInfo.bankType == bank::MULTITEX){
+        tileWidth = texInfo.tileRect.size.x;
+        tileHeight = texInfo.tileRect.size.y;
+    } else if (texInfo.bankType == bank::TILESET){
+        tileWidth = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.x;
+        tileHeight = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.y;
+    }
+    setPosition(x-tileWidth*scale/2.0f, y-tileHeight*scale/2.0f);
+}
+
 void Sprite::setTranslate(float tx, float ty) {
     translate.x = tx;
     translate.y = ty;
@@ -31,6 +43,13 @@ float2 Sprite::getTranslate() const {
 void Sprite::move(float dx, float dy) {
     translate.x += dx;
     translate.y += dy;
+}
+
+void Sprite::setScale(float s) {
+    scale = s;
+}
+float Sprite::getScale() const {
+    return scale;
 }
 
 void Sprite::setTexturesBankType(bank::bank_type type) {
