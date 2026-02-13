@@ -123,6 +123,7 @@ int game::init(){
     player.setScale(0.5f);
     player.setCenter(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f);
     player.useNikes(true);
+    player.setRoom(&room);
 
     printf("Room %s [%d,%d]\n",room.areaName.c_str(),room.bounds.size.x,room.bounds.size.y);
 

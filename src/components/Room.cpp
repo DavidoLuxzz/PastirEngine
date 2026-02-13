@@ -1,5 +1,6 @@
 #include <components/Room.hpp>
 #include <components/display.hpp>
+#include <sprite/Player.hpp>
 
 void Room::setTranslate(float x, float y) {
     translate.x = x;
@@ -8,11 +9,11 @@ void Room::setTranslate(float x, float y) {
 float2 Room::getTranslate() const {
     return translate;
 }
-void Room::move(float dx, float dy, Player* player) {
-    float2 ptrans = {0.0f, 0.0f}; // player translate
-    if (player) ptrans = player->getTranslate();
-    ptrans.x -= dx;
-    ptrans.y -= dy;
+void Room::move(float _dx, float _dy, void* _player) {
+    Player* player = (Player*) _player;
+    float dx=_dx, dy=_dy;
+    if (player) dx = -player->getFixedDisplacementX(-dx);
+    if (player) dy = -player->getFixedDisplacementY(-dy);
     /*
     // camera coordinates
     double x = player.getRequestedX()-root.getWidth()/2;
@@ -65,10 +66,6 @@ void Room::move(float dx, float dy, Player* player) {
         player->move(0.0f, -dy);
         newy = translate.y;
     }
-
-    ptrans.x = newx-translate.x;
-    ptrans.y = newy-translate.y;
-
 
     translate.x = newx;
     translate.y = newy;

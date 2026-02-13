@@ -4,7 +4,6 @@
 
 #include <vector>
 #include <sprite/Drawable.hpp>
-#include <sprite/Player.hpp>
 
 class Room {
     float2 translate = {0,0};
@@ -17,7 +16,7 @@ public:
 
     void setTranslate(float tx, float ty);
     float2 getTranslate() const;
-    void move(float dx, float dy, Player* player=NULL);
+    void move(float dx, float dy, void* player=NULL);
 
     uint64_t getMemoryUsage() const;
 };

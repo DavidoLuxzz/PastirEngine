@@ -5,6 +5,7 @@
 #include <sprite/sprite.hpp>
 #include <sprite/texture.hpp>
 #include <animation.hpp>
+#include <components/Room.hpp>
 
 class Player : public Sprite {
 protected:
@@ -14,6 +15,9 @@ protected:
     /// @brief Speed [pixel(s)/60FPS]
     static constexpr float speed = 0.5f;
     float speedmul=1.0f;
+
+    /* pointer to a [solid drawable pointers] list */ // DrawableData** solids;
+    Room* room=NULL;
 public:
     Player();
     enum directions {
@@ -26,6 +30,15 @@ public:
 
     void setSpeedMul(float mul);
     float getSpeed() const;
+
+    void setRoom(Room*);
+
+    inline float2 getWorldPosition() const;
+
+    // based on collision checks in current room
+    float getFixedDisplacementX(float);
+    float getFixedDisplacementY(float);
+    float2 getFixedDisplacement(float, float);
 
     void move(float dx, float dy);
     /**

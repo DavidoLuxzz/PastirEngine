@@ -12,6 +12,9 @@ void Player::move(float dx, float dy) {
     this->Sprite::move(dx,dy);
     // orientate(dx,dy);
 }
+inline float2 Player::getWorldPosition() const {
+    return getFullPosition();
+}
 
 float Player::getSpeed() const {
     return speed*speedmul;
@@ -22,6 +25,59 @@ void Player::setSpeedMul(float v) {
 
 void Player::useNikes(bool t) {
     usingNikes = t;
+}
+
+void Player::setRoom(Room* r) {
+    room = r;
+}
+float Player::getFixedDisplacementX(float dx) {
+    if (dx==0.0f) return 0.0f;
+    bool dir_right = dx>0.0f;
+    float maxdx = dx;
+    const float playerPos = getWorldPosition().x;
+    static const float playerSize = 32.0f * scale;
+    static constexpr float tileSize = 16.0f; //tile = 16x16 (todo)
+    for (const Drawable::DrawableData& data : room->objects) {
+        float xpos = (float) data[Drawable::COMP_X];
+        if (dir_right) {
+            if ((playerPos+playerSize + dx) > xpos) {
+                float _maxdx = dx - xpos-(playerPos+playerSize);
+                if (std::abs(_maxdx)<std::abs(maxdx)) maxdx = _maxdx;
+                printf("right maxdx: %.1f; %.1f; %.1f\n",maxdx, xpos, (playerPos+playerSize));
+            }
+        } /*else {
+            if (playerPos < (xpos+tileSize)) {
+                maxdx = dx + (xpos+tileSize)-playerPos;
+                printf("left maxdx: %.1f; %.1f; %.1f\n",maxdx, xpos+tileSize, playerPos);
+            }
+        }*/
+    }
+    return maxdx;
+}
+float Player::getFixedDisplacementY(float dy) {
+    return dy;
+}
+float2 Player::getFixedDisplacement(float dx, float dy) {
+    /*  
+        boolean canMoveX = true;
+        boolean canMoveY = true;
+        for (Drawable o : cos){
+            if (o.getHitbox().intersects(getHitboxAt(reqx + dx, reqy))){ // X movement check
+                canMoveX = false;
+            }
+            if (o.getHitbox().intersects(getHitboxAt(reqx, reqy + dy))){ // Y movement check
+                canMoveY = false;
+            }
+        }
+        for (Entity e : Main.getEntities().getNodeGroup()) {
+            if (e.getHitbox().intersects(getHitboxAt(reqx + dx, reqy))) canMoveX = false;
+            if (e.getHitbox().intersects(getHitboxAt(reqx, reqy + dy))) canMoveY = false;
+        }
+
+        if (canMoveX) reqx = (getRequestedX() + dx);
+        if (canMoveY) reqy = (getRequestedY() + dy);
+    */
+    return {getFixedDisplacementX(dx), getFixedDisplacementY(dy)};
 }
 
 void Player::orientate(float _dx, float _dy) {
