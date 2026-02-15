@@ -37,7 +37,7 @@ std::vector<Rectu> util::loadTiles(const char* relativefilepath) {
 
     file.close();
 
-    std::cout << "done " << relativefilepath << "\n";
+    // std::cout << "done " << relativefilepath << "\n";
 
     return tiles;
 }

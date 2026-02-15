@@ -12,8 +12,7 @@ protected:
     // int currentDirection = DIR_UP;
     Animation animation;
     bool usingNikes = false;
-    /// @brief Speed [pixel(s)/60FPS]
-    static constexpr float speed = 0.5f;
+    
     float speedmul=1.0f;
 
     /**
@@ -24,6 +23,10 @@ protected:
     /* pointer to a [solid drawable pointers] list */ // DrawableData** solids;
     Room* room=NULL;
 public:
+    /// @brief Speed [pixel(s)/60FPS]
+    static constexpr float SPEED = 60.0f;
+
+
     Player();
     enum directions {
         DIR_UP,

@@ -28,8 +28,9 @@ namespace game {
     void draw();
 
 
-    // used localy
-    void update();
+    /// @brief used localy
+    /// @param ms time passed since last update (should equal to 1/FPS)
+    void update(float ms);
 
 } // namespace game
 

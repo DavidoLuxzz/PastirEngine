@@ -28,7 +28,7 @@ float2 Player::getScreenPosition() const {
 }
 
 float Player::getSpeed() const {
-    return speed*speedmul;
+    return SPEED*speedmul;
 }
 void Player::setSpeedMul(float v) {
     speedmul = v;

@@ -22,9 +22,12 @@ ALLEGRO_FONT* font;
 #pragma region game::run
 
 int game::run(){
-    unsigned int frames = 0;
+    // unsigned int frames = 0;
     double lastTime = 0.0;
     while (true) {
+        double deltaTime = al_get_time() - lastTime;
+        lastTime = al_get_time();
+        // printf("%f\n", deltaTime);
         /* handle events: */ {
             ALLEGRO_EVENT evt;
             while (display.getEventQueue().popNext(&evt)) {
@@ -33,15 +36,10 @@ int game::run(){
             }
         } // end handling events
 
-        frames++;
-        if (al_get_time()-lastTime >= 1.0) {
-            lastTime = al_get_time();
-            display.setTitle(  (std::string("DEMO FPS: ")+std::to_string(frames)+" Sprites: "+std::to_string(TEST_DRAW_SAMPLES*room.objects.size())).c_str()  );
-            frames = 0;
-        }
+        display.setTitle(  (std::string("DEMO FPS: ")+std::to_string((int)round(1.0/deltaTime))+" Sprites: "+std::to_string(TEST_DRAW_SAMPLES*room.objects.size())).c_str()  );
 
         // ## UPDATE ## //
-        update();
+        update(deltaTime);
 
         /* DRAWING */
         draw();
@@ -95,10 +93,10 @@ void __game_move(float dx, float dy) {
     player.orientate(dx,dy);
 }
 
-void game::update() {
+void game::update(float ms) {
     keyboard::fetchKeyboardState();
-    float dx = (keyboard::keyDown(ALLEGRO_KEY_RIGHT)-keyboard::keyDown(ALLEGRO_KEY_LEFT)) * player.getSpeed();
-    float dy = (keyboard::keyDown(ALLEGRO_KEY_DOWN)-keyboard::keyDown(ALLEGRO_KEY_UP)) * player.getSpeed();
+    float dx = (keyboard::keyDown(ALLEGRO_KEY_RIGHT)-keyboard::keyDown(ALLEGRO_KEY_LEFT)) * player.getSpeed() * ms;
+    float dy = (keyboard::keyDown(ALLEGRO_KEY_DOWN)-keyboard::keyDown(ALLEGRO_KEY_UP)) * player.getSpeed() * ms;
     // drawable.setPosition(pos.x+dx, pos.y+dy);
     __game_move(dx,dy);
 }
