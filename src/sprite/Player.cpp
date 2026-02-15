@@ -42,58 +42,6 @@ void Player::useNikes(bool t) {
 void Player::setRoom(Room* r) {
     room = r;
 }
-float Player::getFixedDisplacementX(float dx) {
-    // if (dx==0.0f) return 0.0f;
-    // bool dir_right = dx>0.0f;
-    // float maxdx = dx;
-    // const float playerPos = getWorldPosition().x;
-    // static const float playerSize = 32.0f * scale;
-    // static constexpr float tileSize = 16.0f; //tile = 16x16 (todo)
-    // for (const Drawable::DrawableData& data : room->objects) {
-    //     float xpos = (float) data[Drawable::COMP_X];
-    //     if (dir_right) {
-    //         if ((playerPos+playerSize + dx) > xpos) {
-    //             float _maxdx = dx - xpos-(playerPos+playerSize);
-    //             if (std::abs(_maxdx)<std::abs(maxdx)) maxdx = _maxdx;
-    //             printf("right maxdx: %.1f; %.1f; %.1f\n",maxdx, xpos, (playerPos+playerSize));
-    //         }
-    //     } /*else {
-    //         if (playerPos < (xpos+tileSize)) {
-    //             maxdx = dx + (xpos+tileSize)-playerPos;
-    //             printf("left maxdx: %.1f; %.1f; %.1f\n",maxdx, xpos+tileSize, playerPos);
-    //         }
-    //     }*/
-    // }
-    // return maxdx;
-    const Rectf __playerHitbox = {getFullPosition(), {32.0f*scale, 48.0f*scale}};
-    for (const Drawable::DrawableData& data : room->objects) {
-        Rectf playerHitbox = __playerHitbox;
-        Rectf drw = {
-            {(float)data[Drawable::COMP_X],(float)data[Drawable::COMP_Y]},
-            {16.0f, 16.0f}
-        };
-        drw.min = drw.min+room->getTranslate();
-        playerHitbox.min.x += dx;
-        if (playerHitbox.intersects(drw)){
-            // printf("%.1f %.1f\n", playerHitbox.min.x, drw.min.x);
-            return 0.0f;
-        }    
-    }
-    return dx;
-}
-float Player::getFixedDisplacementY(float dy) {
-    const Rectf __playerHitbox = {getWorldPosition(), {32.0f*scale, 48.0f*scale}};
-    for (const Drawable::DrawableData& data : room->objects) {
-        Rectf playerHitbox = __playerHitbox;
-        Rectf drw = {
-            {(float)data[Drawable::COMP_X],(float)data[Drawable::COMP_Y]},
-            {16.0f, 16.0f}
-        };
-        playerHitbox.min.y += dy;
-        if (playerHitbox.intersects(drw)) return 0.0f;
-    }
-    return dy;
-}
 template <typename T>
 Rect<T> hitboxAdded(const Rect<T>& a, float2 delta) {
     Rect<T> c = a;
@@ -118,8 +66,28 @@ Rectf Player::getHitbox() const {
     return hitbox;
 }
 
+#define JUST_A_NICE_COLLISION_DISTANCE 0.2f
+#define JANCD JUST_A_NICE_COLLISION_DISTANCE
+
+/**
+ * if (abs(a)<abs(b)) return a;
+ * else return b;
+ */
+float absmin(float a, float b) {
+    if (abs(a)<abs(b)) return a;
+    return b;
+}
+
+#define AXIS_CHECK(d,axis)  (d<0.0f? absmin(d,  drw.min.axis+drw.size.axis + JANCD - __playerHitbox.min.axis) : \
+                                    absmin(d,  drw.min.axis - JANCD - (__playerHitbox.min.axis+__playerHitbox.size.axis)))
+/*
+if (d<0.0f) \
+                        rdx = absmin(d,  drw.min.x+drw.size.x + JANCD - __playerHitbox.min.x);\
+                    else \
+                        rdx = absmin(d,  drw.min.x - JANCD - (__playerHitbox.min.x+__playerHitbox.size.x));
+*/
 float2 Player:: getFixedDisplacement(float dx, float dy) {
-    /*  
+    /* Algoritam iz Java Pastira
         boolean canMoveX = true;
         boolean canMoveY = true;
         for (Drawable o : cos){
@@ -148,12 +116,14 @@ float2 Player:: getFixedDisplacement(float dx, float dy) {
         playerHitbox.min.x += dx;
         if (playerHitbox.intersects(drw)){
             // printf("%.1f %.1f\n", __playerHitbox.min.x, drw.min.x);
-            rdx = 0.0f;
+            // newx = drw.max.x
+            // newDx = newx - worldPos.x
+            rdx = AXIS_CHECK(dx,x);
         }
         playerHitbox.min.x = __playerHitbox.min.x;
         playerHitbox.min.y += dy;
         if (playerHitbox.intersects(drw)) {
-            rdy = 0.0f;
+            rdy = AXIS_CHECK(dy,y);
         }
     }
     return {rdx, rdy};

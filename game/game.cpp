@@ -151,7 +151,8 @@ int game::init(){
     player.setScale(0.5f);
     //player.setCenter(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f);
     //player.setWorldPosition(player.getPosition());
-    player.setWorldPosition({24.0f,24.0f});
+    // player.setWorldPosition({24.0f,24.0f});
+    player.setWorldPosition({0.0f,0.0f});
     player.useNikes(true);
     player.setRoom(&room);
 

@@ -60,8 +60,6 @@ public:
     float2 getWorldPosition() const;
 
     // based on collision checks in current room
-    float getFixedDisplacementX(float);
-    float getFixedDisplacementY(float);
     float2 getFixedDisplacement(float, float);
 
     void move(float dx, float dy);
