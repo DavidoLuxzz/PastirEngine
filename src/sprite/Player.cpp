@@ -9,8 +9,9 @@ Player::Player() {
 }
 
 void Player::move(float dx, float dy) {
-    worldPos.x += dx;
-    worldPos.y += dy;
+    worldPos += getFixedDisplacement(dx,dy);
+    // worldPos.x += dx;
+    // worldPos.y += dy;
 }
 
 void Player::setWorldPosition(float2 pos) {
@@ -74,7 +75,7 @@ float Player::getFixedDisplacementX(float dx) {
         drw.min = drw.min+room->getTranslate();
         playerHitbox.min.x += dx;
         if (playerHitbox.intersects(drw)){
-            printf("%.1f %.1f\n", playerHitbox.min.x, drw.min.x);
+            // printf("%.1f %.1f\n", playerHitbox.min.x, drw.min.x);
             return 0.0f;
         }    
     }
@@ -99,7 +100,25 @@ Rect<T> hitboxAdded(const Rect<T>& a, float2 delta) {
     c.min = c.min + delta;
     return c;
 }
-float2 Player::getFixedDisplacement(float dx, float dy) {
+
+Rectf Player::getHitbox() const {
+    float2 size = {(float) texInfo.tileRect.size.x,(float) texInfo.tileRect.size.y};
+    if (texInfo.bankType == bank::TILESET){
+        size.x = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.x;
+        size.y = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.y;
+    }
+    size *= scale;
+    static const float xoffset = 4*scale;
+    Rectf hitbox = {
+        getWorldPosition(),
+        {size.x-2*xoffset, size.y/2.0f}
+    };
+    hitbox.min.x += xoffset;
+    hitbox.min.y += size.y/2.0f;
+    return hitbox;
+}
+
+float2 Player:: getFixedDisplacement(float dx, float dy) {
     /*  
         boolean canMoveX = true;
         boolean canMoveY = true;
@@ -123,11 +142,12 @@ float2 Player::getFixedDisplacement(float dx, float dy) {
     float rdx = dx, rdy = dy;
     const Rectf __playerHitbox = getHitbox();
     for (const Drawable::DrawableData& data : room->objects) {
+        if (!data[Drawable::COMP_SOLID]) continue;
         Rectf playerHitbox = __playerHitbox;
         Rectf drw = Drawable::createHitbox(data);
         playerHitbox.min.x += dx;
         if (playerHitbox.intersects(drw)){
-            printf("%.1f %.1f\n", __playerHitbox.min.x, drw.min.x);
+            // printf("%.1f %.1f\n", __playerHitbox.min.x, drw.min.x);
             rdx = 0.0f;
         }
         playerHitbox.min.x = __playerHitbox.min.x;

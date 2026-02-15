@@ -22,6 +22,9 @@ typedef vec3<unsigned int> uint3;
 float2 operator+(float2 a, float2 b);
 float2 operator-(float2 a, float2 b);
 float2 operator*(float2 a, float scale);
+float2& operator+=(float2& a, float2 b);
+float2& operator-=(float2& a, float2 b);
+float2& operator*=(float2& a, float scale);
 
 template <typename T>
 inline bool between(T x, T a1, T a2) {

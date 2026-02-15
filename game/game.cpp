@@ -95,8 +95,10 @@ void __game_move(float dx, float dy) {
 
 void game::update(float ms) {
     keyboard::fetchKeyboardState();
-    float dx = (keyboard::keyDown(ALLEGRO_KEY_RIGHT)-keyboard::keyDown(ALLEGRO_KEY_LEFT)) * player.getSpeed() * ms;
-    float dy = (keyboard::keyDown(ALLEGRO_KEY_DOWN)-keyboard::keyDown(ALLEGRO_KEY_UP)) * player.getSpeed() * ms;
+    float dx = (keyboard::keyDown(ALLEGRO_KEY_RIGHT) - keyboard::keyDown(ALLEGRO_KEY_LEFT))
+                * player.getSpeed() * ms;
+    float dy = (keyboard::keyDown(ALLEGRO_KEY_DOWN)  - keyboard::keyDown(ALLEGRO_KEY_UP))
+                * player.getSpeed() * ms;
     // drawable.setPosition(pos.x+dx, pos.y+dy);
     __game_move(dx,dy);
 }
@@ -147,8 +149,9 @@ int game::init(){
     player.setTexturesBankType(bank::TILESET);
     player.setTexturesBankID(bank::tileset::PLAYER);
     player.setScale(0.5f);
-    player.setCenter(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f);
-    player.setWorldPosition(player.getPosition());
+    //player.setCenter(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f);
+    //player.setWorldPosition(player.getPosition());
+    player.setWorldPosition({24.0f,24.0f});
     player.useNikes(true);
     player.setRoom(&room);
 

@@ -26,7 +26,7 @@ public:
     /// @brief Speed [pixel(s)/60FPS]
     static constexpr float SPEED = 60.0f;
 
-
+    // constructors
     Player();
     enum directions {
         DIR_UP,
@@ -40,6 +40,8 @@ public:
     float getSpeed() const;
 
     void setRoom(Room*);
+
+    Rectf getHitbox() const;
 
     /**
      * Move procedure:
