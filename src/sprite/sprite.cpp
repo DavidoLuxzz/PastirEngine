@@ -5,6 +5,9 @@ void Sprite::setPosition(float x, float y) {
     position.x = x;
     position.y = y;
 }
+void Sprite::setPosition(float2 pos) {
+    position = pos;
+}
 
 float2 Sprite::getPosition() const {
     return position;
@@ -47,6 +50,9 @@ Rectf Sprite::getHitbox() const {
 void Sprite::setTranslate(float tx, float ty) {
     translate.x = tx;
     translate.y = ty;
+}
+void Sprite::setTranslate(float2 trans) {
+    translate = trans;
 }
 float2 Sprite::getTranslate() const {
     return translate;

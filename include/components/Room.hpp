@@ -14,6 +14,8 @@ public:
 
     void draw();
 
+    void position(float2 playerPos);
+
     void setTranslate(float tx, float ty);
     float2 getTranslate() const;
     void move(float dx, float dy, void* player=NULL);

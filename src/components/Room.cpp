@@ -82,6 +82,34 @@ void Room::draw() {
     al_hold_bitmap_drawing(false);
 }
 
+#include <game.hpp>
+void Room::position(float2 playerPos) {
+    vec2<int> winSize;
+    // window size. no scale (1.0f)
+    winSize.x = Display::getCurrentDisplay()->getWidth();
+    winSize.y = Display::getCurrentDisplay()->getHeight();
+    // uses default pixel scale (4.0f)
+    float newx = bounds.min.x + (winSize.x/2.0f)/Display::getPixelScale() - playerPos.x;
+    float newy = bounds.min.y + (winSize.y/2.0f)/Display::getPixelScale() - playerPos.y;
+    //printf("1: %f\n", newx-translate.x);
+
+    float desna_strana = (bounds.min.x+bounds.size.x) / DEFAULT_PIXEL_SCALE - winSize.x/Display::getPixelScale();
+
+    if (newx>bounds.min.x)
+        newx=bounds.min.x;
+    if (-newx > desna_strana)
+        newx = -desna_strana;
+    desna_strana = (bounds.min.y+bounds.size.y) / DEFAULT_PIXEL_SCALE - winSize.y/Display::getPixelScale();
+    if (newy>bounds.min.y)
+        newy=bounds.min.y;
+    if (-newy > desna_strana)
+        newy = -desna_strana;
+
+    translate.x = newx;
+    translate.y = newy;
+
+    // printf("2: %f %f\n", newx, newy);
+}
 
 #define __KILOBYTE 1024
 #define __MEGABYTE 1048576

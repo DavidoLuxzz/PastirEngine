@@ -40,6 +40,7 @@ public:
      * @param y Y coordinate
      */
     void setPosition(float x, float y);
+    void setPosition(float2);
     /// @brief Returns the current position @code{float2 position}
     /// Doesn't come with translation.
     /// @return position
@@ -58,6 +59,7 @@ public:
     /// @param tx 
     /// @param ty 
     void setTranslate(float tx, float ty);
+    void setTranslate(float2);
     float2 getTranslate() const;
 
     /// @brief This gets added to translate value

@@ -9,13 +9,22 @@ Player::Player() {
 }
 
 void Player::move(float dx, float dy) {
-    this->Sprite::move(dx,dy);
-    // orientate(dx,dy);
+    worldPos.x += dx;
+    worldPos.y += dy;
+}
+
+void Player::setWorldPosition(float2 pos) {
+    worldPos = pos;
 }
 float2 Player::getWorldPosition() const {
-    if (room)
-        return getFullPosition() - room->getTranslate();
-    return getFullPosition();
+    return worldPos;
+}
+
+void Player::positionRoom(float2 roomPos) {
+    setPosition(worldPos+roomPos);
+}
+float2 Player::getScreenPosition() const {
+    return position+translate;
 }
 
 float Player::getSpeed() const {

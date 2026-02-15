@@ -55,7 +55,8 @@ int game::run(){
 #pragma region game::draw
 
 void debugText() {
-    Display::useCustomScale(2.0f, 2.0f);
+    const float __px_scale = Display::getPixelScale()/2.0f;
+    Display::useCustomScale(__px_scale, __px_scale);
 
     Rectf drw = Drawable::createHitbox(room.objects[0]);
     Rectf playerHitbox = player.getHitbox();
@@ -85,7 +86,12 @@ void game::draw() {
 #pragma region game::update
 
 void __game_move(float dx, float dy) {
-    room.move(-dx,-dy, &player);
+    player.move(dx,dy);
+    // player.setTranslate(player.getTranslate().x+dx, player.getTranslate().y+dy);
+    //player.setPosition(player.getWorldPosition().x, player.getWorldPosition().y);
+    room.position(player.getWorldPosition());
+    player.positionRoom(room.getTranslate());
+
     player.orientate(dx,dy);
 }
 
@@ -130,7 +136,7 @@ int game::init(){
     __assets_path += "assets";
     printf("> Setting resources path to %s [errors=%d, %d]\n", __assets_path.c_str(), __assets_path_err, assman::setcwd(__assets_path));
 
-    Display::setPixelScale(4.0f);
+    Display::setPixelScale(8.0f);
 
     LUKA_ASSERT0(display.create(WINDOW_WIDTH, WINDOW_HEIGHT, "DEMO", true));
     display.getEventQueue().registerKeyboardEventSource();
@@ -144,6 +150,7 @@ int game::init(){
     player.setTexturesBankID(bank::tileset::PLAYER);
     player.setScale(0.5f);
     player.setCenter(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f);
+    player.setWorldPosition(player.getPosition());
     player.useNikes(true);
     player.setRoom(&room);
 

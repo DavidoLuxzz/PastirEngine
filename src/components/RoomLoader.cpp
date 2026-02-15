@@ -53,8 +53,8 @@ int __lvl_loader_load(const std::string& filepath) {
             if (index>=Drawable::COMPONENT_COUNT) break;
         }
         room_loader::room.objects.push_back(data);
-        printf("Loaded object: %d %d 16x16\n", data[Drawable::COMP_X], data[Drawable::COMP_Y]);
-        break;
+        //printf("Loaded object: %d %d 16x16\n", data[Drawable::COMP_X], data[Drawable::COMP_Y]);
+        //break;
     }
 
     file.close();

@@ -13,8 +13,13 @@ protected:
     Animation animation;
     bool usingNikes = false;
     /// @brief Speed [pixel(s)/60FPS]
-    static constexpr float speed = 3.0f;
+    static constexpr float speed = 0.5f;
     float speedmul=1.0f;
+
+    /**
+     * Player world position.
+     */
+    float2 worldPos;
 
     /* pointer to a [solid drawable pointers] list */ // DrawableData** solids;
     Room* room=NULL;
@@ -33,6 +38,20 @@ public:
 
     void setRoom(Room*);
 
+    /**
+     * Move procedure:
+     *  -  player.move(dx,dy)
+     *  -  room.position(player.getWorldPosition())
+     *  -  player.setScreenPosition(room)
+     */
+
+
+    /// @brief fixes the players screen position
+    /// @param pos the top left corner of room
+    void positionRoom(float2 roomPos);
+    float2 getScreenPosition() const;
+
+    void setWorldPosition(float2 pos);
     float2 getWorldPosition() const;
 
     // based on collision checks in current room
