@@ -152,6 +152,14 @@ public:
     void init(TextureID texture, float x=0.0f, float y=0.0f);
     void init(DrawableData& data);
 
+    /**
+     * Prebaci x i y u game koordinate
+     * @brief <comp>/DEFAULT_PIXEL_SCALE.  64 -> 16.0f
+     * @return game koordinate
+     */
+    static float2 worldCoordinates(int x, int y);
+    static Rectf createHitbox(const DrawableData& data, float2 translate={0,0});
+
     /// @brief calls drawData(data);
     void draw();
 

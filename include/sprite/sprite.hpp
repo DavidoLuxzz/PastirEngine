@@ -31,6 +31,8 @@ public:
     void setScale(float);
     float getScale() const;
 
+    Rectf getHitbox() const;
+
     /**
      * Sets the position of the sprite.
      * Doesn't affect translation

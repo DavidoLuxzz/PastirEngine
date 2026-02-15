@@ -29,6 +29,9 @@ void uninstall(){
     al_uninstall_mouse();
     al_uninstall_keyboard();
     al_uninstall_audio();
+    al_shutdown_font_addon();
+    al_shutdown_image_addon();
+    al_shutdown_primitives_addon();
     al_uninstall_system();
 }
 

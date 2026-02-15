@@ -11,9 +11,11 @@ float2 Room::getTranslate() const {
 }
 void Room::move(float _dx, float _dy, void* _player) {
     Player* player = (Player*) _player;
-    float dx=_dx, dy=_dy;
-    if (player) dx = -player->getFixedDisplacementX(-dx);
-    if (player) dy = -player->getFixedDisplacementY(-dy);
+    float2 delta = {_dx,_dy};
+    float dx = _dx, dy = _dy;
+    if (player) delta = player->getFixedDisplacement(_dx,_dy);
+    dx = delta.x;
+    dy = delta.y;
     /*
     // camera coordinates
     double x = player.getRequestedX()-root.getWidth()/2;

@@ -13,7 +13,7 @@ protected:
     Animation animation;
     bool usingNikes = false;
     /// @brief Speed [pixel(s)/60FPS]
-    static constexpr float speed = 0.5f;
+    static constexpr float speed = 3.0f;
     float speedmul=1.0f;
 
     /* pointer to a [solid drawable pointers] list */ // DrawableData** solids;
@@ -33,7 +33,7 @@ public:
 
     void setRoom(Room*);
 
-    inline float2 getWorldPosition() const;
+    float2 getWorldPosition() const;
 
     // based on collision checks in current room
     float getFixedDisplacementX(float);

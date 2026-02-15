@@ -1,4 +1,5 @@
 #include <sprite/Drawable.hpp>
+#include <game.hpp>
 
 const char* Drawable::TEXTURES[] = {
     "block","stone", "grass","water", "plank","plank_on_water", "cobweb","plum","fence_full",
@@ -35,6 +36,20 @@ Drawable::Drawable(DrawableData& data) {
 
 void Drawable::init(DrawableData& _data) {
     data = _data;
+}
+
+float2 Drawable::worldCoordinates(int x, int y) {
+    return {x/DEFAULT_PIXEL_SCALE, y/DEFAULT_PIXEL_SCALE};
+}
+
+Rectf Drawable::createHitbox(const DrawableData& data, float2 translate) {
+    Rectu tile = bank::tileset::getBank(bank::tileset::MAP_DRAWABLES).getTile(data[COMP_TEXTURE_ID]);
+    float2 coords = Drawable::worldCoordinates(data[COMP_X],data[COMP_Y]);
+    Rectf hitbox = {
+        {coords.x+translate.x, coords.y+translate.y},
+        {(float)tile.size.x, (float)tile.size.y}
+    };
+    return hitbox;
 }
 
 void Drawable::draw() {

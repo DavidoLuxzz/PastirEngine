@@ -12,7 +12,9 @@ void Player::move(float dx, float dy) {
     this->Sprite::move(dx,dy);
     // orientate(dx,dy);
 }
-inline float2 Player::getWorldPosition() const {
+float2 Player::getWorldPosition() const {
+    if (room)
+        return getFullPosition() - room->getTranslate();
     return getFullPosition();
 }
 
@@ -31,31 +33,62 @@ void Player::setRoom(Room* r) {
     room = r;
 }
 float Player::getFixedDisplacementX(float dx) {
-    if (dx==0.0f) return 0.0f;
-    bool dir_right = dx>0.0f;
-    float maxdx = dx;
-    const float playerPos = getWorldPosition().x;
-    static const float playerSize = 32.0f * scale;
-    static constexpr float tileSize = 16.0f; //tile = 16x16 (todo)
+    // if (dx==0.0f) return 0.0f;
+    // bool dir_right = dx>0.0f;
+    // float maxdx = dx;
+    // const float playerPos = getWorldPosition().x;
+    // static const float playerSize = 32.0f * scale;
+    // static constexpr float tileSize = 16.0f; //tile = 16x16 (todo)
+    // for (const Drawable::DrawableData& data : room->objects) {
+    //     float xpos = (float) data[Drawable::COMP_X];
+    //     if (dir_right) {
+    //         if ((playerPos+playerSize + dx) > xpos) {
+    //             float _maxdx = dx - xpos-(playerPos+playerSize);
+    //             if (std::abs(_maxdx)<std::abs(maxdx)) maxdx = _maxdx;
+    //             printf("right maxdx: %.1f; %.1f; %.1f\n",maxdx, xpos, (playerPos+playerSize));
+    //         }
+    //     } /*else {
+    //         if (playerPos < (xpos+tileSize)) {
+    //             maxdx = dx + (xpos+tileSize)-playerPos;
+    //             printf("left maxdx: %.1f; %.1f; %.1f\n",maxdx, xpos+tileSize, playerPos);
+    //         }
+    //     }*/
+    // }
+    // return maxdx;
+    const Rectf __playerHitbox = {getFullPosition(), {32.0f*scale, 48.0f*scale}};
     for (const Drawable::DrawableData& data : room->objects) {
-        float xpos = (float) data[Drawable::COMP_X];
-        if (dir_right) {
-            if ((playerPos+playerSize + dx) > xpos) {
-                float _maxdx = dx - xpos-(playerPos+playerSize);
-                if (std::abs(_maxdx)<std::abs(maxdx)) maxdx = _maxdx;
-                printf("right maxdx: %.1f; %.1f; %.1f\n",maxdx, xpos, (playerPos+playerSize));
-            }
-        } /*else {
-            if (playerPos < (xpos+tileSize)) {
-                maxdx = dx + (xpos+tileSize)-playerPos;
-                printf("left maxdx: %.1f; %.1f; %.1f\n",maxdx, xpos+tileSize, playerPos);
-            }
-        }*/
+        Rectf playerHitbox = __playerHitbox;
+        Rectf drw = {
+            {(float)data[Drawable::COMP_X],(float)data[Drawable::COMP_Y]},
+            {16.0f, 16.0f}
+        };
+        drw.min = drw.min+room->getTranslate();
+        playerHitbox.min.x += dx;
+        if (playerHitbox.intersects(drw)){
+            printf("%.1f %.1f\n", playerHitbox.min.x, drw.min.x);
+            return 0.0f;
+        }    
     }
-    return maxdx;
+    return dx;
 }
 float Player::getFixedDisplacementY(float dy) {
+    const Rectf __playerHitbox = {getWorldPosition(), {32.0f*scale, 48.0f*scale}};
+    for (const Drawable::DrawableData& data : room->objects) {
+        Rectf playerHitbox = __playerHitbox;
+        Rectf drw = {
+            {(float)data[Drawable::COMP_X],(float)data[Drawable::COMP_Y]},
+            {16.0f, 16.0f}
+        };
+        playerHitbox.min.y += dy;
+        if (playerHitbox.intersects(drw)) return 0.0f;
+    }
     return dy;
+}
+template <typename T>
+Rect<T> hitboxAdded(const Rect<T>& a, float2 delta) {
+    Rect<T> c = a;
+    c.min = c.min + delta;
+    return c;
 }
 float2 Player::getFixedDisplacement(float dx, float dy) {
     /*  
@@ -77,7 +110,24 @@ float2 Player::getFixedDisplacement(float dx, float dy) {
         if (canMoveX) reqx = (getRequestedX() + dx);
         if (canMoveY) reqy = (getRequestedY() + dy);
     */
-    return {getFixedDisplacementX(dx), getFixedDisplacementY(dy)};
+    // return {getFixedDisplacementX(dx), getFixedDisplacementY(dy)};
+    float rdx = dx, rdy = dy;
+    const Rectf __playerHitbox = getHitbox();
+    for (const Drawable::DrawableData& data : room->objects) {
+        Rectf playerHitbox = __playerHitbox;
+        Rectf drw = Drawable::createHitbox(data);
+        playerHitbox.min.x += dx;
+        if (playerHitbox.intersects(drw)){
+            printf("%.1f %.1f\n", __playerHitbox.min.x, drw.min.x);
+            rdx = 0.0f;
+        }
+        playerHitbox.min.x = __playerHitbox.min.x;
+        playerHitbox.min.y += dy;
+        if (playerHitbox.intersects(drw)) {
+            rdy = 0.0f;
+        }
+    }
+    return {rdx, rdy};
 }
 
 void Player::orientate(float _dx, float _dy) {

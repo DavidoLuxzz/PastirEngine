@@ -10,9 +10,12 @@
 #include <components/utility.hpp>
 #include <sprite/Player.hpp>
 
+#include <allegro5/allegro_font.h>
+
 Display display;
 Room room;
 Player player;
+ALLEGRO_FONT* font;
 
 #define TEST_DRAW_SAMPLES 1
 
@@ -51,12 +54,28 @@ int game::run(){
 
 #pragma region game::draw
 
+void debugText() {
+    Display::useCustomScale(2.0f, 2.0f);
+
+    Rectf drw = Drawable::createHitbox(room.objects[0]);
+    Rectf playerHitbox = player.getHitbox();
+
+    al_draw_textf(font, al_map_rgb(255,255,255), 0, 0, 0, "Player pos: %.1f %.1f [%.0fx%.0f]", playerHitbox.min.x,playerHitbox.min.y, playerHitbox.size.x,playerHitbox.size.y);
+    al_draw_textf(font, al_map_rgb(255,255,255), 0, 10, 0, "Obj pos: %.1f %.1f [%.0fx%.0f]", drw.min.x,drw.min.y, drw.size.x,drw.size.y);
+    bool t = playerHitbox.intersects(drw);
+    al_draw_textf(font, al_map_rgb(255,255,255), 0, 20, 0, "Intersects: %s", t?"true":"false");
+
+    Display::useScale();
+}
+
 void game::draw() {
     Display::clear(100,0,0);
 
     for (int i=0; i<TEST_DRAW_SAMPLES; i++)
         room.draw();
     player.draw();
+
+    debugText();
     
     Display::swapBuffers();
 }
@@ -101,6 +120,9 @@ int game::loadAssets() {
 }
 
 int game::init(){
+    font = al_create_builtin_font();
+
+
     int __assets_path_err = 0;
     std::string __assets_path;
     __assets_path = assman::getallegropathstr(ALLEGRO_RESOURCES_PATH, &__assets_path_err);

@@ -32,6 +32,18 @@ void Sprite::setCenter(float x, float y) {
     setPosition(x-tileWidth*scale/2.0f, y-tileHeight*scale/2.0f);
 }
 
+Rectf Sprite::getHitbox() const {
+    float2 size = {(float) texInfo.tileRect.size.x,(float) texInfo.tileRect.size.y};
+    if (texInfo.bankType == bank::TILESET){
+        size.x = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.x;
+        size.y = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.y;
+    }
+    Rectf hitbox = {
+        getFullPosition(), size * scale
+    };
+    return hitbox;
+}
+
 void Sprite::setTranslate(float tx, float ty) {
     translate.x = tx;
     translate.y = ty;
