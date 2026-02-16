@@ -41,7 +41,7 @@ int __lvl_loader_load(const std::string& filepath) {
     std::string line;
     while (std::getline(file, line)) {
         if (!std::isdigit(line[0])){
-            std::cout << line << std::endl;
+            // std::cout << line << std::endl;
             __lvl_loader_nonobject(line);
             continue;
         }

@@ -67,6 +67,15 @@ public:
     static void dontUseScale();
 
     /**
+     * Sets up the display pixel scale, based on
+     * scale that is used on 1080p.
+     * 
+     *  -  scale = screen_height/1080.0 * scaleOn1080p
+     * @param scaleOn1080p - Scale that is used in 1080p resolution
+     */
+    static void setupPixelScale(float scaleOn1080p);
+
+    /**
      * Sets the title for this display
      */
     void setTitle(const char* title);

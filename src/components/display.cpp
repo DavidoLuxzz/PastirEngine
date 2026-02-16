@@ -101,6 +101,16 @@ void Display::setPixelScale(float s) {
 float Display::getPixelScale() {
     return PIXEL_SCALE;
 }
+void Display::setupPixelScale(float scaleOn1080p) {
+    int adapter = 0;
+    if (_currentDisplay) adapter = al_get_display_adapter(_currentDisplay->getAllegroDisplay());
+    ALLEGRO_MONITOR_INFO info;
+    al_get_monitor_info(0, &info);
+    int width = info.y2-info.y1;
+    float scale = width/1080.0f;
+    printf("Pixel scale set to %.2f\n", scale);
+    Display::setPixelScale(scaleOn1080p * scale);
+}
 void Display::makeCurrent(Display* disp) {
     _currentDisplay = disp;
     if (disp && disp->getAllegroDisplay()) {

@@ -3,7 +3,7 @@
     "code-runner.showRunIconInEditorTitleMenu": true,
     "code-runner.ignoreSelection": true,
     "code-runner.executorMap": {
-        "cpp": "cd $workspaceRoot && ./build.sh && ./a.out",
+        "cpp": "./build.sh && ./a.out",
         "shellscript": "cd $dir && bash $fileName"
     },
     "code-runner.customCommand": "./a.out",
