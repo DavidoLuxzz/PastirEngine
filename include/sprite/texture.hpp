@@ -3,7 +3,7 @@
 #define __TEXTURE_HPP
 
 #include <allegro5/bitmap.h>
-#include <allegro5/allegro_opengl.h>
+// #include <allegro5/allegro_opengl.h>
 
 /**
  *  Texture a; a.load(...);
@@ -41,10 +41,6 @@ public:
 
     /// @returns @code{ALLEGRO_BITMAP* _bitmap}
     ALLEGRO_BITMAP* getAllegroBitmap() const;
-    /**
-     * @returns OpenGL Texture ID (use for manual bindings ili tako nekako)
-     */
-    GLuint getOpenGLTexture() const;
 };
 
 

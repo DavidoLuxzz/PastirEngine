@@ -4,11 +4,29 @@
 #include <iostream>
 #include <colors.h>
 #include <sstream>
-
+#include <game.hpp>
 
 Trigger::Trigger(TriggerData& _data) {
     data = _data;
 }
+
+float2 Trigger::worldCoordinates(int x, int y) {
+    return {x/DEFAULT_PIXEL_SCALE, y/DEFAULT_PIXEL_SCALE};
+}
+
+Rectf Trigger::createHitbox(const TriggerData& data, float2 translate) {
+    float2 coords = Trigger::worldCoordinates(data[COMP_X], data[COMP_Y]);
+    return {
+        coords,
+        {(float)data[COMP_WIDTH], (float)data[COMP_HEIGHT]}
+    };
+}
+
+
+
+
+
+
 
 
 

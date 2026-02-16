@@ -102,6 +102,14 @@ void game::update(float ms) {
                 * player.getSpeed() * ms;
     // drawable.setPosition(pos.x+dx, pos.y+dy);
     __game_move(dx,dy);
+
+    for (unsigned int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
+        const Trigger::TriggerData& data = triggers::get(i);
+        Rectf trHitbox = Trigger::createHitbox(data);
+        if (player.getHitbox().intersects(trHitbox)) {
+            printf("Trigger!\n");
+        }
+    }
 }
 
 #pragma endregion
@@ -152,7 +160,7 @@ int game::loadRooms() {
     if (triggers::load()) {
         printf("Problem loading triggers\n");
     }
-    // triggers::prepare(2);
+    triggers::prepare(0);
     // std::cout << triggers::get(0)[Trigger::COMP_X] << std::endl;
     return 0;
 }

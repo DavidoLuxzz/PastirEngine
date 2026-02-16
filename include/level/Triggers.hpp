@@ -3,8 +3,8 @@
 #define __TRIGGERS_HPP
 
 #include <vector>
-
 #include <array>
+#include <data_types.hpp>
 
 /**
  * Trigger class
@@ -35,6 +35,9 @@ public:
 
     Trigger() = default;
     Trigger(TriggerData& data);
+
+    static Rectf createHitbox(const TriggerData&, float2 translate={0,0});
+    static float2 worldCoordinates(int x, int y);
 };
 
 // typedef std::vector<Trigger::TriggerData> TriggerRooms;
