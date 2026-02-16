@@ -1,11 +1,12 @@
-#include <components/RoomLoader.hpp>
+#include <level/RoomLoader.hpp>
 #include <fstream>
 #include <string>
 #include <sstream>
 #include <filesystem>
 #include <iostream>
-#include <components/Room.hpp>
+#include <level/Room.hpp>
 #include <colors.h>
+#include <asset_manager.hpp>
 
 namespace room_loader {
     Room room;
@@ -62,13 +63,8 @@ int __lvl_loader_load(const std::string& filepath) {
     return 0;
 }
 
-
-
 int room_loader::load(unsigned int roomID) {
-    std::string filepath(std::getenv("HOME"));
-    filepath += ("/eclipse-workspace/Pastir-editor/");
-    filepath += std::to_string(roomID);
-    filepath += ".txt";
+    std::string filepath = assman::getasset(std::to_string(roomID) + ".txt");
     if (!std::filesystem::exists(filepath)) {
         fprintf(stderr, "<%sLVLLOADER%s> Room %u doesn't exists. path=%s\n",TERMINAL_COLOR_RED_BOLD,TERMINAL_COLOR_RESET, roomID, filepath.c_str());
         return -1;
@@ -77,25 +73,8 @@ int room_loader::load(unsigned int roomID) {
     return __lvl_loader_load(filepath);
 }
 
-
-
 void room_loader::swapData(Room& _room) {
     _room.objects.swap(room.objects);
     _room.areaName = room.areaName;
     _room.bounds = room.bounds;
-}
-
-
-
-
-
-Trigger::Trigger(TriggerData& _data) {
-    data = _data;
-}
-
-
-std::vector<Trigger::TriggerData> trigger_loader::loadAll() {
-    std::vector<Trigger::TriggerData> contents;
-
-    return contents;
 }

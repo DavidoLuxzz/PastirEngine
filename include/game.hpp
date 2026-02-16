@@ -8,6 +8,9 @@
 /// @brief Used in rooms
 #define DEFAULT_PIXEL_SCALE 4.0f
 
+#define TRIGGERS_FILE "triggers.txt"
+#define ENTITIES_FILE "ent.txt"
+
 namespace game {
 
     /**
@@ -18,6 +21,8 @@ namespace game {
     int init();
     /// @returns error code 
     int loadAssets();
+    /// @returns error code
+    int loadRooms();
     /// @brief clean before exit
     void clean();
     /**

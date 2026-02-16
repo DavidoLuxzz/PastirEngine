@@ -6,9 +6,10 @@
 #include <asset_manager.hpp>
 #include <sprite/Drawable.hpp>
 #include <input.hpp>
-#include <components/RoomLoader.hpp>
+#include <level/RoomLoader.hpp>
 #include <components/utility.hpp>
 #include <sprite/Player.hpp>
+#include <level/Triggers.hpp>
 
 #include <allegro5/allegro_font.h>
 
@@ -112,6 +113,26 @@ void game::update(float ms) {
 #define LUKA_ASSERT1(x) if (x<0) return -1;
 
 
+void setupAssman() {
+    int __assets_path_err = 0;
+    std::string __assets_path;
+    __assets_path = assman::getallegropathstr(ALLEGRO_RESOURCES_PATH, &__assets_path_err);
+    //__assets_path = std::getenv("HOME");
+    __assets_path += "assets";
+    printf("> Setting resources path to %s [errors=%d, %d]\n", __assets_path.c_str(), __assets_path_err, assman::setcwd(__assets_path));
+}
+
+int initDisplay() {
+    Display::setupPixelScale(4.0f);
+    LUKA_ASSERT0(display.create(WINDOW_WIDTH, WINDOW_HEIGHT, "DEMO", true));
+    display.getEventQueue().registerKeyboardEventSource();
+
+    int dpi = al_get_monitor_dpi(al_get_display_adapter(display.getAllegroDisplay()));
+
+    printf("DPI: %d\n", dpi);
+    return 0;
+}
+
 int game::loadAssets() {
     /* Bank loading */{
         bank::tileset::init(bank::tileset::NUM_KNOWN_BANKS);
@@ -124,31 +145,17 @@ int game::loadAssets() {
     }
     return 0;
 }
-
-int game::init(){
-    font = al_create_builtin_font();
-
-
-    int __assets_path_err = 0;
-    std::string __assets_path;
-    __assets_path = assman::getallegropathstr(ALLEGRO_RESOURCES_PATH, &__assets_path_err);
-    //__assets_path = std::getenv("HOME");
-    __assets_path += "assets";
-    printf("> Setting resources path to %s [errors=%d, %d]\n", __assets_path.c_str(), __assets_path_err, assman::setcwd(__assets_path));
-
-    Display::setupPixelScale(4.0f);
-    LUKA_ASSERT0(display.create(WINDOW_WIDTH, WINDOW_HEIGHT, "DEMO", true));
-    display.getEventQueue().registerKeyboardEventSource();
-
-    int dpi = al_get_monitor_dpi(al_get_display_adapter(display.getAllegroDisplay()));
-
-    printf("DPI: %d\n", dpi);
-    
-    LUKA_ASSERT0(loadAssets());
-
-    room_loader::load(0); // .txt
+int game::loadRooms() {
+    LUKA_ASSERT0(room_loader::load(0)); // .txt
     room_loader::swapData(room);
 
+    if (triggers::load()) {
+        printf("Problem loading triggers\n");
+    }
+    return 0;
+}
+
+void initPlayer() {
     player.setTexturesBankType(bank::TILESET);
     player.setTexturesBankID(bank::tileset::PLAYER);
     player.setScale(0.5f);
@@ -158,13 +165,24 @@ int game::init(){
     // player.setWorldPosition({0.0f,0.0f});
     player.useNikes(true);
     player.setRoom(&room);
+}
+
+int game::init(){
+    font = al_create_builtin_font();
+
+    setupAssman();
+    initDisplay();
+    
+    LUKA_ASSERT0(loadAssets());
+    LUKA_ASSERT0(loadRooms());
+    initPlayer();
+
 
     printf("Room %s [%d,%d]\n",room.areaName.c_str(),room.bounds.size.x,room.bounds.size.y);
 
-    // std::cout << "Room memory usage: " << __memsizeToString(room.getMemoryUsage()) << std::endl;
-
     return 0;
 }
+
 #pragma endregion
 #pragma region game::clean
 void game::clean(){

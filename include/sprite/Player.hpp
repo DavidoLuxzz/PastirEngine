@@ -5,7 +5,7 @@
 #include <sprite/sprite.hpp>
 #include <sprite/texture.hpp>
 #include <animation.hpp>
-#include <components/Room.hpp>
+#include <level/Room.hpp>
 
 class Player : public Sprite {
 protected:
