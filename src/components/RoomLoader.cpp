@@ -84,3 +84,18 @@ void room_loader::swapData(Room& _room) {
     _room.areaName = room.areaName;
     _room.bounds = room.bounds;
 }
+
+
+
+
+
+Trigger::Trigger(TriggerData& _data) {
+    data = _data;
+}
+
+
+std::vector<Trigger::TriggerData> trigger_loader::loadAll() {
+    std::vector<Trigger::TriggerData> contents;
+
+    return contents;
+}

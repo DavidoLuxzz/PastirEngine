@@ -68,7 +68,7 @@ void debugText() {
 }
 
 void game::draw() {
-    Display::clear(100,0,0);
+    Display::clear(0,0,0);
 
     for (int i=0; i<TEST_DRAW_SAMPLES; i++)
         room.draw();
