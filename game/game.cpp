@@ -152,6 +152,8 @@ int game::loadRooms() {
     if (triggers::load()) {
         printf("Problem loading triggers\n");
     }
+    // triggers::prepare(2);
+    // std::cout << triggers::get(0)[Trigger::COMP_X] << std::endl;
     return 0;
 }
 

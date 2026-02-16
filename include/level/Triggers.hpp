@@ -46,10 +46,16 @@ namespace triggers {
      */
     int load();
     /**
-     * Returnes whole list of triggers that are in specified room.
-     * @returns Trigger Data for the room
+     * Get certain trigger from room
+     * @returns Trigger Data
      */
-    const Trigger::TriggerData& get(unsigned int room);
+    const Trigger::TriggerData& get(unsigned int trID);
+    /**
+     * Creates a list with pointers to all the triggers from room.
+     */
+    void prepare(unsigned int room);
+
+    unsigned int getThisRoomTriggerCount();
 } // namespace triggers
 
 
