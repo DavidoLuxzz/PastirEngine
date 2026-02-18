@@ -31,7 +31,7 @@ std::vector<Rectu> util::loadTiles(const char* relativefilepath) {
             data[index++] = std::stoi(token);
             if (index>=4) break;
         }
-        Rectu tile = {data[0],data[1],data[2],data[3]};
+        Rectu tile = {{data[0],data[1]}, {data[2],data[3]}};
         tiles.push_back(tile);
     }
 

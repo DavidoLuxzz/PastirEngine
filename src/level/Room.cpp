@@ -33,7 +33,7 @@ void Room::move(float _dx, float _dy, void* _player) {
     player.relocate(player.getRequestedX() - x, player.getRequestedY() - y);
     for (DynamicObject o : dynamicObjects) o.updatePos(-x, -y);
     DialogBox.updatePos(this, 0, 0);*/
-    vec2<int> winSize;
+    uint2 winSize;
     winSize.x = Display::getCurrentDisplay()->getWidth();
     winSize.y = Display::getCurrentDisplay()->getHeight();
     float newx = translate.x + dx; // new translate x
@@ -84,7 +84,7 @@ void Room::draw() {
 
 #include <game.hpp>
 void Room::position(float2 playerPos) {
-    vec2<int> winSize;
+    uint2 winSize;
     // window size. no scale (1.0f)
     winSize.x = Display::getCurrentDisplay()->getWidth();
     winSize.y = Display::getCurrentDisplay()->getHeight();

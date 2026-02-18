@@ -42,12 +42,6 @@ void Player::useNikes(bool t) {
 void Player::setRoom(Room* r) {
     room = r;
 }
-template <typename T>
-Rect<T> hitboxAdded(const Rect<T>& a, float2 delta) {
-    Rect<T> c = a;
-    c.min = c.min + delta;
-    return c;
-}
 
 Rectf Player::getHitbox() const {
     float2 size = {(float) texInfo.tileRect.size.x,(float) texInfo.tileRect.size.y};
