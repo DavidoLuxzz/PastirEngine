@@ -91,6 +91,10 @@ public:
      */
     int loadTileRects(const char* tilerectsfile);
     /**
+     * Adds tile rect to the list
+     */
+    void registerTile(const Rectu);
+    /**
      * Returns the Texture at specified ID
      * @returns textures[id]
      */
@@ -141,6 +145,7 @@ namespace bank {
         enum tileset_banks {
             MAP_DRAWABLES,
             PLAYER,
+            DIALOG_BOX,
 
             NUM_KNOWN_BANKS
         };

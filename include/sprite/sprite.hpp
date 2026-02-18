@@ -79,6 +79,8 @@ public:
     void draw();
 
 
+    void setTexture(const bank::TextureInfo&);
+    bank::TextureInfo getTexture() const;
     /** Sets the texture's bank type.
      * @param _bank
      */

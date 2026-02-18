@@ -70,6 +70,13 @@ float Sprite::getScale() const {
     return scale;
 }
 
+void Sprite::setTexture(const bank::TextureInfo& tex) {
+    texInfo = tex;
+}
+bank::TextureInfo Sprite::getTexture() const {
+    return texInfo;
+}
+
 void Sprite::setTexturesBankType(bank::bank_type type) {
     texInfo.bankType = type;
 }

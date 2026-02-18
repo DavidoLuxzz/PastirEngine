@@ -10,6 +10,7 @@
 #include <components/utility.hpp>
 #include <sprite/Player.hpp>
 #include <level/Triggers.hpp>
+#include <components/dialogbox.hpp>
 
 #include <allegro5/allegro_font.h>
 
@@ -34,6 +35,10 @@ int game::run(){
             while (display.getEventQueue().popNext(&evt)) {
                 if (evt.type==ALLEGRO_EVENT_DISPLAY_CLOSE) return 0;
                 if (evt.type==ALLEGRO_EVENT_KEY_DOWN && evt.keyboard.keycode == ALLEGRO_KEY_ESCAPE) return 0;
+                if (evt.type==ALLEGRO_EVENT_KEY_DOWN && evt.keyboard.keycode == ALLEGRO_KEY_SPACE) {
+                    printf("debug key pressed\n");
+                    dialogbox::show(!dialogbox::isShowing());
+                }
             }
         } // end handling events
 
@@ -74,6 +79,7 @@ void game::draw() {
     for (int i=0; i<TEST_DRAW_SAMPLES; i++)
         room.draw();
     player.draw();
+    if (dialogbox::isShowing()) dialogbox::draw();
 
     debugText();
     
@@ -144,12 +150,15 @@ int initDisplay() {
 int game::loadAssets() {
     /* Bank loading */{
         bank::tileset::init(bank::tileset::NUM_KNOWN_BANKS);
-        // TilesetBank tbank;
+        // Map drawables
         bank::tileset::getBank(bank::tileset::MAP_DRAWABLES).loadTexture("drawables.png");
         bank::tileset::getBank(bank::tileset::MAP_DRAWABLES).loadTileRects("drawable_rects.txt");
-        // bank::tileset::makeGlobal(tbank, 0);
+        // Player tilesheet
         bank::tileset::getBank(bank::tileset::PLAYER).loadTexture("player.png");
         bank::tileset::getBank(bank::tileset::PLAYER).loadTileRects("player_rects.txt");
+        // Dialog box
+        bank::tileset::getBank(bank::tileset::DIALOG_BOX).loadTexture("dialog_box.png");
+        bank::tileset::getBank(bank::tileset::DIALOG_BOX).registerTile({{0,0},{236,128}});
     }
     return 0;
 }
@@ -186,6 +195,8 @@ int game::init(){
     LUKA_ASSERT0(loadAssets());
     LUKA_ASSERT0(loadRooms());
     initPlayer();
+    LUKA_ASSERT0(dialogbox::init());
+    dialogbox::show();
 
 
     printf("Room %s [%d,%d]\n",room.areaName.c_str(),room.bounds.size.x,room.bounds.size.y);

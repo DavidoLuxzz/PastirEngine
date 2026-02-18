@@ -92,6 +92,10 @@ int TilesetBank::loadTileRects(const char* tilerectsfile){
     return 0;
 }
 
+void TilesetBank::registerTile(const Rectu rect) {
+    tileRects.push_back(rect);
+}
+
 
 const Texture& TilesetBank::getTexture() const {
     return texture;
