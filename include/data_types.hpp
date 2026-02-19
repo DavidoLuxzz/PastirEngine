@@ -22,9 +22,11 @@ typedef vec3<unsigned int> uint3;
 float2 operator+(float2 a, float2 b);
 float2 operator-(float2 a, float2 b);
 float2 operator*(float2 a, float scale);
+float2 operator*(float2 a, float2 b);
 float2& operator+=(float2& a, float2 b);
 float2& operator-=(float2& a, float2 b);
 float2& operator*=(float2& a, float scale);
+float2& operator*=(float2& a, const float2& b);
 
 template <typename T>
 inline bool between(T x, T a1, T a2) {
@@ -35,6 +37,11 @@ template<typename T>
 struct Rect {
     vec2<T> min;
     vec2<T> size;
+
+    template <typename Q>
+    inline explicit operator Rect<Q>() const {
+        return {{(Q)min.x,(Q)min.y},{(Q)size.x,(Q)size.y}};
+    }
 
     inline bool contains(const vec2<T>& a) const {
         return (min.x<=a.x && min.y<=a.y) && (a.x<=(min.x+size.x) && a.y<=(min.y+size.y));

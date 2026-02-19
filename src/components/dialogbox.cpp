@@ -14,6 +14,8 @@ int dialogbox::init() {
         .tileID = 0
     };
     view.setTexture(dialogboxTexture);
+    view.setScale(0.8f, 0.5f);
+    view.setPosition(6.0f, 0.0f);
 
     return 0;
 }

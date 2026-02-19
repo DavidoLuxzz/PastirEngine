@@ -33,11 +33,9 @@ public:
      * Frees this texture.
      */
     void destroy();
-    /**
-     * Will destroy this object.
-     * But before that it copies its data into a new object.
-     */
-    void copyAndDestroy(Texture& dest);
+    
+    int getWidth() const;
+    int getHeight() const;
 
     /// @returns @code{ALLEGRO_BITMAP* _bitmap}
     ALLEGRO_BITMAP* getAllegroBitmap() const;

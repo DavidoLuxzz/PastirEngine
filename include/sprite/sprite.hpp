@@ -16,7 +16,7 @@ protected:
 
     float2 position = {0,0};
     float2 translate = {0,0};
-    float scale = 1.0f;
+    float2 scale = {1.0f,1.0f};
 public:
     Sprite() = default;
     ~Sprite() = default;
@@ -28,8 +28,10 @@ public:
     void setTileID(TextureID);
     TextureID getTileID() const;
 
+    /// @brief Sets scale on both axis the same specified value 
     void setScale(float);
-    float getScale() const;
+    void setScale(float, float);
+    float2 getScale() const;
 
     Rectf getHitbox() const;
 

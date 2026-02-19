@@ -32,7 +32,7 @@ void Sprite::setCenter(float x, float y) {
         tileWidth = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.x;
         tileHeight = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.y;
     }
-    setPosition(x-tileWidth*scale/2.0f, y-tileHeight*scale/2.0f);
+    setPosition(x-tileWidth*scale.x/2.0f, y-tileHeight*scale.x/2.0f);
 }
 
 Rectf Sprite::getHitbox() const {
@@ -64,9 +64,13 @@ void Sprite::move(float dx, float dy) {
 }
 
 void Sprite::setScale(float s) {
-    scale = s;
+    scale.x = s; scale.y = s;
 }
-float Sprite::getScale() const {
+void Sprite::setScale(float x, float y) {
+    scale.x = x;
+    scale.y = y;
+}
+float2 Sprite::getScale() const {
     return scale;
 }
 
@@ -121,19 +125,43 @@ TextureID Sprite::getTileID() const {
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 void Sprite::drawWhole(){
+    const Texture& texture = bank::getTexture(texInfo);
     ALLEGRO_BITMAP* bitmap = bank::getTexture(texInfo).getAllegroBitmap();
+    int width = texture.getWidth();
+    int height = texture.getHeight();
     if (!bitmap) return;
     // al_draw_tinted_scaled_rotated_bitmap(bitmap, al_map_rgba(100,100,100, 100), cx, cy, dx, dy, xscale, yscale, angle,  flags);
-    al_draw_bitmap(bitmap, position.x+translate.x, position.y+translate.y, 0);
+    al_draw_tinted_scaled_rotated_bitmap_region(
+        bitmap,
+        0.0f, 0.0f,
+        (float)width, (float)height,
+        al_map_rgb_f(1.0f,1.0f,1.0f),
+        // al_map_rgb(100,100,100),
+        0.0f, 0.0f,
+        position.x+translate.x, position.y+translate.y,
+        scale.x, scale.y,
+        0.0f,
+        0
+    );
 }
 
 void Sprite::draw() {
     ALLEGRO_BITMAP* bitmap = bank::getTexture(texInfo).getAllegroBitmap();
     if (!bitmap) return;
-    al_draw_bitmap_region(bitmap,
-        (float)texInfo.tileRect.min.x, (float)texInfo.tileRect.min.y,
-        (float)texInfo.tileRect.size.x, (float)texInfo.tileRect.size.y,
+    Rectf rect = (Rectf) texInfo.tileRect;
+    if (texInfo.bankType == bank::TILESET) {
+        rect = (Rectf) bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID);
+    }
+    al_draw_tinted_scaled_rotated_bitmap_region(
+        bitmap,
+        (float)rect.min.x,(float)rect.min.y,
+        (float)rect.size.x,(float)rect.size.y,
+        al_map_rgb_f(1.0f,1.0f,1.0f),
+        // al_map_rgb(100,100,100),
+        0.0f, 0.0f,
         position.x+translate.x, position.y+translate.y,
+        scale.x, scale.y,
+        0.0f,
         0
     );
 }

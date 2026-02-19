@@ -50,7 +50,7 @@ Rectf Player::getHitbox() const {
         size.y = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.y;
     }
     size *= scale;
-    static const float xoffset = 4*scale;
+    static const float xoffset = 4*scale.x;
     Rectf hitbox = {
         getWorldPosition(),
         {size.x-2*xoffset, size.y/2.0f}
@@ -148,7 +148,7 @@ void Player::draw() {
                                         // al_map_rgb(100,100,100),
                                         0.0f, 0.0f,
                                         position.x+translate.x, position.y+translate.y,
-                                        scale, scale,
+                                        scale.x, scale.y,
                                         0.0f,
                                         0);
 }

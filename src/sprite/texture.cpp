@@ -29,6 +29,13 @@ ALLEGRO_BITMAP* Texture::getAllegroBitmap() const {
     return _bitmap;
 }
 
+int Texture::getWidth() const {
+    return al_get_bitmap_width(_bitmap);
+}
+int Texture::getHeight() const {
+    return al_get_bitmap_height(_bitmap);
+}
+
 // GLuint Texture::getOpenGLTexture() const {
 //     return al_get_opengl_texture(_bitmap);
 // }
