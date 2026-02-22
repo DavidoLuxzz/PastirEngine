@@ -15,7 +15,7 @@ float2 Trigger::worldCoordinates(int x, int y) {
 }
 
 Rectf Trigger::createHitbox(const TriggerData& data, float2 translate) {
-    const float2 coords = Trigger::worldCoordinates(data[COMP_X], data[COMP_Y]);
+    const float2 coords = Trigger::worldCoordinates(data[COMP_X], data[COMP_Y]) + translate;
     const float2 size = Trigger::worldCoordinates(data[COMP_WIDTH], data[COMP_HEIGHT]);
     return {
         coords,

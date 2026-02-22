@@ -84,7 +84,7 @@ void game::draw() {
     for (int i=0; i<TEST_DRAW_SAMPLES; i++)
         room.draw();
     player.draw();
-    drawRectf(player.getHitbox(), al_map_rgb(50,255,50));
+    drawRectf(player.getHitbox(), al_map_rgb(50,255,50), room.getTranslate());
     if (dialogbox::isShowing()) dialogbox::draw();
 
     for (int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
@@ -94,7 +94,7 @@ void game::draw() {
         // float x2 = x1 + (float)trdata[Trigger::COMP_WIDTH]/DEFAULT_PIXEL_SCALE;
         // float y2 = y1 + (float)trdata[Trigger::COMP_HEIGHT]/DEFAULT_PIXEL_SCALE;
         // al_draw_rectangle(x1,y1,x2,y2,al_map_rgb(255,50,50),1.0f);
-        drawRectf(Trigger::createHitbox(triggers::get(i)), al_map_rgb(255,50,50));//, room.getTranslate());
+        drawRectf(Trigger::createHitbox(triggers::get(i), room.getTranslate()), al_map_rgb(255,50,50));//, room.getTranslate());
     }
 
     debugText();
