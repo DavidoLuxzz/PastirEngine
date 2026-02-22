@@ -72,14 +72,30 @@ void debugText() {
 
     Display::useScale();
 }
-
+#include <allegro5/allegro_primitives.h>
+inline void drawRectf(const Rectf rect, ALLEGRO_COLOR color, float2 translate={0,0}) {
+    float x = rect.min.x + translate.x;
+    float y = rect.min.y + translate.y;
+    al_draw_rectangle(x,y, x+rect.size.x,y+rect.size.y, color, 1.0f);
+}
 void game::draw() {
     Display::clear(0,0,0);
 
     for (int i=0; i<TEST_DRAW_SAMPLES; i++)
         room.draw();
     player.draw();
+    drawRectf(player.getHitbox(), al_map_rgb(50,255,50));
     if (dialogbox::isShowing()) dialogbox::draw();
+
+    for (int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
+        // const Trigger::TriggerData& trdata = triggers::get(i);
+        // float x1 = (float)trdata[Trigger::COMP_X]/DEFAULT_PIXEL_SCALE + room.getTranslate().x;
+        // float y1 = (float)trdata[Trigger::COMP_Y]/DEFAULT_PIXEL_SCALE + room.getTranslate().y;
+        // float x2 = x1 + (float)trdata[Trigger::COMP_WIDTH]/DEFAULT_PIXEL_SCALE;
+        // float y2 = y1 + (float)trdata[Trigger::COMP_HEIGHT]/DEFAULT_PIXEL_SCALE;
+        // al_draw_rectangle(x1,y1,x2,y2,al_map_rgb(255,50,50),1.0f);
+        drawRectf(Trigger::createHitbox(triggers::get(i)), al_map_rgb(255,50,50));//, room.getTranslate());
+    }
 
     debugText();
     
@@ -196,7 +212,7 @@ int game::init(){
     LUKA_ASSERT0(loadRooms());
     initPlayer();
     LUKA_ASSERT0(dialogbox::init());
-    dialogbox::show();
+    // dialogbox::show();
 
 
     printf("Room %s [%d,%d]\n",room.areaName.c_str(),room.bounds.size.x,room.bounds.size.y);
