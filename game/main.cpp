@@ -4,6 +4,7 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 #include <game.hpp>
 
 void assertInit(int ret, const char* name){
@@ -19,6 +20,7 @@ void init(){
     assertInit(al_init_primitives_addon(), "primitives addon");
     assertInit(al_init_image_addon(), "image addon");
     assertInit(al_init_font_addon(), "font addon");
+    assertInit(al_init_acodec_addon(), "font addon");
     assertInit(al_install_keyboard(), "keyboard");
     assertInit(al_install_mouse(), "mouse");
     assertInit(al_install_audio(), "audio addon");

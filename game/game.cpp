@@ -11,6 +11,7 @@
 #include <sprite/Player.hpp>
 #include <level/Triggers.hpp>
 #include <components/dialogbox.hpp>
+#include <components/audio.hpp>
 
 #include <allegro5/allegro_font.h>
 
@@ -129,7 +130,8 @@ void game::update(float ms) {
         const Trigger::TriggerData& data = triggers::get(i);
         Rectf trHitbox = Trigger::createHitbox(data);
         if (player.getHitbox().intersects(trHitbox)) {
-            printf("Trigger!\n");
+            
+            printf("Trigger! action=%d\n", data[Trigger::COMP_ACTION]);
         }
     }
 }
@@ -212,6 +214,7 @@ int game::init(){
     LUKA_ASSERT0(loadRooms());
     initPlayer();
     LUKA_ASSERT0(dialogbox::init());
+    // LUKA_ASSERT0(audio::init());
     // dialogbox::show();
 
 
