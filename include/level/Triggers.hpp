@@ -16,7 +16,7 @@ public:
         COMP_ROOM,
         COMP_ACTION,
         COMP_NEEDS_Z,
-        COMP_SPECIAL_VALUE,
+        COMP_SPECIAL,
         COMP_RMAFINT,
         COMP_X,
         COMP_Y,

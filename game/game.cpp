@@ -12,11 +12,14 @@
 #include <level/Triggers.hpp>
 #include <components/dialogbox.hpp>
 #include <components/audio.hpp>
+#include <event.hpp>
 
 #include <allegro5/allegro_font.h>
 
 Display display;
-Room room;
+#define NUM_ROOMS 4
+Room rooms[NUM_ROOMS];
+int roomID = 0;
 Player player;
 ALLEGRO_FONT* font;
 
@@ -43,7 +46,7 @@ int game::run(){
             }
         } // end handling events
 
-        display.setTitle(  (std::string("DEMO FPS: ")+std::to_string((int)round(1.0/deltaTime))+" Sprites: "+std::to_string(TEST_DRAW_SAMPLES*room.objects.size())).c_str()  );
+        display.setTitle(  (std::string("DEMO FPS: ")+std::to_string((int)round(1.0/deltaTime))+" Sprites: "+std::to_string(TEST_DRAW_SAMPLES*rooms[roomID].objects.size())).c_str()  );
 
         // ## UPDATE ## //
         update(deltaTime);
@@ -63,7 +66,7 @@ void debugText() {
     const float __px_scale = Display::getPixelScale()/2.0f;
     Display::useCustomScale(__px_scale, __px_scale);
 
-    Rectf drw = Drawable::createHitbox(room.objects[0]);
+    Rectf drw = Drawable::createHitbox(rooms[roomID].objects[0]);
     Rectf playerHitbox = player.getHitbox();
 
     al_draw_textf(font, al_map_rgb(255,255,255), 0, 0, 0, "Player pos: %.1f %.1f [%.0fx%.0f]", playerHitbox.min.x,playerHitbox.min.y, playerHitbox.size.x,playerHitbox.size.y);
@@ -83,9 +86,9 @@ void game::draw() {
     Display::clear(0,0,0);
 
     for (int i=0; i<TEST_DRAW_SAMPLES; i++)
-        room.draw();
+        rooms[roomID].draw();
     player.draw();
-    drawRectf(player.getHitbox(), al_map_rgb(50,255,50), room.getTranslate());
+    drawRectf(player.getHitbox(), al_map_rgb(50,255,50), rooms[roomID].getTranslate());
     if (dialogbox::isShowing()) dialogbox::draw();
 
     for (int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
@@ -95,7 +98,7 @@ void game::draw() {
         // float x2 = x1 + (float)trdata[Trigger::COMP_WIDTH]/DEFAULT_PIXEL_SCALE;
         // float y2 = y1 + (float)trdata[Trigger::COMP_HEIGHT]/DEFAULT_PIXEL_SCALE;
         // al_draw_rectangle(x1,y1,x2,y2,al_map_rgb(255,50,50),1.0f);
-        drawRectf(Trigger::createHitbox(triggers::get(i), room.getTranslate()), al_map_rgb(255,50,50));//, room.getTranslate());
+        drawRectf(Trigger::createHitbox(triggers::get(i), rooms[roomID].getTranslate()), al_map_rgb(255,50,50));//, room.getTranslate());
     }
 
     debugText();
@@ -111,8 +114,8 @@ void __game_move(float dx, float dy) {
     player.move(dx,dy);
     // player.setTranslate(player.getTranslate().x+dx, player.getTranslate().y+dy);
     //player.setPosition(player.getWorldPosition().x, player.getWorldPosition().y);
-    room.position(player.getWorldPosition());
-    player.positionRoom(room.getTranslate());
+    rooms[roomID].position(player.getWorldPosition());
+    player.positionRoom(rooms[roomID].getTranslate());
 
     player.orientate(dx,dy);
 }
@@ -130,8 +133,14 @@ void game::update(float ms) {
         const Trigger::TriggerData& data = triggers::get(i);
         Rectf trHitbox = Trigger::createHitbox(data);
         if (player.getHitbox().intersects(trHitbox)) {
-            
             printf("Trigger! action=%d\n", data[Trigger::COMP_ACTION]);
+            if (data[Trigger::COMP_ACTION] == event::CHANGE_ROOM) {
+                roomID = data[Trigger::COMP_SPECIAL];
+                triggers::prepare(roomID);
+                player.setRoom(&rooms[roomID]);
+                player.setWorldPosition({16.0f,16.0f});
+                break;
+            }
         }
     }
 }
@@ -181,13 +190,15 @@ int game::loadAssets() {
     return 0;
 }
 int game::loadRooms() {
-    LUKA_ASSERT0(room_loader::load(0)); // .txt
-    room_loader::swapData(room);
+    for (int i=0; i<NUM_ROOMS; i++) {
+        LUKA_ASSERT0(room_loader::load(i)); // .txt
+        room_loader::swapData(rooms[i]);
+    }
 
     if (triggers::load()) {
         printf("Problem loading triggers\n");
     }
-    triggers::prepare(0);
+    triggers::prepare(roomID);
     // std::cout << triggers::get(0)[Trigger::COMP_X] << std::endl;
     return 0;
 }
@@ -201,7 +212,7 @@ void initPlayer() {
     player.setWorldPosition({24.0f,24.0f});
     // player.setWorldPosition({0.0f,0.0f});
     player.useNikes(true);
-    player.setRoom(&room);
+    player.setRoom(&rooms[roomID]);
 }
 
 int game::init(){
@@ -218,7 +229,7 @@ int game::init(){
     // dialogbox::show();
 
 
-    printf("Room %s [%d,%d]\n",room.areaName.c_str(),room.bounds.size.x,room.bounds.size.y);
+    printf("Room %s [%d,%d]\n",rooms[roomID].areaName.c_str(),rooms[roomID].bounds.size.x,rooms[roomID].bounds.size.y);
 
     return 0;
 }

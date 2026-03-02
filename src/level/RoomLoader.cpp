@@ -50,8 +50,17 @@ int __lvl_loader_load(const std::string& filepath) {
         Drawable::DrawableData data = DRAWABLE_DEFAULT_DATA; int index=0;
         std::string token;
         while (std::getline(_l, token, ' ')) {
-            data[index++] = std::stoi(token);
             if (index>=Drawable::COMPONENT_COUNT) break;
+            if (token.length()<=0) continue;
+            try {
+                data[index++] = std::stoi(token);
+            } catch (const std::exception& e) {
+                std::cout << "Greska: " << e.what() << std::endl;
+                std::cout << "line = " << line << std::endl;
+                std::cout << "token = " << token << std::endl;
+                std::cout << "index = " << index << std::endl;
+                std::cout << "token.len = " << token.length() << std::endl;
+            }
         }
         room_loader::room.objects.push_back(data);
         //printf("Loaded object: %d %d 16x16\n", data[Drawable::COMP_X], data[Drawable::COMP_Y]);
