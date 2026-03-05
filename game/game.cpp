@@ -120,6 +120,8 @@ void __game_move(float dx, float dy) {
 }
 
 void game::update(float ms) {
+    audio::update();
+
     keyboard::fetchKeyboardState();
     float dx = (keyboard::keyDown(ALLEGRO_KEY_RIGHT) - keyboard::keyDown(ALLEGRO_KEY_LEFT))
                 * player.getSpeed() * ms;
@@ -220,7 +222,11 @@ int game::init(){
     LUKA_ASSERT0(loadRooms());
     initPlayer();
     LUKA_ASSERT0(dialogbox::init());
-    // LUKA_ASSERT0(audio::init());
+    LUKA_ASSERT0(audio::init());
+    int sndID;
+    audio::loadAudio("audio/project.mp3", &sndID);
+    audio::prepareAudio(sndID).setPlaying(true);
+
     dialogbox::setText("Hallo!!");
     dialogbox::show();
 
@@ -235,8 +241,8 @@ int game::init(){
 void game::clean(){
     logger::info("Cleaning game components...");
 
+    audio::destroy();
     bank::destroyAll();
-
     display.destroy();
 }
 #pragma endregion
