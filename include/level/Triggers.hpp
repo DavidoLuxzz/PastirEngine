@@ -38,6 +38,8 @@ public:
 
     static Rectf createHitbox(const TriggerData&, float2 translate={0,0});
     static float2 worldCoordinates(int x, int y);
+
+    static void execute(const TriggerData&);
 };
 
 // typedef std::vector<Trigger::TriggerData> TriggerRooms;

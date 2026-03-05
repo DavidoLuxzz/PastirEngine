@@ -23,6 +23,42 @@ Rectf Trigger::createHitbox(const TriggerData& data, float2 translate) {
     };
 }
 
+#include <level/Room.hpp>
+#include <sprite/Player.hpp>
+#include <sprite/Drawable.hpp>
+#include <event.hpp>
+#include <components/dialogbox.hpp>
+
+extern int roomID;
+extern Player player;
+extern Room rooms[];
+
+void changeRoom(int room) {
+    roomID = room;
+    triggers::prepare(roomID);
+    player.setRoom(&rooms[roomID]);
+    player.setWorldPosition({17.0f,17.0f});
+}
+
+void Trigger::execute(const TriggerData& data) {
+    switch (data[COMP_ACTION]) {
+    case event::CHANGE_ROOM: {
+        changeRoom(data[COMP_SPECIAL]);
+        break;
+    }
+    case event::DIALOG_INTERRUPT: {
+        dialogbox::show();
+        break;
+    }
+    case event::TEXTURE_CHANGE: {
+        rooms[roomID].objects[data[COMP_SPECIAL]][Drawable::COMP_TEXTURE_ID] = data[COMP_SPECIAL2];
+        break;
+    }
+    
+    default:
+        break;
+    }
+}
 
 
 

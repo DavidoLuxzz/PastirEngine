@@ -22,6 +22,7 @@ Room rooms[NUM_ROOMS];
 int roomID = 0;
 Player player;
 ALLEGRO_FONT* font;
+bool f3 = false;
 
 #define TEST_DRAW_SAMPLES 1
 
@@ -42,6 +43,8 @@ int game::run(){
                 if (evt.type==ALLEGRO_EVENT_KEY_DOWN && evt.keyboard.keycode == ALLEGRO_KEY_SPACE) {
                     printf("debug key pressed\n");
                     dialogbox::show(!dialogbox::isShowing());
+                } else if (evt.type==ALLEGRO_EVENT_KEY_DOWN && evt.keyboard.keycode == ALLEGRO_KEY_F3) {
+                    f3 = !f3;
                 }
             }
         } // end handling events
@@ -73,6 +76,7 @@ void debugText() {
     al_draw_textf(font, al_map_rgb(255,255,255), 0, 10, 0, "Obj pos: %.1f %.1f [%.0fx%.0f]", drw.min.x,drw.min.y, drw.size.x,drw.size.y);
     bool t = playerHitbox.intersects(drw);
     al_draw_textf(font, al_map_rgb(255,255,255), 0, 20, 0, "Intersects: %s", t?"true":"false");
+    al_draw_textf(font, al_map_rgb(255,255,255), 0, 30, 0, "Debug (show hitboxes): %s", f3?"true":"false");
 
     Display::useScale();
 }
@@ -91,17 +95,12 @@ void game::draw() {
     drawRectf(player.getHitbox(), al_map_rgb(50,255,50), rooms[roomID].getTranslate());
     if (dialogbox::isShowing()) dialogbox::draw();
 
-    for (int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
-        // const Trigger::TriggerData& trdata = triggers::get(i);
-        // float x1 = (float)trdata[Trigger::COMP_X]/DEFAULT_PIXEL_SCALE + room.getTranslate().x;
-        // float y1 = (float)trdata[Trigger::COMP_Y]/DEFAULT_PIXEL_SCALE + room.getTranslate().y;
-        // float x2 = x1 + (float)trdata[Trigger::COMP_WIDTH]/DEFAULT_PIXEL_SCALE;
-        // float y2 = y1 + (float)trdata[Trigger::COMP_HEIGHT]/DEFAULT_PIXEL_SCALE;
-        // al_draw_rectangle(x1,y1,x2,y2,al_map_rgb(255,50,50),1.0f);
-        drawRectf(Trigger::createHitbox(triggers::get(i), rooms[roomID].getTranslate()), al_map_rgb(255,50,50));//, room.getTranslate());
-    }
+    if (f3)
+        for (int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
+            drawRectf(Trigger::createHitbox(triggers::get(i), rooms[roomID].getTranslate()), al_map_rgb(255,50,50));//, room.getTranslate());
+        }
 
-    debugText();
+    if (f3) debugText();
     
     Display::swapBuffers();
 }
@@ -134,13 +133,9 @@ void game::update(float ms) {
         Rectf trHitbox = Trigger::createHitbox(data);
         if (player.getHitbox().intersects(trHitbox)) {
             printf("Trigger! action=%d\n", data[Trigger::COMP_ACTION]);
-            if (data[Trigger::COMP_ACTION] == event::CHANGE_ROOM) {
-                roomID = data[Trigger::COMP_SPECIAL];
-                triggers::prepare(roomID);
-                player.setRoom(&rooms[roomID]);
-                player.setWorldPosition({16.0f,16.0f});
+            Trigger::execute(data);
+            if (data[Trigger::COMP_ACTION] == event::CHANGE_ROOM)
                 break;
-            }
         }
     }
 }
@@ -226,7 +221,8 @@ int game::init(){
     initPlayer();
     LUKA_ASSERT0(dialogbox::init());
     // LUKA_ASSERT0(audio::init());
-    // dialogbox::show();
+    dialogbox::setText("Hallo!!");
+    dialogbox::show();
 
 
     printf("Room %s [%d,%d]\n",rooms[roomID].areaName.c_str(),rooms[roomID].bounds.size.x,rooms[roomID].bounds.size.y);
