@@ -32,7 +32,6 @@ public:
     // functions
     void init(int id);
     void init(FMOD::Channel *channel);
-    void setSourcePosition(float x, float y, float z);
     void setPlaying(bool t);
     bool isPlaying();
     FMOD::Channel *getFMODChannel();
@@ -44,13 +43,10 @@ void destroy();
 int getError();
 const char *getErrorString(FMOD_RESULT);
 void getDriverInfo(char *out_name, int name_len, int *out_opt_driverID, int *out_opt_systemRate);
+const char* getSpeakerModeName(FMOD_SPEAKERMODE);
 int loadAudio(const char* filename, int *out_sound_id);
 Channel prepareAudio(int sound_id);
 FMOD::Channel *getChannel(int index);
-
-
-// test
-void temp();
 
 
 } // namespace audio

@@ -23,27 +23,22 @@ Rectf Trigger::createHitbox(const TriggerData& data, float2 translate) {
     };
 }
 
-#include <level/Room.hpp>
-#include <sprite/Player.hpp>
-#include <sprite/Drawable.hpp>
+#include <game.hpp>
 #include <event.hpp>
 #include <components/dialogbox.hpp>
 
-extern int roomID;
-extern Player player;
-extern Room rooms[];
-
-void changeRoom(int room) {
-    roomID = room;
-    triggers::prepare(roomID);
-    player.setRoom(&rooms[roomID]);
-    player.setWorldPosition({17.0f,17.0f});
+void changeRoom(const Trigger::TriggerData& data) {
+    Game* game = game::getGame();
+    game->roomID = data[Trigger::COMP_SPECIAL];
+    triggers::prepare(game->roomID);
+    game->player.setRoom(&game->rooms[game->roomID]);
+    game->player.setWorldPosition({(float)data[Trigger::COMP_SPECIAL2], (float)data[Trigger::COMP_SPECIAL3]});
 }
 
 void Trigger::execute(const TriggerData& data) {
     switch (data[COMP_ACTION]) {
     case event::CHANGE_ROOM: {
-        changeRoom(data[COMP_SPECIAL]);
+        changeRoom(data);
         break;
     }
     case event::DIALOG_INTERRUPT: {
@@ -51,7 +46,7 @@ void Trigger::execute(const TriggerData& data) {
         break;
     }
     case event::TEXTURE_CHANGE: {
-        rooms[roomID].objects[data[COMP_SPECIAL]][Drawable::COMP_TEXTURE_ID] = data[COMP_SPECIAL2];
+        game::getGame()->rooms[game::getGame()->roomID].objects[data[COMP_SPECIAL]][Drawable::COMP_TEXTURE_ID] = data[COMP_SPECIAL2];
         break;
     }
     
@@ -144,7 +139,7 @@ void __tr_loader_loadRoomTriggerCounts(const TrData& contents, std::vector<unsig
 #include <game.hpp>
 int triggers::load() {
     std::string filepath = assman::getasset(TRIGGERS_FILE);
-    fprintf(stderr, "<TRLOADER> Loading triggers. path=%s\n", filepath.c_str());
+    // fprintf(stderr, "<TRLOADER> Loading triggers. path=%s\n", filepath.c_str());
     if (!std::filesystem::exists(filepath)) {
         fprintf(stderr, "<%sTRLOADER%s> Triggers file doesn't exists path=%s\n",TERMINAL_COLOR_RED_BOLD,TERMINAL_COLOR_RESET, filepath.c_str());
         return -1;

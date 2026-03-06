@@ -50,6 +50,25 @@ int audio::getError(){
 const char *audio::getErrorString(FMOD_RESULT res){
     return FMOD_ErrorString(res);
 }
+namespace audio {
+void setup_driver() {
+    int driver;
+    system->getDriver(&driver);
+    char drv_name[64];
+    FMOD_GUID drv_guid;
+    int drv_sysrate;
+    FMOD_SPEAKERMODE drv_speakermode;
+    int drv_spkmode_channels;
+    system->getDriverInfo(driver, drv_name, 64, &drv_guid, &drv_sysrate, &drv_speakermode, &drv_spkmode_channels);
+
+    printf("[FMOD] Driver: %s [%d]. System Rate=%d;  Speaker Mode=%s;  SpeakerMode Channels=%d\n", drv_name,driver,drv_sysrate,getSpeakerModeName(drv_speakermode),drv_spkmode_channels);
+
+    latest_result = system->setSoftwareFormat(drv_sysrate, drv_speakermode, 0);
+    if (latest_result != FMOD_OK) {
+        printf("[FMOD] Software format error. (%s)\n", FMOD_ErrorString(latest_result));
+    }
+}
+}
 
 int audio::init(){
     // Create main system object
@@ -59,14 +78,17 @@ int audio::init(){
         printf("[FMOD] Init error. (%s)\n", FMOD_ErrorString(latest_result));
         return -1;
     }
+
+    // Setup speaker mode
+    setup_driver();
     // Initialize FMOD
-    latest_result = system->setSoftwareFormat(0, FMOD_SPEAKERMODE_STEREO, 0);
     latest_result = system->init(AUDIO_CHANNELS, FMOD_INIT_NORMAL, 0);
     if (latest_result != FMOD_OK) {
         printf("[FMOD] Init error. (%s)\n", FMOD_ErrorString(latest_result));
         return -1;
     }
     
+
     memset(sounds_free_bitmap, 0, SOUND_BUFFERS);
     
     printf("[FMOD] All gud =b\n");
@@ -82,6 +104,20 @@ void audio::getDriverInfo(char *out_name, int name_len, int *out_opt_driverid, i
     system->getDriverInfo(driverid, out_name, name_len, NULL, out_opt_sysrate, NULL, NULL);
     *out_opt_driverid = driverid;
 }
+const char* audio::getSpeakerModeName(FMOD_SPEAKERMODE spkmd) {
+    static const char* const names[] = {
+        "DEFAULT",
+        "RAW",
+        "MONO",
+        "STEREO",
+        "QUAD",
+        "SURROUND",
+        "5POINT1",
+        "7POINT1",
+        "7POINT1POINT4"
+    };
+    return names[spkmd];
+}
 int audio::loadAudio(const char* filename, int *sound_id){
     // Check if space for new sound
     int slot = findFreeSoundSlot();
@@ -91,7 +127,7 @@ int audio::loadAudio(const char* filename, int *sound_id){
     }
     // Sound
     FMOD::Sound *sound;
-    latest_result = system->createStream(assman::getasset(filename).c_str(), FMOD_3D, NULL, &sound);
+    latest_result = system->createStream(assman::getasset(filename).c_str(), FMOD_2D, NULL, &sound);
     if (latest_result != FMOD_OK){
         fprintf(stderr, "[FMOD] Error creating sound (%s)\n", FMOD_ErrorString(latest_result));
         return -1;
@@ -116,23 +152,6 @@ audio::Channel audio::prepareAudio(int sound_id){
     Channel out_channel(channel);
     out_channel.sound_id = sound_id;
     return out_channel;
-}
-
-void audio::temp(){
-    // Setting up example reverb
-    FMOD::Reverb3D *revb;
-    system->createReverb3D(&revb);
-    FMOD_REVERB_PROPERTIES props = FMOD_PRESET_CAVE;
-    revb->setProperties(&props);
-    
-    FMOD_VECTOR pos = { -10.0f, 0.0f, 0.0f };
-    float mindist = 0.0f;
-    float maxdist = 100.0f;
-    revb->set3DAttributes(&pos, mindist, maxdist);
-    
-    while (true){
-        system->update();
-    }
 }
 
 FMOD::Channel *audio::getChannel(int index){
@@ -187,12 +206,4 @@ bool audio::Channel::isPlaying(){
 
 FMOD::Channel *audio::Channel::getFMODChannel(){
     return channel;
-}
-
-void audio::Channel::setSourcePosition(float x, float y, float z){
-    FMOD_VECTOR a_vec_pos;
-    a_vec_pos.x = x;
-    a_vec_pos.y = y;
-    a_vec_pos.z = z;
-    channel->set3DAttributes(&a_vec_pos, NULL);
 }

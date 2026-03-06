@@ -34,12 +34,12 @@ bool dialogbox::isShowing() {
 #include <allegro5/allegro_font.h>
 #include <components/display.hpp>
 
-extern ALLEGRO_FONT* font;
+#include <game.hpp>
 
 void dialogbox::draw() {
     view.drawWhole();
     Display::useCustomScale(3.0f,3.0f);
-    al_draw_multiline_textf(font, al_map_rgb(255,255,255), 20.0f,8.0f, 100.0f,20.0f, 0, "%s", dialog.pages[0].c_str());
+    al_draw_multiline_textf(game::getGame()->font, al_map_rgb(255,255,255), 20.0f,8.0f, 100.0f,20.0f, 0, "%s", dialog.pages[0].c_str());
     Display::useScale();
 }
 

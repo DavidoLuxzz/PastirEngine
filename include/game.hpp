@@ -2,6 +2,10 @@
 #ifndef __GAME_HPP
 #define __GAME_HPP
 
+#include <components/display.hpp>
+#include <level/Room.hpp>
+#include <sprite/Player.hpp>
+#include <allegro5/allegro_font.h>
 
 #define WINDOW_WIDTH  200 // in game pixels
 #define WINDOW_HEIGHT 160 // in game pixels
@@ -11,8 +15,15 @@
 #define TRIGGERS_FILE "triggers.txt"
 #define ENTITIES_FILE "ent.txt"
 
-namespace game {
-
+class Game {
+public:
+    Display display;
+    #define NUM_ROOMS 4
+    Room rooms[NUM_ROOMS];
+    int roomID = 0;
+    Player player;
+    ALLEGRO_FONT* font;
+    bool f3 = false;
     /**
      * Initializes game components and variables.
      * Calls loadAssets().
@@ -32,11 +43,21 @@ namespace game {
     int run();
     void draw();
 
+    void game_move(float dx, float dy);
+
+    void debugText();
+
 
     /// @brief used localy
     /// @param ms time passed since last update (should equal to 1/FPS)
     void update(float ms);
 
-} // namespace game
+}; // namespace game
+
+
+namespace game {
+    void makeCurrent(Game*);
+    Game* getGame();
+}
 
 #endif

@@ -16,19 +16,11 @@
 
 #include <allegro5/allegro_font.h>
 
-Display display;
-#define NUM_ROOMS 4
-Room rooms[NUM_ROOMS];
-int roomID = 0;
-Player player;
-ALLEGRO_FONT* font;
-bool f3 = false;
-
 #define TEST_DRAW_SAMPLES 1
 
 #pragma region game::run
 
-int game::run(){
+int Game::run(){
     // unsigned int frames = 0;
     double lastTime = 0.0;
     while (true) {
@@ -65,7 +57,7 @@ int game::run(){
 
 #pragma region game::draw
 
-void debugText() {
+void Game::debugText() {
     const float __px_scale = Display::getPixelScale()/2.0f;
     Display::useCustomScale(__px_scale, __px_scale);
 
@@ -86,7 +78,7 @@ inline void drawRectf(const Rectf rect, ALLEGRO_COLOR color, float2 translate={0
     float y = rect.min.y + translate.y;
     al_draw_rectangle(x,y, x+rect.size.x,y+rect.size.y, color, 1.0f);
 }
-void game::draw() {
+void Game::draw() {
     Display::clear(0,0,0);
 
     for (int i=0; i<TEST_DRAW_SAMPLES; i++)
@@ -109,7 +101,7 @@ void game::draw() {
 
 #pragma region game::update
 
-void __game_move(float dx, float dy) {
+void Game::game_move(float dx, float dy) {
     player.move(dx,dy);
     // player.setTranslate(player.getTranslate().x+dx, player.getTranslate().y+dy);
     //player.setPosition(player.getWorldPosition().x, player.getWorldPosition().y);
@@ -119,7 +111,7 @@ void __game_move(float dx, float dy) {
     player.orientate(dx,dy);
 }
 
-void game::update(float ms) {
+void Game::update(float ms) {
     audio::update();
 
     keyboard::fetchKeyboardState();
@@ -128,7 +120,7 @@ void game::update(float ms) {
     float dy = (keyboard::keyDown(ALLEGRO_KEY_DOWN)  - keyboard::keyDown(ALLEGRO_KEY_UP))
                 * player.getSpeed() * ms;
     // drawable.setPosition(pos.x+dx, pos.y+dy);
-    __game_move(dx,dy);
+    game_move(dx,dy);
 
     for (unsigned int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
         const Trigger::TriggerData& data = triggers::get(i);
@@ -162,16 +154,14 @@ void setupAssman() {
 
 int initDisplay() {
     Display::setupPixelScale(4.0f);
-    LUKA_ASSERT0(display.create(WINDOW_WIDTH, WINDOW_HEIGHT, "DEMO", true));
-    display.getEventQueue().registerKeyboardEventSource();
+    LUKA_ASSERT0(game::getGame()->display.create(WINDOW_WIDTH, WINDOW_HEIGHT, "DEMO", true));
+    game::getGame()->display.getEventQueue().registerKeyboardEventSource();
 
-    int dpi = al_get_monitor_dpi(al_get_display_adapter(display.getAllegroDisplay()));
-
-    printf("DPI: %d\n", dpi);
+    // int dpi = al_get_monitor_dpi(al_get_display_adapter(display.getAllegroDisplay()));
     return 0;
 }
 
-int game::loadAssets() {
+int Game::loadAssets() {
     /* Bank loading */{
         bank::tileset::init(bank::tileset::NUM_KNOWN_BANKS);
         // Map drawables
@@ -186,7 +176,7 @@ int game::loadAssets() {
     }
     return 0;
 }
-int game::loadRooms() {
+int Game::loadRooms() {
     for (int i=0; i<NUM_ROOMS; i++) {
         LUKA_ASSERT0(room_loader::load(i)); // .txt
         room_loader::swapData(rooms[i]);
@@ -201,6 +191,8 @@ int game::loadRooms() {
 }
 
 void initPlayer() {
+    Game* game = game::getGame();
+    Player& player = game->player;
     player.setTexturesBankType(bank::TILESET);
     player.setTexturesBankID(bank::tileset::PLAYER);
     player.setScale(0.5f);
@@ -209,10 +201,10 @@ void initPlayer() {
     player.setWorldPosition({24.0f,24.0f});
     // player.setWorldPosition({0.0f,0.0f});
     player.useNikes(true);
-    player.setRoom(&rooms[roomID]);
+    player.setRoom(&game->rooms[game->roomID]);
 }
 
-int game::init(){
+int Game::init(){
     font = al_create_builtin_font();
 
     setupAssman();
@@ -230,15 +222,12 @@ int game::init(){
     dialogbox::setText("Hallo!!");
     dialogbox::show();
 
-
-    printf("Room %s [%d,%d]\n",rooms[roomID].areaName.c_str(),rooms[roomID].bounds.size.x,rooms[roomID].bounds.size.y);
-
     return 0;
 }
 
 #pragma endregion
 #pragma region game::clean
-void game::clean(){
+void Game::clean(){
     logger::info("Cleaning game components...");
 
     audio::destroy();
@@ -246,3 +235,20 @@ void game::clean(){
     display.destroy();
 }
 #pragma endregion
+
+
+
+
+
+
+
+
+
+namespace game { Game* game; }
+
+void game::makeCurrent(Game* _gm) {
+    game = _gm;
+}
+Game* game::getGame() {
+    return game;
+}
