@@ -60,6 +60,7 @@ public:
      * Scales everything
      */
     static void useCustomScale(float sx, float sy);
+    static void useCustomScale(float scale);
     /**
      * Use the static scale set up by Display::setPixelScale(float).
      */

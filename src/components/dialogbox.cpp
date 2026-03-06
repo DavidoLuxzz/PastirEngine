@@ -5,6 +5,7 @@ namespace dialogbox {
     Sprite view;
     bool showing = false;
     dialog_t dialog(MAX_DIALOG_PAGES);
+    constexpr float scale = 3.0f/4.0f;
 } // namespace dialogbox
 
 
@@ -15,8 +16,8 @@ int dialogbox::init() {
         .tileID = 0
     };
     view.setTexture(dialogboxTexture);
-    view.setScale(0.8f, 0.5f);
-    view.setPosition(6.0f, 0.0f);
+    view.setScale(0.8f / scale, 0.5f / scale);
+    view.setPosition(6.0f/scale, 0.0f);
 
     return 0;
 }
@@ -37,9 +38,13 @@ bool dialogbox::isShowing() {
 #include <game.hpp>
 
 void dialogbox::draw() {
+    Display::useCustomScale(Display::getPixelScale() * scale);
+
+    // view.setPosition(view.getPosition() + float2{0.0f, 0.1f});
     view.drawWhole();
-    Display::useCustomScale(3.0f,3.0f);
-    al_draw_multiline_textf(game::getGame()->font, al_map_rgb(255,255,255), 20.0f,8.0f, 100.0f,20.0f, 0, "%s", dialog.pages[0].c_str());
+
+    al_draw_multiline_textf(game::getGame()->font, al_map_rgb(255,255,255), view.getPosition().x+20.0f,view.getPosition().y+10.0f, 100.0f,20.0f, 0, "%s", dialog.pages[0].c_str());
+
     Display::useScale();
 }
 

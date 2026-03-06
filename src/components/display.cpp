@@ -87,6 +87,9 @@ void Display::useCustomScale(float sx, float sy){
     al_scale_transform(&trans, sx, sy);
     al_use_transform(&trans);
 }
+void Display::useCustomScale(float s){
+    useCustomScale(s,s);
+}
 void Display::useScale() {
     useCustomScale(PIXEL_SCALE, PIXEL_SCALE);
 }

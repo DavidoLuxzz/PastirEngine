@@ -31,12 +31,19 @@ int Game::run(){
             ALLEGRO_EVENT evt;
             while (display.getEventQueue().popNext(&evt)) {
                 if (evt.type==ALLEGRO_EVENT_DISPLAY_CLOSE) return 0;
-                if (evt.type==ALLEGRO_EVENT_KEY_DOWN && evt.keyboard.keycode == ALLEGRO_KEY_ESCAPE) return 0;
-                if (evt.type==ALLEGRO_EVENT_KEY_DOWN && evt.keyboard.keycode == ALLEGRO_KEY_SPACE) {
-                    printf("debug key pressed\n");
-                    dialogbox::show(!dialogbox::isShowing());
-                } else if (evt.type==ALLEGRO_EVENT_KEY_DOWN && evt.keyboard.keycode == ALLEGRO_KEY_F3) {
-                    f3 = !f3;
+                if (evt.type==ALLEGRO_EVENT_KEY_DOWN) switch (evt.keyboard.keycode) {
+                    case ALLEGRO_KEY_ESCAPE: return 0;
+                    case ALLEGRO_KEY_SPACE:
+                        dialogbox::show(!dialogbox::isShowing());
+                        break;
+                    case ALLEGRO_KEY_F3:
+                        f3 = !f3;
+                        break;
+                    case ALLEGRO_KEY_Z:
+                        if (dialogbox::isShowing()) dialogbox::hide();
+                        break;
+                    default:
+                        break;
                 }
             }
         } // end handling events
@@ -44,7 +51,9 @@ int Game::run(){
         display.setTitle(  (std::string("DEMO FPS: ")+std::to_string((int)round(1.0/deltaTime))+" Sprites: "+std::to_string(TEST_DRAW_SAMPLES*rooms[roomID].objects.size())).c_str()  );
 
         // ## UPDATE ## //
-        update(deltaTime);
+        audio::update();
+        keyboard::fetchKeyboardState();
+        if (!dialogbox::isShowing()) update(deltaTime);
 
         /* DRAWING */
         draw();
@@ -87,10 +96,9 @@ void Game::draw() {
     drawRectf(player.getHitbox(), al_map_rgb(50,255,50), rooms[roomID].getTranslate());
     if (dialogbox::isShowing()) dialogbox::draw();
 
-    if (f3)
-        for (int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
-            drawRectf(Trigger::createHitbox(triggers::get(i), rooms[roomID].getTranslate()), al_map_rgb(255,50,50));//, room.getTranslate());
-        }
+    if (f3) for (int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
+        drawRectf(Trigger::createHitbox(triggers::get(i), rooms[roomID].getTranslate()), al_map_rgb(255,50,50));//, room.getTranslate());
+    }
 
     if (f3) debugText();
     
@@ -112,9 +120,6 @@ void Game::game_move(float dx, float dy) {
 }
 
 void Game::update(float ms) {
-    audio::update();
-
-    keyboard::fetchKeyboardState();
     float dx = (keyboard::keyDown(ALLEGRO_KEY_RIGHT) - keyboard::keyDown(ALLEGRO_KEY_LEFT))
                 * player.getSpeed() * ms;
     float dy = (keyboard::keyDown(ALLEGRO_KEY_DOWN)  - keyboard::keyDown(ALLEGRO_KEY_UP))
@@ -202,6 +207,7 @@ void initPlayer() {
     // player.setWorldPosition({0.0f,0.0f});
     player.useNikes(true);
     player.setRoom(&game->rooms[game->roomID]);
+    game->game_move(0.0f,0.0f); // init step, positioning
 }
 
 int Game::init(){
