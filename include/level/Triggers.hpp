@@ -40,6 +40,8 @@ public:
     static float2 worldCoordinates(int x, int y);
 
     static void execute(const TriggerData&);
+
+    static bool isDisabled(const TriggerData&);
 };
 
 // typedef std::vector<Trigger::TriggerData> TriggerRooms;
@@ -59,6 +61,15 @@ namespace triggers {
      * Creates a list with pointers to all the triggers from room.
      */
     void prepare(unsigned int room);
+    /**
+     * Checks/Updates triggers. If any intersection with the player.
+     */
+    void check_update();
+
+    /**
+     * Disables a trigger.
+     */
+    void disable(unsigned int trID);
 
     unsigned int getThisRoomTriggerCount();
 } // namespace triggers

@@ -97,7 +97,10 @@ void Game::draw() {
     if (dialogbox::isShowing()) dialogbox::draw();
 
     if (f3) for (int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
-        drawRectf(Trigger::createHitbox(triggers::get(i), rooms[roomID].getTranslate()), al_map_rgb(255,50,50));//, room.getTranslate());
+        drawRectf(
+            Trigger::createHitbox(triggers::get(i), rooms[roomID].getTranslate()),
+            al_map_rgb(triggers::get(i)[Trigger::COMP_ACTION]!=event::NONE?255:50,50,50)
+        );//, room.getTranslate());
     }
 
     if (f3) debugText();
@@ -127,16 +130,7 @@ void Game::update(float ms) {
     // drawable.setPosition(pos.x+dx, pos.y+dy);
     game_move(dx,dy);
 
-    for (unsigned int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
-        const Trigger::TriggerData& data = triggers::get(i);
-        Rectf trHitbox = Trigger::createHitbox(data);
-        if (player.getHitbox().intersects(trHitbox)) {
-            printf("Trigger! action=%d\n", data[Trigger::COMP_ACTION]);
-            Trigger::execute(data);
-            if (data[Trigger::COMP_ACTION] == event::CHANGE_ROOM)
-                break;
-        }
-    }
+    triggers::check_update();
 }
 
 #pragma endregion

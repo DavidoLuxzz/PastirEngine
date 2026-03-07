@@ -5,6 +5,8 @@
 #include <colors.h>
 #include <sstream>
 #include <game.hpp>
+#include <event.hpp>
+#include <components/dialogbox.hpp>
 
 Trigger::Trigger(TriggerData& _data) {
     data = _data;
@@ -23,16 +25,16 @@ Rectf Trigger::createHitbox(const TriggerData& data, float2 translate) {
     };
 }
 
-#include <game.hpp>
-#include <event.hpp>
-#include <components/dialogbox.hpp>
+bool Trigger::isDisabled(const TriggerData& data) {
+    return data[COMP_ACTION]==event::NONE;
+}
 
 void changeRoom(const Trigger::TriggerData& data) {
     Game* game = game::getGame();
     game->roomID = data[Trigger::COMP_SPECIAL];
     triggers::prepare(game->roomID);
     game->player.setRoom(&game->rooms[game->roomID]);
-    game->player.setWorldPosition({(float)data[Trigger::COMP_SPECIAL2], (float)data[Trigger::COMP_SPECIAL3]});
+    game->player.setWorldPosition({(float)data[Trigger::COMP_SPECIAL2]/DEFAULT_PIXEL_SCALE, (float)data[Trigger::COMP_SPECIAL3]/DEFAULT_PIXEL_SCALE});
 }
 
 void Trigger::execute(const TriggerData& data) {
@@ -150,4 +152,26 @@ int triggers::load() {
     // __tr_loader_loadRoomTriggerCounts(__triggers, __roomTrCounts);
 
     return 0;
+}
+
+void triggers::check_update() {
+    Game* game = game::getGame();
+    for (unsigned int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
+        const Trigger::TriggerData& data = triggers::get(i);
+        if (data[Trigger::COMP_ACTION] == event::NONE) continue;
+
+        Rectf trHitbox = Trigger::createHitbox(data);
+        if (game->player.getHitbox().intersects(trHitbox)) {
+            printf("Trigger! action=%d\n", data[Trigger::COMP_ACTION]);
+            Trigger::execute(data);
+            if (data[Trigger::COMP_ACTION] == event::CHANGE_ROOM)
+                break;
+            if (data[Trigger::COMP_RMAFINT]) // remove after execution/intersection
+                disable(i);
+        }
+    }
+}
+
+void triggers::disable(unsigned int trID) {
+    __triggers[__thisRoomTriggers[trID]][Trigger::COMP_ACTION] = event::NONE;
 }
