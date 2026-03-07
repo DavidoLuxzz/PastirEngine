@@ -48,7 +48,12 @@ void Trigger::execute(const TriggerData& data) {
         break;
     }
     case event::TEXTURE_CHANGE: {
-        game::getGame()->rooms[game::getGame()->roomID].objects[data[COMP_SPECIAL]][Drawable::COMP_TEXTURE_ID] = data[COMP_SPECIAL2];
+        int targetID = data[COMP_SPECIAL];
+        int newTexture = data[COMP_SPECIAL2];
+        int solid = data[COMP_SPECIAL3];
+        game::getGame()->rooms[game::getGame()->roomID].objects[targetID][Drawable::COMP_TEXTURE_ID] = newTexture;
+        game::getGame()->rooms[game::getGame()->roomID].objects[targetID][Drawable::COMP_SOLID] = solid;
+        // printf("Changing texture object=%d to %d. Setting solidity to: %s\n", targetID, newTexture, solid?"yes":"no");
         break;
     }
     

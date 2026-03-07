@@ -33,9 +33,17 @@ int Game::run(){
                 if (evt.type==ALLEGRO_EVENT_DISPLAY_CLOSE) return 0;
                 if (evt.type==ALLEGRO_EVENT_KEY_DOWN) switch (evt.keyboard.keycode) {
                     case ALLEGRO_KEY_ESCAPE: return 0;
-                    case ALLEGRO_KEY_SPACE:
+                    case ALLEGRO_KEY_SPACE: {
                         dialogbox::show(!dialogbox::isShowing());
+                        // debug: find door
+                        int dix = 0; // drw index
+                        for (const Drawable::DrawableData& drw : rooms[roomID].objects) {
+                            if (drw[Drawable::COMP_TEXTURE_ID] == Drawable::TEXTURE_DOOR)
+                                printf("Door ID: %d\n", dix);
+                            dix++;
+                        }
                         break;
+                    }
                     case ALLEGRO_KEY_F3:
                         f3 = !f3;
                         break;
@@ -219,7 +227,7 @@ int Game::init(){
     audio::loadAudio("audio/project.mp3", &sndID);
     audio::prepareAudio(sndID).setPlaying(true);
 
-    dialogbox::setText("Hallo!!");
+    // dialogbox::setText("Hallo!!");
     dialogbox::show();
 
     return 0;
