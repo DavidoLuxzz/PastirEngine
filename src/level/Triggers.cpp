@@ -161,13 +161,15 @@ int triggers::load() {
 
 void triggers::check_update() {
     Game* game = game::getGame();
+    bool zDown = game->isZPressed();
     for (unsigned int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
         const Trigger::TriggerData& data = triggers::get(i);
         if (data[Trigger::COMP_ACTION] == event::NONE) continue;
+        if (data[Trigger::COMP_NEEDS_Z] && !zDown) continue;
 
         Rectf trHitbox = Trigger::createHitbox(data);
         if (game->player.getHitbox().intersects(trHitbox)) {
-            printf("Trigger! action=%d\n", data[Trigger::COMP_ACTION]);
+            // printf("Trigger! action=%d\n", data[Trigger::COMP_ACTION]);
             Trigger::execute(data);
             if (data[Trigger::COMP_ACTION] == event::CHANGE_ROOM)
                 break;

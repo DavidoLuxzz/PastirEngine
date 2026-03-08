@@ -75,6 +75,7 @@ float absmin(float a, float b) {
 #define AXIS_CHECK(d,axis)  (d<0.0f? absmin(d,  drw.min.axis+drw.size.axis + JANCD - __playerHitbox.min.axis) : \
                                     absmin(d,  drw.min.axis - JANCD - (__playerHitbox.min.axis+__playerHitbox.size.axis)))
 /*
+JANCD = just a nice collision distance \
 if (d<0.0f) \
                         rdx = absmin(d,  drw.min.x+drw.size.x + JANCD - __playerHitbox.min.x);\
                     else \

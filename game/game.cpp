@@ -98,20 +98,26 @@ inline void drawRectf(const Rectf rect, ALLEGRO_COLOR color, float2 translate={0
 void Game::draw() {
     Display::clear(0,0,0);
 
+    // Draw room
     for (int i=0; i<TEST_DRAW_SAMPLES; i++)
         rooms[roomID].draw();
+    // Draw player
     player.draw();
-    drawRectf(player.getHitbox(), al_map_rgb(50,255,50), rooms[roomID].getTranslate());
+
+    // Show dialogbox (kada treba)
     if (dialogbox::isShowing()) dialogbox::draw();
 
-    if (f3) for (int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
-        drawRectf(
-            Trigger::createHitbox(triggers::get(i), rooms[roomID].getTranslate()),
-            al_map_rgb(triggers::get(i)[Trigger::COMP_ACTION]!=event::NONE?255:50,50,50)
-        );//, room.getTranslate());
+    // Debug hitboxes
+    if (f3) {
+        drawRectf(player.getHitbox(), al_map_rgb(50,255,50), rooms[roomID].getTranslate());
+        for (int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
+            drawRectf(
+                Trigger::createHitbox(triggers::get(i), rooms[roomID].getTranslate()),
+                al_map_rgb(triggers::get(i)[Trigger::COMP_ACTION]!=event::NONE?255:50,50,50)
+            );//, room.getTranslate());
+        }
+        debugText();
     }
-
-    if (f3) debugText();
     
     Display::swapBuffers();
 }
@@ -121,12 +127,14 @@ void Game::draw() {
 #pragma region game::update
 
 void Game::game_move(float dx, float dy) {
+    // Move player
     player.move(dx,dy);
-    // player.setTranslate(player.getTranslate().x+dx, player.getTranslate().y+dy);
-    //player.setPosition(player.getWorldPosition().x, player.getWorldPosition().y);
+
+    // Adjust camera
     rooms[roomID].position(player.getWorldPosition());
     player.positionRoom(rooms[roomID].getTranslate());
 
+    // Orientate player
     player.orientate(dx,dy);
 }
 
@@ -135,7 +143,19 @@ void Game::update(float ms) {
                 * player.getSpeed() * ms;
     float dy = (keyboard::keyDown(ALLEGRO_KEY_DOWN)  - keyboard::keyDown(ALLEGRO_KEY_UP))
                 * player.getSpeed() * ms;
-    // drawable.setPosition(pos.x+dx, pos.y+dy);
+
+    float speedmul = keyboard::keyDown(ALLEGRO_KEY_C)? 1.5f:1.0f;
+
+    for (const Drawable::DrawableData& data : rooms[roomID].objects) {
+        if (data[Drawable::COMP_TEXTURE_ID] == Drawable::TEXTURE_COBWEB) {
+            if (Drawable::createHitbox(data).intersects(player.getHitbox())) {
+                speedmul *= 0.5f;
+                break;
+            }
+        }
+    }
+
+    player.setSpeedMul(speedmul);
     game_move(dx,dy);
 
     triggers::check_update();
@@ -228,7 +248,7 @@ int Game::init(){
     audio::prepareAudio(sndID).setPlaying(true);
 
     // dialogbox::setText("Hallo!!");
-    dialogbox::show();
+    // dialogbox::show();
 
     return 0;
 }
@@ -245,7 +265,9 @@ void Game::clean(){
 #pragma endregion
 
 
-
+bool Game::isZPressed() {
+    return keyboard::keyDown(ALLEGRO_KEY_Z);
+}
 
 
 

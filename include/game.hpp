@@ -47,6 +47,8 @@ public:
 
     void debugText();
 
+    bool isZPressed();
+
 
     /// @brief used localy
     /// @param ms time passed since last update (should equal to 1/FPS)
