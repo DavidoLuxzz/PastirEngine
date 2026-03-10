@@ -30,6 +30,10 @@ int Display::create(int _w, int _h, const char* title, bool use_scale) {
 
     if (use_scale) useScale();
 
+    fadeAnim.init(0.1, 160);
+    fadeAnim.frame = -1;
+
+
     // post initialization
     // if (!al_get_new_display_option(ALLEGRO_VSYNC, NULL)) logger::info("VSync is off");
     int opt_vsync = al_get_new_display_option(ALLEGRO_VSYNC, NULL);
@@ -123,4 +127,27 @@ void Display::makeCurrent(Display* disp) {
 }
 Display* Display::getCurrentDisplay() {
     return _currentDisplay;
+}
+
+
+void Display::update() {
+    if (fadeAnim.frame>=0) fadeAnim.frame++;
+    if (fadeAnim.frame>fadeAnim.cycleCount) fadeAnim.frame = -1;
+}
+#include <allegro5/allegro_primitives.h>
+void Display::drawFade() {
+    al_draw_filled_rectangle(0.0f,0.0f, (float)getWidth(),(float)getHeight(),
+            al_map_rgba_f(0.0f,0.0f,0.0f, 1.0f - abs(fadeAnim.cycleCount-2.0f*fadeAnim.frame)/(float)fadeAnim.cycleCount));
+}
+void Display::startFade() {
+    fadeAnim.frame = 0;
+}
+int Display::getFadeFrame() {
+    return fadeAnim.frame;
+}
+int Display::getFadeCycleCount() {
+    return fadeAnim.cycleCount;
+}
+bool Display::isFading() {
+    return fadeAnim.frame>=0 && fadeAnim.frame<fadeAnim.cycleCount;
 }

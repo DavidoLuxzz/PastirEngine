@@ -31,10 +31,11 @@ bool Trigger::isDisabled(const TriggerData& data) {
 
 void changeRoom(const Trigger::TriggerData& data) {
     Game* game = game::getGame();
-    game->roomID = data[Trigger::COMP_SPECIAL];
-    triggers::prepare(game->roomID);
-    game->player.setRoom(&game->rooms[game->roomID]);
-    game->player.setWorldPosition({(float)data[Trigger::COMP_SPECIAL2]/DEFAULT_PIXEL_SCALE, (float)data[Trigger::COMP_SPECIAL3]/DEFAULT_PIXEL_SCALE});
+    
+    game->requestRoomID = data[Trigger::COMP_SPECIAL];
+    game->requestPlayerCoords = {(float)data[Trigger::COMP_SPECIAL2]/DEFAULT_PIXEL_SCALE, (float)data[Trigger::COMP_SPECIAL3]/DEFAULT_PIXEL_SCALE};
+
+    game->display.startFade();
 }
 
 void Trigger::execute(const TriggerData& data) {

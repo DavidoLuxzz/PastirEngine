@@ -4,6 +4,7 @@
 
 #include <allegro5/display.h>
 #include <components/eventqueue.hpp>
+#include <animation.hpp>
 
 /**
  * Display object that uses ALLEGRO_DISPLAY as base
@@ -16,6 +17,8 @@ private:
     // for this object
     ALLEGRO_DISPLAY* _display = NULL;
     EventQueue _evqueue;
+
+    Animation fadeAnim;
 public:
     /**
      * Empty constructor. Need to call create()
@@ -84,6 +87,15 @@ public:
     const char* getTitle() const;
     int getWidth() const;
     int getHeight() const;
+
+    void startFade();
+    int getFadeFrame();
+    int getFadeCycleCount();
+    bool isFading();
+    void drawFade();
+    
+    
+    void update();
 
     /**
      * @returns @code{ALLEGRO_DISPLAY* _display}

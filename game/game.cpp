@@ -61,7 +61,15 @@ int Game::run(){
         // ## UPDATE ## //
         audio::update();
         keyboard::fetchKeyboardState();
-        if (!dialogbox::isShowing()) update(deltaTime);
+        if (!(dialogbox::isShowing()||display.isFading())) update(deltaTime);
+        display.update();
+        if (display.isFading()) {
+            printf("Display fade: %d\n", display.getFadeFrame());
+            if (display.getFadeFrame()==display.getFadeCycleCount()/2) {
+                immidiatelyChangeRoom();
+                game_move(0.0f,0.0f);
+            }
+        }
 
         /* DRAWING */
         draw();
@@ -118,7 +126,8 @@ void Game::draw() {
         }
         debugText();
     }
-    
+
+    display.drawFade();
     Display::swapBuffers();
 }
 
@@ -138,7 +147,15 @@ void Game::game_move(float dx, float dy) {
     player.orientate(dx,dy);
 }
 
+void Game::immidiatelyChangeRoom() {
+    roomID = requestRoomID;
+    triggers::prepare(roomID);
+    player.setRoom(&rooms[roomID]);
+    player.setWorldPosition(requestPlayerCoords);
+}
+
 void Game::update(float ms) {
+    // if (requestRoomID != roomID) immidiatelyChangeRoom();
     float dx = (keyboard::keyDown(ALLEGRO_KEY_RIGHT) - keyboard::keyDown(ALLEGRO_KEY_LEFT))
                 * player.getSpeed() * ms;
     float dy = (keyboard::keyDown(ALLEGRO_KEY_DOWN)  - keyboard::keyDown(ALLEGRO_KEY_UP))

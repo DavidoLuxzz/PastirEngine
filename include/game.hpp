@@ -20,7 +20,8 @@ public:
     Display display;
     #define NUM_ROOMS 4
     Room rooms[NUM_ROOMS];
-    int roomID = 0;
+    int roomID = 0, requestRoomID = 0; // requestRoomID - kada change room
+    float2 requestPlayerCoords; // za sad samo kada change room
     Player player;
     ALLEGRO_FONT* font;
     bool f3 = false;
@@ -48,6 +49,8 @@ public:
     void debugText();
 
     bool isZPressed();
+
+    void immidiatelyChangeRoom();
 
 
     /// @brief used localy
