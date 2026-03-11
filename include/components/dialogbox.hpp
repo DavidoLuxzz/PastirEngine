@@ -3,6 +3,7 @@
 #define __DIALOGBOX_HPP
 
 #include <string>
+#include <animation.hpp>
 
 #define MAX_DIALOG_PAGES 10
 #define NUM_GAME_DIALOGS 2
@@ -50,6 +51,7 @@ namespace dialogbox {
     const dialog_t& getDialog(int dialogID);
 
     void draw();
+    void _update();
 } // namespace dialogbox
 
 

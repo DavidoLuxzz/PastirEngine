@@ -64,7 +64,7 @@ int Game::run(){
         if (!(dialogbox::isShowing()||display.isFading())) update(deltaTime);
         display.update();
         if (display.isFading()) {
-            printf("Display fade: %d\n", display.getFadeFrame());
+            // printf("Display fade: %d\n", display.getFadeFrame());
             if (display.getFadeFrame()==display.getFadeCycleCount()/2) {
                 immidiatelyChangeRoom();
                 game_move(0.0f,0.0f);

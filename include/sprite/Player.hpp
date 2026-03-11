@@ -65,6 +65,7 @@ public:
     void move(float dx, float dy);
     /**
      * Changes players texture tile according to the current direction.
+     * Also contains animation.update().
      */
     void orientate(float dx, float dy);
     void setTileByDirection(directions);
