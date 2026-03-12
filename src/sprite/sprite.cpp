@@ -112,7 +112,9 @@ void Sprite::setTile(uint mx, uint my, uint w, uint h) {
     texInfo.tileRect.size.y = h;
 }
 Rectu Sprite::getTile() const {
-    return texInfo.tileRect;
+    if (texInfo.bankType == bank::MULTITEX)
+        return texInfo.tileRect;
+    return bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID);
 }
 void Sprite::setTileID(TextureID id) {
     texInfo.tileID = id;

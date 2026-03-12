@@ -22,7 +22,7 @@ int dialogbox::init() {
     };
     view.setTexture(dialogboxTexture);
     view.setScale(0.8f / scale, 0.5f / scale);
-    view.setPosition(6.0f/scale, 0.0f);
+    view.setPosition(6.0f/scale, 2.0f);
 
     // init dialogs
     _loadDialogs(GAME_DIALOGS);
@@ -54,7 +54,11 @@ void dialogbox::draw() {
     if (!showing) return;
     Display::useCustomScale(Display::getPixelScale() * scale);
 
-    // view.setPosition(view.getPosition() + float2{0.0f, 0.1f});
+    const float winHeight = game::getGame()->display.getHeight() / Display::getPixelScale() / scale;
+    if (game::getGame()->player.getScreenPosition().y * Display::getPixelScale() * scale < winHeight) {
+        view.setPosition(view.getPosition().x, winHeight - view.getTile().size.y*scale);
+    } else view.setPosition(view.getPosition().x, 2.0f);
+    
     view.drawWhole();
 
     // printf("Animation frame: %d\n", animation.frame);

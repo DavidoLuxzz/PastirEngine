@@ -35,13 +35,6 @@ int Game::run(){
                     case ALLEGRO_KEY_ESCAPE: return 0;
                     case ALLEGRO_KEY_SPACE: {
                         dialogbox::show(!dialogbox::isShowing());
-                        // debug: find door
-                        int dix = 0; // drw index
-                        for (const Drawable::DrawableData& drw : rooms[roomID].objects) {
-                            if (drw[Drawable::COMP_TEXTURE_ID] == Drawable::TEXTURE_DOOR)
-                                printf("Door ID: %d\n", dix);
-                            dix++;
-                        }
                         break;
                     }
                     case ALLEGRO_KEY_F3:

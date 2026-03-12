@@ -46,6 +46,11 @@ namespace dialogbox {
     void hide();
     bool isShowing();
 
+    void moveUp();
+    void moveDown();
+    bool isUp();
+    bool isDown();
+
     void setText(const std::string);
     void setDialog(int);
     const dialog_t& getDialog(int dialogID);
