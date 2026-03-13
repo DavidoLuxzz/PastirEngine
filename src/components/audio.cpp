@@ -127,7 +127,7 @@ int audio::loadAudio(const char* filename, int *sound_id){
     }
     // Sound
     FMOD::Sound *sound;
-    latest_result = system->createStream(assman::getasset(filename).c_str(), FMOD_2D, NULL, &sound);
+    latest_result = system->createStream(assman::getasset(filename).c_str(), FMOD_LOOP_NORMAL | FMOD_2D, NULL, &sound);
     if (latest_result != FMOD_OK){
         fprintf(stderr, "[FMOD] Error creating sound (%s)\n", FMOD_ErrorString(latest_result));
         return -1;
