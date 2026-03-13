@@ -146,6 +146,7 @@ namespace bank {
             MAP_DRAWABLES,
             PLAYER,
             DIALOG_BOX,
+            ENTITY0,
 
             NUM_KNOWN_BANKS
         };

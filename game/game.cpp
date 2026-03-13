@@ -210,6 +210,8 @@ int Game::loadAssets() {
         // Dialog box
         bank::tileset::getBank(bank::tileset::DIALOG_BOX).loadTexture("dialog_box.png");
         bank::tileset::getBank(bank::tileset::DIALOG_BOX).registerTile({{0,0},{236,128}});
+        // Entities
+        bank::tileset::getBank(bank::tileset::DIALOG_BOX).loadTexture("todo.png");
     }
     return 0;
 }
