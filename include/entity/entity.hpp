@@ -4,10 +4,13 @@
 
 #include <sprite/sprite.hpp>
 
-class Entity {
-    Sprite sprite;
+class Entity : public Sprite {
     // AI, Trigger
 public:
+    void init(unsigned int tilesetBankID=bank::tileset::ENTITY0);
+
+    void draw();
+    void update(float ms);
 };
 
 

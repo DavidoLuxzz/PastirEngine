@@ -102,6 +102,8 @@ void Game::draw() {
     // Draw room
     for (int i=0; i<TEST_DRAW_SAMPLES; i++)
         rooms[roomID].draw();
+    // Draw entities
+    entity.draw();
     // Draw player
     player.draw();
 
@@ -168,6 +170,8 @@ void Game::update(float ms) {
     player.setSpeedMul(speedmul);
     game_move(dx,dy);
 
+    entity.update(ms);
+
     triggers::check_update();
 }
 
@@ -210,8 +214,10 @@ int Game::loadAssets() {
         // Dialog box
         bank::tileset::getBank(bank::tileset::DIALOG_BOX).loadTexture("dialog_box.png");
         bank::tileset::getBank(bank::tileset::DIALOG_BOX).registerTile({{0,0},{236,128}});
+
         // Entities
-        bank::tileset::getBank(bank::tileset::DIALOG_BOX).loadTexture("todo.png");
+        bank::tileset::getBank(bank::tileset::ENTITY0).loadTexture("player.png");
+        bank::tileset::getBank(bank::tileset::ENTITY0).loadTileRects("player_rects.txt");
     }
     return 0;
 }
@@ -244,6 +250,12 @@ void initPlayer() {
     game->game_move(0.0f,0.0f); // init step, positioning
 }
 
+int Game::initEntities() {
+    entity.init();
+    entity.setPosition(32.0f, 32.0f);
+    return 0;
+}
+
 int Game::init(){
     font = al_create_builtin_font();
 
@@ -258,6 +270,8 @@ int Game::init(){
     int sndID;
     audio::loadAudio("audio/project.mp3", &sndID);
     audio::prepareAudio(sndID).setPlaying(true);
+
+    LUKA_ASSERT0(initEntities());
 
     // dialogbox::setText("Hallo!!");
     // dialogbox::show();
