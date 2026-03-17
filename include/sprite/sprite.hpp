@@ -47,6 +47,12 @@ public:
     /// Doesn't come with translation.
     /// @return position
     float2 getPosition() const;
+    inline float getPositionX() const {
+        return position.x;
+    }
+    inline float getPositionY() const {
+        return position.y;
+    }
     /**
      * @return getPosition() + getTranslate()
      */
