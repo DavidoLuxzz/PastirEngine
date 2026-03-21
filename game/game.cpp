@@ -83,10 +83,12 @@ void Game::debugText() {
     Rectf playerHitbox = player.getHitbox();
 
     al_draw_textf(font, al_map_rgb(255,255,255), 0, 0, 0, "Player pos: %.1f %.1f [%.0fx%.0f]", playerHitbox.min.x,playerHitbox.min.y, playerHitbox.size.x,playerHitbox.size.y);
-    al_draw_textf(font, al_map_rgb(255,255,255), 0, 10, 0, "Obj pos: %.1f %.1f [%.0fx%.0f]", drw.min.x,drw.min.y, drw.size.x,drw.size.y);
+    al_draw_textf(font, al_map_rgb(255,255,255), 0, 10.0f, 0, "Obj pos: %.1f %.1f [%.0fx%.0f]", drw.min.x,drw.min.y, drw.size.x,drw.size.y);
     bool t = playerHitbox.intersects(drw);
-    al_draw_textf(font, al_map_rgb(255,255,255), 0, 20, 0, "Intersects: %s", t?"true":"false");
-    al_draw_textf(font, al_map_rgb(255,255,255), 0, 30, 0, "Debug (show hitboxes): %s", f3?"true":"false");
+    al_draw_textf(font, al_map_rgb(255,255,255), 0, 20.0f, 0, "Intersects: %s", t?"true":"false");
+    al_draw_textf(font, al_map_rgb(255,255,255), 0, 30.0f, 0, "Debug (show hitboxes): %s", f3?"true":"false");
+
+    al_draw_textf(font, al_map_rgb(255,255,255), 0, 40.0f, 0, "Ent.pos: %.1f %.1f", entity.getPositionX(),entity.getPositionY());
 
     Display::useScale();
 }
@@ -252,7 +254,7 @@ void initPlayer() {
 
 int Game::initEntities() {
     entity.init();
-    entity.setPosition(32.0f, 32.0f);
+    entity.setPosition(200.0f, 100.0f);
     return 0;
 }
 

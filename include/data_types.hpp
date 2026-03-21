@@ -23,15 +23,25 @@ float2 operator+(float2 a, float2 b);
 float2 operator-(float2 a, float2 b);
 float2 operator*(float2 a, float scale);
 float2 operator*(float2 a, float2 b);
+float2 operator/(float2 a, float scale);
+float2 operator/(float2 a, float2 b);
 float2& operator+=(float2& a, float2 b);
 float2& operator-=(float2& a, float2 b);
 float2& operator*=(float2& a, float scale);
 float2& operator*=(float2& a, const float2& b);
+float2& operator/=(float2& a, float scale);
+float2& operator/=(float2& a, const float2& b);
+
+/// @brief Length = hypotf(vx,vy)
+float2 normalized(const float2);
+void normalize(float2&);
 
 template <typename T>
 inline bool between(T x, T a1, T a2) {
     return (a1>=x && x>=a2) || (a2>=x && x>=a1);
 }
+
+
 
 template<typename T>
 struct Rect {

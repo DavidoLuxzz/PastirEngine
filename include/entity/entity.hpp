@@ -6,6 +6,7 @@
 
 class Entity : public Sprite {
     // AI, Trigger
+    float2 v{0.0f,0.0f};
 public:
     void init(unsigned int tilesetBankID=bank::tileset::ENTITY0);
 

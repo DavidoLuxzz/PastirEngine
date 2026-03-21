@@ -17,10 +17,20 @@ void Entity::update(float ms) {
     setTranslate(game::getGame()->rooms[game::getGame()->roomID].getTranslate());
     float2 ppos = game::getGame()->player.getWorldPosition();
 
-    float2 delta = ppos-getPosition();
-    float c = hypotf(ppos.x-getPositionX(), ppos.y-getPositionY()); // distance do playera
-    if (c<0.2f) return;
-    delta.x /= c;
-    delta.y /= c;
-    setPosition(getPosition() + delta * 0.1f);
+    float2 accel = ppos-getPosition(); float accel_intenzitet = 0.05f;
+    float2 F = accel - (normalized(v)*accel_intenzitet);
+    accel += F;
+    
+    normalize(accel);
+    accel *= accel_intenzitet;
+
+    v += accel;
+    constexpr static float max_velo = 3.0f;
+    float c = hypotf(v.x,v.y);
+    if (c>max_velo) {
+        normalize(v);
+        v *= max_velo;
+    }
+
+    setPosition(getPosition() + v);
 }
