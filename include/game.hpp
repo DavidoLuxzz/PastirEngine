@@ -5,8 +5,8 @@
 #include <components/display.hpp>
 #include <level/Room.hpp>
 #include <sprite/Player.hpp>
+#include <sprite/StaticEntity.hpp>
 #include <allegro5/allegro_font.h>
-#include <entity/entity.hpp>
 
 #define WINDOW_WIDTH  200 // in game pixels
 #define WINDOW_HEIGHT 160 // in game pixels
@@ -26,7 +26,7 @@ public:
     Player player;
     ALLEGRO_FONT* font;
     bool f3 = false;
-    Entity entity;
+    StaticEntity ent;
     /**
      * Initializes game components and variables.
      * Calls loadAssets().
@@ -37,8 +37,6 @@ public:
     int loadAssets();
     /// @returns error code
     int loadRooms();
-    /// @returns error code
-    int initEntities();
     /// @brief clean before exit
     void clean();
     /**

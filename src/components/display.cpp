@@ -130,7 +130,7 @@ Display* Display::getCurrentDisplay() {
 }
 
 
-void Display::update() {
+void Display::update(double ms) {
     if (fadeAnim.frame>=0) fadeAnim.frame++;
     if (fadeAnim.frame>fadeAnim.cycleCount) fadeAnim.frame = -1;
 }

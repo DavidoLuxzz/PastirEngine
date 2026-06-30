@@ -95,7 +95,7 @@ public:
     void drawFade();
     
     
-    void update();
+    void update(double ms);
 
     /**
      * @returns @code{ALLEGRO_DISPLAY* _display}

@@ -32,6 +32,8 @@ float2& operator*=(float2& a, const float2& b);
 float2& operator/=(float2& a, float scale);
 float2& operator/=(float2& a, const float2& b);
 
+float2 operator-(float2 a);
+
 /// @brief Length = hypotf(vx,vy)
 float2 normalized(const float2);
 void normalize(float2&);

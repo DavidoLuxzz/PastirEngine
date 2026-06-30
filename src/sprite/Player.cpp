@@ -82,6 +82,7 @@ if (d<0.0f) \
                         rdx = absmin(d,  drw.min.x - JANCD - (__playerHitbox.min.x+__playerHitbox.size.x));
 */
 float2 Player:: getFixedDisplacement(float dx, float dy) {
+    if (invincible) return {dx,dy};
     /* Algoritam iz Java Pastira
         boolean canMoveX = true;
         boolean canMoveY = true;

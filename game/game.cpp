@@ -24,7 +24,7 @@ int Game::run(){
     // unsigned int frames = 0;
     double lastTime = 0.0;
     while (true) {
-        double deltaTime = al_get_time() - lastTime;
+        double deltaTime = al_get_time() - lastTime; // seconds?
         lastTime = al_get_time();
         // printf("%f\n", deltaTime);
         /* handle events: */ {
@@ -39,6 +39,9 @@ int Game::run(){
                     }
                     case ALLEGRO_KEY_F3:
                         f3 = !f3;
+                        break;
+                    case ALLEGRO_KEY_Q:
+                        player.setInvincible(!player.isInvincible());
                         break;
                     case ALLEGRO_KEY_Z:
                         if (dialogbox::isShowing()) dialogbox::hide();
@@ -55,7 +58,7 @@ int Game::run(){
         audio::update();
         keyboard::fetchKeyboardState();
         if (!(dialogbox::isShowing()||display.isFading())) update(deltaTime);
-        display.update();
+        display.update(deltaTime*1000.0f);
         if (display.isFading()) {
             // printf("Display fade: %d\n", display.getFadeFrame());
             if (display.getFadeFrame()==display.getFadeCycleCount()/2) {
@@ -88,8 +91,6 @@ void Game::debugText() {
     al_draw_textf(font, al_map_rgb(255,255,255), 0, 20.0f, 0, "Intersects: %s", t?"true":"false");
     al_draw_textf(font, al_map_rgb(255,255,255), 0, 30.0f, 0, "Debug (show hitboxes): %s", f3?"true":"false");
 
-    al_draw_textf(font, al_map_rgb(255,255,255), 0, 40.0f, 0, "Ent.pos: %.1f %.1f", entity.getPositionX(),entity.getPositionY());
-
     Display::useScale();
 }
 #include <allegro5/allegro_primitives.h>
@@ -104,8 +105,9 @@ void Game::draw() {
     // Draw room
     for (int i=0; i<TEST_DRAW_SAMPLES; i++)
         rooms[roomID].draw();
-    // Draw entities
-    entity.draw();
+
+    // Draw shoes
+    ent.drawWhole();
     // Draw player
     player.draw();
 
@@ -139,6 +141,7 @@ void Game::game_move(float dx, float dy) {
     // Adjust camera
     rooms[roomID].position(player.getWorldPosition());
     player.positionRoom(rooms[roomID].getTranslate());
+    ent.setTranslate(rooms[roomID].getTranslate());
 
     // Orientate player
     player.orientate(dx,dy);
@@ -172,8 +175,6 @@ void Game::update(float ms) {
     player.setSpeedMul(speedmul);
     game_move(dx,dy);
 
-    entity.update(ms);
-
     triggers::check_update();
 }
 
@@ -193,6 +194,17 @@ void setupAssman() {
     //__assets_path = std::getenv("HOME");
     __assets_path += "assets";
     printf("> Setting resources path to %s [errors=%d, %d]\n", __assets_path.c_str(), __assets_path_err, assman::setcwd(__assets_path));
+}
+
+
+void initEntities() {
+    bank::TextureInfo nikeTex = {
+        .bankType = bank::TILESET,
+        .bankID = bank::tileset::ENTITY0,
+        .tileID = 0
+    };
+    game::getGame()->ent.setTexture(nikeTex);
+    game::getGame()->ent.setPosition(180.0f,100.0f);
 }
 
 int initDisplay() {
@@ -218,8 +230,8 @@ int Game::loadAssets() {
         bank::tileset::getBank(bank::tileset::DIALOG_BOX).registerTile({{0,0},{236,128}});
 
         // Entities
-        bank::tileset::getBank(bank::tileset::ENTITY0).loadTexture("player.png");
-        bank::tileset::getBank(bank::tileset::ENTITY0).loadTileRects("player_rects.txt");
+        bank::tileset::getBank(bank::tileset::ENTITY0).loadTexture("nike_shoes.png");
+        bank::tileset::getBank(bank::tileset::ENTITY0).registerTile({{0,0},{100,65}});
     }
     return 0;
 }
@@ -252,12 +264,6 @@ void initPlayer() {
     game->game_move(0.0f,0.0f); // init step, positioning
 }
 
-int Game::initEntities() {
-    entity.init();
-    entity.setPosition(200.0f, 100.0f);
-    return 0;
-}
-
 int Game::init(){
     font = al_create_builtin_font();
 
@@ -267,13 +273,12 @@ int Game::init(){
     LUKA_ASSERT0(loadAssets());
     LUKA_ASSERT0(loadRooms());
     initPlayer();
+    initEntities();
     LUKA_ASSERT0(dialogbox::init());
     LUKA_ASSERT0(audio::init());
     int sndID;
     audio::loadAudio("audio/project.mp3", &sndID);
     audio::prepareAudio(sndID).setPlaying(true);
-
-    LUKA_ASSERT0(initEntities());
 
     // dialogbox::setText("Hallo!!");
     // dialogbox::show();

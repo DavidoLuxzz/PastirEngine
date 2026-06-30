@@ -6,9 +6,11 @@
 #include <sprite/texture.hpp>
 #include <animation.hpp>
 #include <level/Room.hpp>
+#include <inventory.hpp>
 
 class Player : public Sprite {
 protected:
+    bool invincible = false;
     // int currentDirection = DIR_UP;
     Animation animation;
     bool usingNikes = false;
@@ -25,6 +27,11 @@ protected:
 public:
     /// @brief Speed [pixel(s)/60FPS]
     static constexpr float SPEED = 60.0f;
+
+    Inventory inventory;
+
+    inline void setInvincible(bool t) {invincible = t;}
+    inline bool isInvincible() const {return invincible;}
 
     // constructors
     Player();
