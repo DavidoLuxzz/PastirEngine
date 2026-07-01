@@ -79,6 +79,9 @@ void Room::draw() {
     for (Drawable::DrawableData& data : objects) {
         Drawable::drawData(data, translate);
     }
+    for (StaticEntity::EntityData& ent : entities) {
+        StaticEntity::drawData(ent, translate);
+    }
     al_hold_bitmap_drawing(false);
 }
 

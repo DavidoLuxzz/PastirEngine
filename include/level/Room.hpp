@@ -4,11 +4,13 @@
 
 #include <vector>
 #include <sprite/Drawable.hpp>
+#include <sprite/StaticEntity.hpp>
 
 class Room {
     float2 translate = {0,0};
 public:
     std::vector<Drawable::DrawableData> objects;
+    std::vector<StaticEntity::EntityData> entities;
     Rectu bounds;
     std::string areaName;
 

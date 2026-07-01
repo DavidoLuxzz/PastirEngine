@@ -122,6 +122,23 @@ float2 Player:: getFixedDisplacement(float dx, float dy) {
             rdy = AXIS_CHECK(dy,y);
         }
     }
+    for (const StaticEntity::EntityData& ent : room->entities) {
+        // assume da su svi solid
+        Rectf playerHitbox = __playerHitbox;
+        Rectf drw = StaticEntity::createHitbox(ent);
+        playerHitbox.min.x += dx;
+        if (playerHitbox.intersects(drw)){
+            // printf("%.1f %.1f\n", __playerHitbox.min.x, drw.min.x);
+            // newx = drw.max.x
+            // newDx = newx - worldPos.x
+            rdx = AXIS_CHECK(dx,x);
+        }
+        playerHitbox.min.x = __playerHitbox.min.x;
+        playerHitbox.min.y += dy;
+        if (playerHitbox.intersects(drw)) {
+            rdy = AXIS_CHECK(dy,y);
+        }
+    }
     return {rdx, rdy};
 }
 

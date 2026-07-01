@@ -3,14 +3,15 @@
 #define __EVENT_HPP
 
 namespace event {
+    /** Trigger events */
     enum {
-        NONE,
-        CHANGE_ROOM,
-        DIALOG_INTERRUPT,
-        TEXTURE_CHANGE,
-        DIALOG_INTERRUPT_THEN_SUDDEN_DISAPPEAR,
-        GIVE_ITEM,
-        GIVE_ITEM_THEN_DISAPPEAR
+        NONE, // 0
+        CHANGE_ROOM, // 1
+        DIALOG_INTERRUPT, // 2
+        TEXTURE_CHANGE, // 3 (todo rename u PROPERTY_CHANGE)
+        DIALOG_INTERRUPT_THEN_DISAPPEAR, // 4
+        GIVE_ITEM, // 5
+        GIVE_ITEM_THEN_DISAPPEAR // 6
     };
 } // namespace event
 

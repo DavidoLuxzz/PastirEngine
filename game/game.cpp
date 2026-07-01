@@ -21,6 +21,7 @@
 #pragma region game::run
 
 int Game::run(){
+    printf("sizeof(Room class): %lu bytes\nsizeof(StaticEntity): %lu bytes\n", sizeof(Room), sizeof(StaticEntity));
     // unsigned int frames = 0;
     double lastTime = 0.0;
     while (true) {
@@ -82,11 +83,11 @@ void Game::debugText() {
     const float __px_scale = Display::getPixelScale()/2.0f;
     Display::useCustomScale(__px_scale, __px_scale);
 
-    Rectf drw = Drawable::createHitbox(rooms[roomID].objects[0]);
+    Rectf drw = StaticEntity::createHitbox(rooms[roomID].entities[0]);
     Rectf playerHitbox = player.getHitbox();
 
     al_draw_textf(font, al_map_rgb(255,255,255), 0, 0, 0, "Player pos: %.1f %.1f [%.0fx%.0f]", playerHitbox.min.x,playerHitbox.min.y, playerHitbox.size.x,playerHitbox.size.y);
-    al_draw_textf(font, al_map_rgb(255,255,255), 0, 10.0f, 0, "Obj pos: %.1f %.1f [%.0fx%.0f]", drw.min.x,drw.min.y, drw.size.x,drw.size.y);
+    al_draw_textf(font, al_map_rgb(255,255,255), 0, 10.0f, 0, "Ent pos: %.1f %.1f [%.0fx%.0f]", drw.min.x,drw.min.y, drw.size.x,drw.size.y);
     bool t = playerHitbox.intersects(drw);
     al_draw_textf(font, al_map_rgb(255,255,255), 0, 20.0f, 0, "Intersects: %s", t?"true":"false");
     al_draw_textf(font, al_map_rgb(255,255,255), 0, 30.0f, 0, "Debug (show hitboxes): %s", f3?"true":"false");
@@ -122,6 +123,10 @@ void Game::draw() {
                 Trigger::createHitbox(triggers::get(i), rooms[roomID].getTranslate()),
                 al_map_rgb(triggers::get(i)[Trigger::COMP_ACTION]!=event::NONE?255:50,50,50)
             );//, room.getTranslate());
+        }
+        for (const StaticEntity::EntityData& ent : rooms[roomID].entities) {
+            drawRectf(StaticEntity::createHitbox(ent),
+                al_map_rgb(50,50,255), rooms[roomID].getTranslate());
         }
         debugText();
     }

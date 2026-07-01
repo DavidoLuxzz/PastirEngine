@@ -22,6 +22,7 @@ public:
         COMP_Y,
         COMP_WIDTH,
         COMP_HEIGHT,
+        COMP_SOURCE,
         COMP_SPECIAL2,
         COMP_SPECIAL3,
 
@@ -29,7 +30,7 @@ public:
     };
 
     typedef std::array<int, data_components::COMPONENT_COUNT> TriggerData;
-#define TRIGGER_DEFAULT_DATA {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+#define TRIGGER_DEFAULT_DATA {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
     TriggerData data;
 

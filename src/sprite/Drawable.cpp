@@ -65,11 +65,11 @@ float degreesToRadians(float degrees) {
 #include <components/display.hpp>
 #include <game.hpp>
 void Drawable::drawData(const DrawableData& data, float2 translate) {
-    ALLEGRO_BITMAP* bitmap = bank::tileset::getBank(0)
+    ALLEGRO_BITMAP* bitmap = bank::tileset::getBank(bank::tileset::MAP_DRAWABLES)
                                 .getTexture()
                                 .getAllegroBitmap();
     if (!bitmap) return;
-    Rectu rect = bank::tileset::getBank(0).getTile(data[COMP_TEXTURE_ID]);
+    Rectu rect = bank::tileset::getBank(bank::tileset::MAP_DRAWABLES).getTile(data[COMP_TEXTURE_ID]);
 
     float PIXEL_SCALE = Display::getPixelScale();
 
