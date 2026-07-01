@@ -25,6 +25,7 @@ public:
         COMP_SOURCE,
         COMP_SPECIAL2,
         COMP_SPECIAL3,
+        COMP_ENTITY_ID,
 
         COMPONENT_COUNT
     };

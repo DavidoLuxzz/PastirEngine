@@ -82,15 +82,12 @@ int __lvl_loader_ent(const std::string& filepath) {
     while (std::getline(file, line)) {
         if (!std::isdigit(line[0])) continue;
 
-        std::cout << line << std::endl;
-
         std::istringstream _l(line);
 
         StaticEntity::EntityData data = DEFAULT_ENTITY_DATA; int index=0;
 
         std::string token;
         while (std::getline(_l, token, ' ')) {
-            std::cout << token << std::endl;
             if (index>=StaticEntity::COMPONENT_COUNT) break;
             if (token.length()<=0) continue;
             try {
@@ -110,7 +107,7 @@ int __lvl_loader_ent(const std::string& filepath) {
 
     file.close();
 
-    std::cout << "sz: " << room_loader::room.entities.size() << std::endl;
+    std::cout << "Loaded " << room_loader::room.entities.size() << " entities\n";
 
     return 0;
 

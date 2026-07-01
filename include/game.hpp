@@ -25,7 +25,7 @@ public:
     float2 requestPlayerCoords; // za sad samo kada change room
     Player player;
     ALLEGRO_FONT* font;
-    bool f3 = false;
+    bool f3 = true;
     StaticEntity ent;
     /**
      * Initializes game components and variables.
@@ -51,6 +51,7 @@ public:
     void debugText();
 
     bool isZPressed();
+    bool isZPressedThisFrame(); // is z pressed that frame
 
     void immidiatelyChangeRoom();
 

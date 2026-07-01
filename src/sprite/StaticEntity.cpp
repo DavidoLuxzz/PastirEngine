@@ -52,7 +52,7 @@ void StaticEntity::drawData(const EntityData& data, float2 translate) {
     // float angle = degreesToRadians(static_cast<float>(data[COMP_ANGLE]));
     static constexpr float angle = 0.0f;
 
-    std::cout << "Ent Pos: " << pos.x << ", " << pos.y << std::endl;
+    //std::cout << "Ent Pos: " << pos.x << ", " << pos.y << std::endl;
 
     float2 scale = {static_cast<float>(data[COMP_SCALEX])/100.0f, static_cast<float>(data[COMP_SCALEY])/100.0f};
     // scale.x = 1.0f;
@@ -69,38 +69,16 @@ void StaticEntity::drawData(const EntityData& data, float2 translate) {
     // clipping
     if (pos.x < -__imgw*scale.x || pos.y < -__imgh*scale.y) return; // clip (won't be visible on screen anyway)
     if (pos.x*PIXEL_SCALE >= __winw || pos.y*PIXEL_SCALE >= __winh) return; // clip (won't be visible on screen anyway)
-
-    // std::cout << "draw ent\n";
-    printf("%p\n%.1f %.1f\n%.1f %.1f\n%.1f %.1f\n%.1f %.1f\n\n",
-        bitmap,
-        (float) rect.min.x, (float) rect.min.y,
-        (float) rect.size.x, (float) rect.size.y,
-        pos.x, pos.y,
-        static_cast<float>(rect.size.x)*scale.x, static_cast<float>(rect.size.y)*scale.y
-    );
-    // std::cout << "draw ent\n";
-    al_draw_bitmap(bitmap, 180.f, 100.f, 0);
+    
+    // final draw with calculated parameters
     al_draw_scaled_bitmap(
         bitmap,
         (float) rect.min.x, (float) rect.min.y,
         (float) rect.size.x, (float) rect.size.y,
         pos.x, pos.y,
-        static_cast<float>(rect.min.x), static_cast<float>(rect.min.y),
+        ((float)rect.size.x)*scale.x, ((float)rect.size.y)*scale.y,
         0
     );
-
-/*
-    static constexpr float2 imageCenter = {0.0f, 0.0f};
-    al_draw_tinted_scaled_rotated_bitmap_region(bitmap,
-                                        (float)rect.min.x,(float)rect.min.y,(float)rect.size.x,(float)rect.size.y,
-                                        al_color_hsl(hsb.x, hsb.y, hsb.z),
-                                        // al_map_rgb(100,100,100),
-                                        imageCenter.x, imageCenter.y,
-                                        pos.x, pos.y,
-                                        scale.x, scale.y,
-                                        angle,
-                                        0);
-                                        */
 }
 
 Rectf StaticEntity::createHitbox(const EntityData& data, float2 translate) {
@@ -109,8 +87,8 @@ Rectf StaticEntity::createHitbox(const EntityData& data, float2 translate) {
     float2 coords = Drawable::worldCoordinates(data[COMP_X],data[COMP_Y]);
     float scalex = data[COMP_SCALEX]/100.0f, scaley = data[COMP_SCALEY]/100.0f;
     Rectf hitbox = {
-        {coords.x+translate.x, coords.y+translate.y},
-        {(float)tile.size.x*scalex, (float)tile.size.y*scaley}
+        {coords.x+translate.x, coords.y+translate.y + tile.size.y*scaley /2},
+        {tile.size.x*scalex, tile.size.y*scaley * 2/4}
     };
     return hitbox;
 }

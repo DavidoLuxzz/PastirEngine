@@ -20,8 +20,9 @@
 
 #pragma region game::run
 
+bool ___zPressedThisFrame = false;
+
 int Game::run(){
-    printf("sizeof(Room class): %lu bytes\nsizeof(StaticEntity): %lu bytes\n", sizeof(Room), sizeof(StaticEntity));
     // unsigned int frames = 0;
     double lastTime = 0.0;
     while (true) {
@@ -46,6 +47,7 @@ int Game::run(){
                         break;
                     case ALLEGRO_KEY_Z:
                         if (dialogbox::isShowing()) dialogbox::hide();
+                        else ___zPressedThisFrame = true;
                         break;
                     default:
                         break;
@@ -70,6 +72,8 @@ int Game::run(){
 
         /* DRAWING */
         draw();
+
+        ___zPressedThisFrame = false;
     }
 
     return 0;
@@ -107,8 +111,6 @@ void Game::draw() {
     for (int i=0; i<TEST_DRAW_SAMPLES; i++)
         rooms[roomID].draw();
 
-    // Draw shoes
-    ent.drawWhole();
     // Draw player
     player.draw();
 
@@ -146,7 +148,6 @@ void Game::game_move(float dx, float dy) {
     // Adjust camera
     rooms[roomID].position(player.getWorldPosition());
     player.positionRoom(rooms[roomID].getTranslate());
-    ent.setTranslate(rooms[roomID].getTranslate());
 
     // Orientate player
     player.orientate(dx,dy);
@@ -201,16 +202,6 @@ void setupAssman() {
     printf("> Setting resources path to %s [errors=%d, %d]\n", __assets_path.c_str(), __assets_path_err, assman::setcwd(__assets_path));
 }
 
-
-void initEntities() {
-    bank::TextureInfo nikeTex = {
-        .bankType = bank::TILESET,
-        .bankID = bank::tileset::ENTITY0,
-        .tileID = 0
-    };
-    game::getGame()->ent.setTexture(nikeTex);
-    game::getGame()->ent.setPosition(180.0f,100.0f);
-}
 
 int initDisplay() {
     Display::setupPixelScale(4.0f);
@@ -278,7 +269,6 @@ int Game::init(){
     LUKA_ASSERT0(loadAssets());
     LUKA_ASSERT0(loadRooms());
     initPlayer();
-    initEntities();
     LUKA_ASSERT0(dialogbox::init());
     LUKA_ASSERT0(audio::init());
     int sndID;
@@ -305,6 +295,9 @@ void Game::clean(){
 
 bool Game::isZPressed() {
     return keyboard::keyDown(ALLEGRO_KEY_Z);
+}
+bool Game::isZPressedThisFrame() {
+    return ___zPressedThisFrame;
 }
 
 

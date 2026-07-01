@@ -18,6 +18,8 @@ public:
     void remove(Item, int count);
     void removeAll(Item);
     bool contains(Item) const;
+
+    static constexpr const char* itemName(Item i);
 };
 
 

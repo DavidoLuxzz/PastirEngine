@@ -37,7 +37,7 @@ void changeRoom(const Trigger::TriggerData& data) {
 
     game->display.startFade();
 }
-
+#define THIS_ROOM game::getGame()->rooms[game::getGame()->roomID]
 void Trigger::execute(const TriggerData& data) {
     switch (data[COMP_ACTION]) {
     case event::CHANGE_ROOM: {
@@ -48,12 +48,24 @@ void Trigger::execute(const TriggerData& data) {
         dialogbox::show();
         break;
     }
+    case event::DIALOG_INTERRUPT_THEN_DISAPPEAR: {
+        dialogbox::show();
+        if (data[COMP_SOURCE]==1) // 1=entity
+            THIS_ROOM.entities.erase(THIS_ROOM.entities.begin()+data[COMP_ENTITY_ID]);
+        break;
+    }
+    case event::GIVE_ITEM_THEN_DISAPPEAR: {
+        game::getGame()->player.inventory.add((Item)data[COMP_SPECIAL]);
+        if (data[COMP_SOURCE]==1) // 1=entity
+            THIS_ROOM.entities.erase(THIS_ROOM.entities.begin()+data[COMP_ENTITY_ID]);
+        break;
+    }
     case event::TEXTURE_CHANGE: {
         int targetID = data[COMP_SPECIAL];
         int newTexture = data[COMP_SPECIAL2];
         int solid = data[COMP_SPECIAL3];
-        game::getGame()->rooms[game::getGame()->roomID].objects[targetID][Drawable::COMP_TEXTURE_ID] = newTexture;
-        game::getGame()->rooms[game::getGame()->roomID].objects[targetID][Drawable::COMP_SOLID] = solid;
+        THIS_ROOM.objects[targetID][Drawable::COMP_TEXTURE_ID] = newTexture;
+        THIS_ROOM.objects[targetID][Drawable::COMP_SOLID] = solid;
         // printf("Changing texture object=%d to %d. Setting solidity to: %s\n", targetID, newTexture, solid?"yes":"no");
         break;
     }
@@ -162,7 +174,7 @@ int triggers::load() {
 
 void triggers::check_update() {
     Game* game = game::getGame();
-    bool zDown = game->isZPressed();
+    bool zDown = game->isZPressedThisFrame();
     for (unsigned int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
         const Trigger::TriggerData& data = triggers::get(i);
         if (data[Trigger::COMP_ACTION] == event::NONE) continue;
