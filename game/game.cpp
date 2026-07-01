@@ -167,7 +167,7 @@ void Game::update(float ms) {
     float dy = (keyboard::keyDown(ALLEGRO_KEY_DOWN)  - keyboard::keyDown(ALLEGRO_KEY_UP))
                 * player.getSpeed() * ms;
 
-    float speedmul = keyboard::keyDown(ALLEGRO_KEY_C)? 1.5f:1.0f;
+    float speedmul = (keyboard::keyDown(ALLEGRO_KEY_C)&&player.isUsingNikes())? 1.5f:1.0f;
 
     for (const Drawable::DrawableData& data : rooms[roomID].objects) {
         if (data[Drawable::COMP_TEXTURE_ID] == Drawable::TEXTURE_COBWEB) {
@@ -255,7 +255,6 @@ void initPlayer() {
     //player.setWorldPosition(player.getPosition());
     player.setWorldPosition({24.0f,24.0f});
     // player.setWorldPosition({0.0f,0.0f});
-    player.useNikes(true);
     player.setRoom(&game->rooms[game->roomID]);
     game->game_move(0.0f,0.0f); // init step, positioning
 }

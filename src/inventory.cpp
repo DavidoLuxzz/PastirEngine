@@ -1,5 +1,10 @@
 #include <inventory.hpp>
 #include <iostream>
+#include <sprite/Player.hpp>
+
+Inventory::Inventory(Player* bearer) {
+    this->bearer = bearer;
+}
 
 constexpr const char* Inventory::itemName(Item i) {
     constexpr const char* names[] = {"None", "Key", "Nike Jordans", "TBD", "TBD"};
@@ -9,6 +14,8 @@ constexpr const char* Inventory::itemName(Item i) {
 void Inventory::add(Item i) {
     items.push_back(i);
     std::cout << "Acquired an item: " << itemName(i) << std::endl;
+    if (i == Item::NIKES)
+        bearer->useNikes(true);
 }
 void Inventory::remove(Item item, int count) { // valjda radi, mozda i ne
     // int indices[count]; int n=0;

@@ -28,7 +28,7 @@ public:
     /// @brief Speed [pixel(s)/60FPS]
     static constexpr float SPEED = 60.0f;
 
-    Inventory inventory;
+    Inventory inventory = Inventory(this);
 
     inline void setInvincible(bool t) {invincible = t;}
     inline bool isInvincible() const {return invincible;}
@@ -78,6 +78,7 @@ public:
     void setTileByDirection(directions);
 
     void useNikes(bool);
+    bool isUsingNikes() const;
 
     void draw();
 };

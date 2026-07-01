@@ -38,6 +38,9 @@ void Player::setSpeedMul(float v) {
 void Player::useNikes(bool t) {
     usingNikes = t;
 }
+bool Player::isUsingNikes() const {
+    return usingNikes;
+}
 
 void Player::setRoom(Room* r) {
     room = r;

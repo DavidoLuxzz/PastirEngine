@@ -10,9 +10,15 @@ enum Item {
     NIKES
 };
 
+class Player;
+
 class Inventory {
 public:
     std::vector<Item> items;
+    Player* bearer;
+
+    Inventory() = default;
+    Inventory(Player* bearer);
 
     void add(Item);
     void remove(Item, int count);
