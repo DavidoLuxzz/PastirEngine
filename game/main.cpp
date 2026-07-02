@@ -24,6 +24,7 @@ void init(){
     assertInit(al_install_keyboard(), "keyboard");
     assertInit(al_install_mouse(), "mouse");
     assertInit(al_install_audio(), "audio addon");
+    assertInit(al_init_acodec_addon(), "acodec addon");
 }
 
 void uninstall(){

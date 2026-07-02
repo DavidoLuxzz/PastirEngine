@@ -257,14 +257,6 @@ void initPlayer() {
     game->game_move(0.0f,0.0f); // init step, positioning
 }
 
-int Game::loadSoundsAndMusic() {
-    // LUKA_ASSERT0(audio::init());
-    // LUKA_ASSERT0(audio::loadAudio("Audio 07.mp3", audio::AUDIO_07));
-    // LUKA_ASSERT0(audio::loadSound("voice1.wav", audio::VOICE01));
-
-    return 0;
-}
-
 int Game::init(){
     font = al_create_builtin_font();
 
@@ -275,9 +267,9 @@ int Game::init(){
     LUKA_ASSERT0(loadRooms());
     initPlayer();
     LUKA_ASSERT0(dialogbox::init());
-    LUKA_ASSERT0(loadSoundsAndMusic());
+    LUKA_ASSERT0(audio::init());
 
-    // audio::prepareAudio(audio::AUDIO_07).setPlaying(true);
+    audio::playStream(audio::Stream::AUDIO_07);
 
     // dialogbox::setText("Hallo!!");
     // dialogbox::show();
@@ -290,7 +282,6 @@ int Game::init(){
 void Game::clean(){
     logger::info("Cleaning game components...");
 
-    audio::destroy();
     bank::destroyAll();
     display.destroy();
 }
