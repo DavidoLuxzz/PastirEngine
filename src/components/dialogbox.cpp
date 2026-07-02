@@ -3,6 +3,7 @@
 #include <allegro5/allegro_font.h>
 #include <components/display.hpp>
 #include <game.hpp>
+#include <audio.hpp>
 
 namespace dialogbox {
     Sprite view;
@@ -11,7 +12,15 @@ namespace dialogbox {
     constexpr float scale = 3.0f/4.0f;
     dialog_t GAME_DIALOGS[NUM_GAME_DIALOGS];
     Animation animation;
+    audio::Sound voice = audio::Sound::SOUND_NONE;
 } // namespace dialogbox
+
+void __dialogbox_tick(int frame) {
+    if (dialogbox::voice>=audio::Sound::SOUND_COUNT) return;
+    if (isalnum(dialogbox::GAME_DIALOGS[dialogbox::currentDialog].pages[0][frame])) {
+        audio::playSound(dialogbox::voice, 3.0f);
+    }
+}
 
 int dialogbox::init() {
     // load sprite (view)
@@ -29,6 +38,7 @@ int dialogbox::init() {
 
     // init animation
     animation.init(0.05);
+    animation.setTickFunction(__dialogbox_tick);
     return 0;
 }
 
@@ -43,8 +53,8 @@ void dialogbox::hide() {
 bool dialogbox::isShowing() {
     return showing;
 }
-void dialogbox::setVoice(int sndID) {
-    // todo
+void dialogbox::setVoice(int sound) {
+    voice = static_cast<audio::Sound>(sound);
 }
 
 void dialogbox::_update() {

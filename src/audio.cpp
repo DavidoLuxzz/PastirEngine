@@ -5,9 +5,6 @@
 #include <asset_manager.hpp>
 
 namespace audio {
-    ALLEGRO_MIXER* mixer;
-    ALLEGRO_VOICE* voice;
-
     ALLEGRO_SAMPLE* sounds[SOUND_COUNT];
     ALLEGRO_AUDIO_STREAM* streams[STREAM_COUNT];
 } // namespace audio
@@ -55,17 +52,22 @@ int audio::init() {
     return 0;
 }
 void audio::destroy() {
-    return; // remove
-    al_detach_mixer(mixer);
-    al_detach_voice(voice);
-    al_destroy_mixer(mixer);
-    al_destroy_voice(voice);
+    for (int i=0; i<Sound::SOUND_COUNT; i++)
+        al_destroy_sample(sounds[i]);
+    for (int i=0; i<Stream::STREAM_COUNT; i++)
+        al_destroy_audio_stream(streams[i]);
 }
 
-void audio::playSound(Sound snd) {
-    al_play_sample(sounds[snd], 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, NULL);
+void audio::playSound(Sound snd, float gain, float pan, float speed, ALLEGRO_SAMPLE_ID *out_id) {
+    // ALLEGRO_SAMPLE_INSTANCE* instance = al_create_sample_instance(sounds[snd]);
+    // al_attach_sample_instance_to_mixer(instance, al_get_default_mixer());
+    // al_play_sample_instance(instance);
+
+    // or just...
+    al_play_sample(sounds[snd], gain, pan, speed, ALLEGRO_PLAYMODE_ONCE, out_id);
 }
-void audio::playStream(Stream strm) {
+void audio::playStream(Stream strm, bool loop) {
     al_attach_audio_stream_to_mixer(streams[strm], al_get_default_mixer());
+    al_set_audio_stream_playmode(streams[strm], loop? ALLEGRO_PLAYMODE_LOOP:ALLEGRO_PLAYMODE_ONCE);
     al_set_audio_stream_playing(streams[strm], true);
 }

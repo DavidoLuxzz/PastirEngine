@@ -270,6 +270,7 @@ int Game::init(){
     LUKA_ASSERT0(audio::init());
 
     audio::playStream(audio::Stream::AUDIO_07);
+    dialogbox::setVoice(audio::Sound::VOICE01);
 
     // dialogbox::setText("Hallo!!");
     // dialogbox::show();
