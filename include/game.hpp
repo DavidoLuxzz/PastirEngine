@@ -36,6 +36,8 @@ public:
     /// @returns error code 
     int loadAssets();
     /// @returns error code
+    int loadSoundsAndMusic();
+    /// @returns error code
     int loadRooms();
     /// @brief clean before exit
     void clean();

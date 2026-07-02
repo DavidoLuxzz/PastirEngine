@@ -43,11 +43,14 @@ void dialogbox::hide() {
 bool dialogbox::isShowing() {
     return showing;
 }
-
+void dialogbox::setVoice(int sndID) {
+    // todo
+}
 
 void dialogbox::_update() {
-    if (showing)
+    if (showing) {
         animation.update();
+    }
 }
 
 void dialogbox::draw() {

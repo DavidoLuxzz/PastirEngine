@@ -11,9 +11,8 @@
 #include <sprite/Player.hpp>
 #include <level/Triggers.hpp>
 #include <components/dialogbox.hpp>
-#include <components/audio.hpp>
 #include <event.hpp>
-
+#include <audio.hpp>
 #include <allegro5/allegro_font.h>
 
 #define TEST_DRAW_SAMPLES 1
@@ -58,7 +57,6 @@ int Game::run(){
         display.setTitle(  (std::string("DEMO FPS: ")+std::to_string((int)round(1.0/deltaTime))+" Sprites: "+std::to_string(TEST_DRAW_SAMPLES*rooms[roomID].objects.size())).c_str()  );
 
         // ## UPDATE ## //
-        audio::update();
         keyboard::fetchKeyboardState();
         if (!(dialogbox::isShowing()||display.isFading())) update(deltaTime);
         display.update(deltaTime*1000.0f);
@@ -259,6 +257,14 @@ void initPlayer() {
     game->game_move(0.0f,0.0f); // init step, positioning
 }
 
+int Game::loadSoundsAndMusic() {
+    // LUKA_ASSERT0(audio::init());
+    // LUKA_ASSERT0(audio::loadAudio("Audio 07.mp3", audio::AUDIO_07));
+    // LUKA_ASSERT0(audio::loadSound("voice1.wav", audio::VOICE01));
+
+    return 0;
+}
+
 int Game::init(){
     font = al_create_builtin_font();
 
@@ -269,10 +275,9 @@ int Game::init(){
     LUKA_ASSERT0(loadRooms());
     initPlayer();
     LUKA_ASSERT0(dialogbox::init());
-    LUKA_ASSERT0(audio::init());
-    int sndID;
-    audio::loadAudio("audio/project.mp3", &sndID);
-    audio::prepareAudio(sndID).setPlaying(true);
+    LUKA_ASSERT0(loadSoundsAndMusic());
+
+    // audio::prepareAudio(audio::AUDIO_07).setPlaying(true);
 
     // dialogbox::setText("Hallo!!");
     // dialogbox::show();

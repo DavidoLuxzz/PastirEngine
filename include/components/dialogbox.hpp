@@ -46,10 +46,7 @@ namespace dialogbox {
     void hide();
     bool isShowing();
 
-    void moveUp();
-    void moveDown();
-    bool isUp();
-    bool isDown();
+    void setVoice(int soundID);
 
     void setText(const std::string);
     void setDialog(int);
