@@ -54,7 +54,7 @@ public:
      * Move procedure:
      *  -  player.move(dx,dy)
      *  -  room.position(player.getWorldPosition())
-     *  -  player.setScreenPosition(room)
+     *  -  player.positionRoom(room.getTranslate())
      */
 
 
@@ -65,6 +65,7 @@ public:
 
     void setWorldPosition(float2 pos);
     float2 getWorldPosition() const;
+    float getWorldFeetY() const; 
 
     // based on collision checks in current room
     float2 getFixedDisplacement(float, float);

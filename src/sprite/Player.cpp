@@ -20,6 +20,9 @@ void Player::setWorldPosition(float2 pos) {
 float2 Player::getWorldPosition() const {
     return worldPos;
 }
+float Player::getWorldFeetY() const {
+    return worldPos.y + (float)bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.y * scale.y;
+}
 
 void Player::positionRoom(float2 roomPos) {
     setPosition(worldPos+roomPos);

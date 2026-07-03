@@ -7,6 +7,7 @@
 #include <sprite/StaticEntity.hpp>
 
 class Room {
+    std::vector<int> entityTopIDs;
     float2 translate = {0,0};
 public:
     std::vector<Drawable::DrawableData> objects;
@@ -14,7 +15,10 @@ public:
     Rectu bounds;
     std::string areaName;
 
-    void draw();
+    /// @brief Draw pre player.draw()
+    void drawBackLayer();
+    /// @brief Draw posle player.draw()
+    void drawTopLayer();
 
     void position(float2 playerPos);
 

@@ -105,12 +105,14 @@ inline void drawRectf(const Rectf rect, ALLEGRO_COLOR color, float2 translate={0
 void Game::draw() {
     Display::clear(0,0,0);
 
-    // Draw room
+    // Draw room back layer
     for (int i=0; i<TEST_DRAW_SAMPLES; i++)
-        rooms[roomID].draw();
-
+        rooms[roomID].drawBackLayer();
     // Draw player
     player.draw();
+    // Draw room top layer
+    for (int i=0; i<TEST_DRAW_SAMPLES; i++)
+        rooms[roomID].drawTopLayer();
 
     // Show dialogbox (kada treba)
     if (dialogbox::isShowing()) dialogbox::draw();

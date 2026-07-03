@@ -37,6 +37,8 @@ public:
     static void drawData(const EntityData& data, float2 translate={0.0f, 0.0f});
 
     static Rectf createHitbox(const EntityData& data, float2 translate={0.f, 0.f});
+
+    static float getFeetY(const EntityData& data);
 };
 
 

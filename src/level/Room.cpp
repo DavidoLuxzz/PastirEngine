@@ -73,16 +73,30 @@ void Room::move(float _dx, float _dy, void* _player) {
     translate.y = newy;
     // if (player) player->move(ptrans.x,ptrans.y);
 }
-
-void Room::draw() {
+#include <game.hpp>
+void Room::drawBackLayer() {
     al_hold_bitmap_drawing(true);
     for (Drawable::DrawableData& data : objects) {
         Drawable::drawData(data, translate);
     }
-    for (StaticEntity::EntityData& ent : entities) {
+    al_hold_bitmap_drawing(false);
+    entityTopIDs.clear();
+    float playerFeetY = game::getGame()->player.getWorldFeetY();
+    for (int i=0; i<entities.size(); i++) {
+        const StaticEntity::EntityData& ent = entities.at(i);
+        float entFeet = StaticEntity::getFeetY(ent);
+        if (playerFeetY < entFeet) {
+            entityTopIDs.push_back(i);
+            continue;
+        }
         StaticEntity::drawData(ent, translate);
     }
-    al_hold_bitmap_drawing(false);
+}
+
+void Room::drawTopLayer() {
+    for (int i : entityTopIDs) {
+        StaticEntity::drawData(entities.at(i), translate);
+    }
 }
 
 #include <game.hpp>

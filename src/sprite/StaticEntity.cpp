@@ -92,3 +92,7 @@ Rectf StaticEntity::createHitbox(const EntityData& data, float2 translate) {
     };
     return hitbox;
 }
+
+float StaticEntity::getFeetY(const EntityData& data) {
+    return data[COMP_Y]/DEFAULT_PIXEL_SCALE + bank::tileset::getBank(bank::tileset::ENTITY0).getTile(data[COMP_TEXTURE]).size.y * data[COMP_SCALEY] / 100.0f;
+}
