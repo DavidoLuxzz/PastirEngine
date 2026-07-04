@@ -73,7 +73,7 @@ int __lvl_loader_load(const std::string& filepath) {
 }
 
 // ### ENTITIES ### //
-int __lvl_loader_ent(const std::string& filepath) {
+int __lvl_loader_ent(const std::string& filepath, unsigned int roomID) {
     std::ifstream file(filepath);
 
     room_loader::room.entities.clear();
@@ -100,7 +100,8 @@ int __lvl_loader_ent(const std::string& filepath) {
                 std::cout << "token.len = " << token.length() << std::endl;
             }
         }
-        room_loader::room.entities.push_back(data);
+        if (data[StaticEntity::COMP_ROOM] == roomID)
+            room_loader::room.entities.push_back(data);
         //printf("Loaded object: %d %d 16x16\n", data[Drawable::COMP_X], data[Drawable::COMP_Y]);
         //break;
     }
@@ -119,7 +120,7 @@ int room_loader::load(unsigned int roomID) {
         fprintf(stderr, "<%sLVLLOADER%s> Room %u doesn't exists. path=%s\n",TERMINAL_COLOR_RED_BOLD,TERMINAL_COLOR_RESET, roomID, filepath.c_str());
         return -1;
     }
-    __lvl_loader_ent("ent.txt");
+    __lvl_loader_ent("ent.txt", roomID);
     // printf("<LVLLOADER> Loading room %u path=%s\n", roomID, filepath.c_str());
     return __lvl_loader_load(filepath);
 }

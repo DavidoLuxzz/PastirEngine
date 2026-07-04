@@ -1,4 +1,4 @@
 # x  y  room  texture  triggerID  scaleX  scaleY  (spec3)
-70 200 0 0 2 25 25
+70 200 1 0 2 25 25
 640 320 1 0 2 25 25
 1420 560 2 0 6 25 25

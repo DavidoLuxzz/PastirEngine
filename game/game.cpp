@@ -181,7 +181,7 @@ void Game::update(float ms) {
     player.setSpeedMul(speedmul);
     game_move(dx,dy);
 
-    triggers::check_update();
+    // triggers::check_update();
 }
 
 #pragma endregion
@@ -204,7 +204,7 @@ void setupAssman() {
 
 
 int initDisplay() {
-    Display::setupPixelScale(4.0f);
+    Display::setupPixelScale(1.0f);
     LUKA_ASSERT0(game::getGame()->display.create(WINDOW_WIDTH, WINDOW_HEIGHT, "DEMO", true));
     game::getGame()->display.getEventQueue().registerKeyboardEventSource();
 
@@ -250,7 +250,8 @@ void initPlayer() {
     Player& player = game->player;
     player.setTexturesBankType(bank::TILESET);
     player.setTexturesBankID(bank::tileset::PLAYER);
-    player.setScale(0.5f);
+    // player.setScale(0.5f);
+    player.setScale(0.5f*DEFAULT_PIXEL_SCALE);
     //player.setCenter(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f);
     //player.setWorldPosition(player.getPosition());
     player.setWorldPosition({24.0f,24.0f});

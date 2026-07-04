@@ -112,15 +112,15 @@ void Room::position(float2 playerPos) {
 
     float desna_strana = (bounds.min.x+bounds.size.x) / DEFAULT_PIXEL_SCALE - winSize.x/Display::getPixelScale();
 
-    if (newx>bounds.min.x)
-        newx=bounds.min.x;
     if (-newx > desna_strana)
         newx = -desna_strana;
+    if (newx>bounds.min.x)
+        newx=bounds.min.x;
     desna_strana = (bounds.min.y+bounds.size.y) / DEFAULT_PIXEL_SCALE - winSize.y/Display::getPixelScale();
-    if (newy>bounds.min.y)
-        newy=bounds.min.y;
     if (-newy > desna_strana)
         newy = -desna_strana;
+    if (newy>bounds.min.y)
+        newy=bounds.min.y;
 
     translate.x = newx;
     translate.y = newy;

@@ -8,8 +8,8 @@
 #include <sprite/StaticEntity.hpp>
 #include <allegro5/allegro_font.h>
 
-#define WINDOW_WIDTH  200 // in game pixels
-#define WINDOW_HEIGHT 160 // in game pixels
+#define WINDOW_WIDTH  1152 // in game pixels
+#define WINDOW_HEIGHT 768 // in game pixels
 /// @brief Used in rooms
 #define DEFAULT_PIXEL_SCALE 4.0f
 
@@ -25,7 +25,7 @@ public:
     float2 requestPlayerCoords; // za sad samo kada change room
     Player player;
     ALLEGRO_FONT* font;
-    bool f3 = true;
+    bool f3 = false;
     StaticEntity ent;
     /**
      * Initializes game components and variables.

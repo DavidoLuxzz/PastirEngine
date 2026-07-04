@@ -47,7 +47,7 @@ Rectf Drawable::createHitbox(const DrawableData& data, float2 translate) {
     float2 coords = Drawable::worldCoordinates(data[COMP_X],data[COMP_Y]);
     Rectf hitbox = {
         {coords.x+translate.x, coords.y+translate.y},
-        {(float)tile.size.x, (float)tile.size.y}
+        {tile.size.x * data[COMP_SCALEX]/100.0f, tile.size.y * data[COMP_SCALEY]/100.0f}
     };
     return hitbox;
 }

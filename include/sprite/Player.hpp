@@ -26,7 +26,7 @@ protected:
     Room* room=NULL;
 public:
     /// @brief Speed [pixel(s)/60FPS]
-    static constexpr float SPEED = 60.0f;
+    static constexpr float SPEED = 240.0f;
 
     Inventory inventory = Inventory(this);
 
