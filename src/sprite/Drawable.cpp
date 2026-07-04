@@ -1,24 +1,6 @@
 #include <sprite/Drawable.hpp>
 #include <game.hpp>
 
-const char* Drawable::TEXTURES[] = {
-    "block","stone", "grass","water", "plank","plank_on_water", "cobweb","plum","fence_full",
-    "door","door_open","room","shade","block_corner","block_top","block_sides","block_end",
-    "black","fence_left","fence_right","fence_no_conn","line_corner","line_top","line_sides",
-    "line_end", "fasada", "grass0", "grass1","grass2", "grass3","grass4", "grass5", "grass6",
-    "grass7","grass8","grass9", "grass10","grass11","grass12", "grass13","grass14","grass15",
-    "dirt0","dirt1", "cobble0","cobble1","cobble2", "cobble3","cobble4", "cobble5","cobble6",
-    "cobble7"
-};
-
-const int Drawable::SOLID_IDs[] = {
-    TEXTURE_BLOCK, TEXTURE_WATER, TEXTURE_PLUM, TEXTURE_FENCE_FULL,
-    TEXTURE_DOOR, TEXTURE_BLOCK_CORNER, TEXTURE_BLOCK_TOP, TEXTURE_BLOCK_SIDES,
-    TEXTURE_BLOCK_END, TEXTURE_BLACK, TEXTURE_FENCE_LEFT, TEXTURE_FENCE_RIGHT, 
-    TEXTURE_FENCE_NO_CONN, TEXTURE_LINE_CORNER, TEXTURE_LINE_TOP, TEXTURE_LINE_SIDES,
-    TEXTURE_LINE_END
-};
-
 Drawable::Drawable(TextureID texture, float x, float y) {
     init(texture, x, y);
 }
@@ -43,13 +25,25 @@ float2 Drawable::worldCoordinates(int x, int y) {
 }
 
 Rectf Drawable::createHitbox(const DrawableData& data, float2 translate) {
-    Rectu tile = bank::tileset::getBank(bank::tileset::MAP_DRAWABLES).getTile(data[COMP_TEXTURE_ID]);
     float2 coords = Drawable::worldCoordinates(data[COMP_X],data[COMP_Y]);
+    if (data[COMP_TYPE] == TYPE_HITBOX) {
+        Rectf hitbox = {
+            {coords.x+translate.x, coords.y+translate.y},
+            {data[COMP_WIDTH] * data[COMP_SCALEX]/100.0f, data[COMP_HEIGHT] * data[COMP_SCALEY]/100.0f}
+        };
+        //printf("Hitbox w,h: %.1f %.1f\n", hitbox);
+        return hitbox;
+    }
+    Rectu tile = bank::tileset::getBank(bank::tileset::MAP_DRAWABLES).getTile(data[COMP_TEXTURE_ID]);
     Rectf hitbox = {
         {coords.x+translate.x, coords.y+translate.y},
         {tile.size.x * data[COMP_SCALEX]/100.0f, tile.size.y * data[COMP_SCALEY]/100.0f}
     };
     return hitbox;
+}
+
+float Drawable::getWorldFeetY(const DrawableData& data) {
+    return data[COMP_Y]/DEFAULT_PIXEL_SCALE + bank::tileset::getBank(bank::tileset::MAP_DRAWABLES).getTile(data[COMP_TEXTURE_ID]).size.y * data[COMP_SCALEY] / 100.0f;
 }
 
 void Drawable::draw() {
@@ -79,10 +73,6 @@ void Drawable::drawData(const DrawableData& data, float2 translate) {
     float angle = degreesToRadians(static_cast<float>(data[COMP_ANGLE]));
 
     float2 scale = {static_cast<float>(data[COMP_SCALEX])/100.0f, static_cast<float>(data[COMP_SCALEY])/100.0f};
-    float3 hsb ={   static_cast<float>(data[COMP_TINT_HUE])/180.0f,
-                    0.5f+static_cast<float>(data[COMP_TINT_SATURATION])/100.0f,
-                    1.5f+static_cast<float>(data[COMP_TINT_BRIGHTNESS])/200.0f
-                };
 
     float __winw = (float) al_get_display_width (al_get_current_display());
     float __winh = (float) al_get_display_height(al_get_current_display());
@@ -95,8 +85,7 @@ void Drawable::drawData(const DrawableData& data, float2 translate) {
     static const float2 imageCenter = {0.0f, 0.0f};
     al_draw_tinted_scaled_rotated_bitmap_region(bitmap,
                                         (float)rect.min.x,(float)rect.min.y,(float)rect.size.x,(float)rect.size.y,
-                                        al_color_hsl(hsb.x, hsb.y, hsb.z),
-                                        // al_map_rgb(100,100,100),
+                                        al_map_rgb(255,255,255),
                                         imageCenter.x, imageCenter.y,
                                         pos.x, pos.y,
                                         scale.x, scale.y,

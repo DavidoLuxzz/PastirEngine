@@ -75,13 +75,21 @@ void Room::move(float _dx, float _dy, void* _player) {
 }
 #include <game.hpp>
 void Room::drawBackLayer() {
+    float playerFeetY = game::getGame()->player.getWorldFeetY();
     al_hold_bitmap_drawing(true);
-    for (Drawable::DrawableData& data : objects) {
-        Drawable::drawData(data, translate);
+    drawableTopIDs.clear();
+    for (int i=0; i<objects.size(); i++) {
+        const Drawable::DrawableData& data = objects.at(i);
+        if (data[Drawable::COMP_TYPE] != Drawable::TYPE_HITBOX) {
+            if (data[Drawable::COMP_LAYER] && playerFeetY < Drawable::getWorldFeetY(data)) {
+                drawableTopIDs.push_back(i);
+                continue;
+            }
+            Drawable::drawData(data, translate);
+        }
     }
     al_hold_bitmap_drawing(false);
     entityTopIDs.clear();
-    float playerFeetY = game::getGame()->player.getWorldFeetY();
     for (int i=0; i<entities.size(); i++) {
         const StaticEntity::EntityData& ent = entities.at(i);
         float entFeet = StaticEntity::getFeetY(ent);
@@ -94,6 +102,9 @@ void Room::drawBackLayer() {
 }
 
 void Room::drawTopLayer() {
+    for (int i : drawableTopIDs) {
+        Drawable::drawData(objects.at(i), translate);
+    }
     for (int i : entityTopIDs) {
         StaticEntity::drawData(entities.at(i), translate);
     }

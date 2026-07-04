@@ -38,7 +38,7 @@ int Game::run(){
                         dialogbox::show(!dialogbox::isShowing());
                         break;
                     }
-                    case ALLEGRO_KEY_F3:
+                    case ALLEGRO_KEY_G:
                         f3 = !f3;
                         break;
                     case ALLEGRO_KEY_R: {
@@ -88,7 +88,7 @@ int Game::run(){
 #pragma region game::draw
 
 void Game::debugText() {
-    constexpr float __px_scale = 2.0f;
+    constexpr float __px_scale = 4.0f;
     Display::useCustomScale(__px_scale, __px_scale);
 
     Rectf playerHitbox = player.getHitbox();
@@ -122,7 +122,8 @@ void Game::draw() {
     // Debug hitboxes
     if (f3) {
         for (const Drawable::DrawableData& drw : rooms[roomID].objects) {
-            drawRectf(Drawable::createHitbox(drw), al_map_rgb(255,255,50), rooms[roomID].getTranslate());
+            if (drw[Drawable::COMP_SOLID])
+                drawRectf(Drawable::createHitbox(drw), al_map_rgb(255,255,50), rooms[roomID].getTranslate());
         }
         drawRectf(player.getHitbox(), al_map_rgb(50,255,50), rooms[roomID].getTranslate());
         for (int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
@@ -173,15 +174,6 @@ void Game::update(float ms) {
                 * player.getSpeed() * ms;
 
     float speedmul = (keyboard::keyDown(ALLEGRO_KEY_C)&&player.isUsingNikes())? 1.5f:1.0f;
-
-    for (const Drawable::DrawableData& data : rooms[roomID].objects) {
-        if (data[Drawable::COMP_TEXTURE_ID] == Drawable::TEXTURE_COBWEB) {
-            if (Drawable::createHitbox(data).intersects(player.getHitbox())) {
-                speedmul *= 0.5f;
-                break;
-            }
-        }
-    }
 
     player.setSpeedMul(speedmul);
     game_move(dx,dy);
@@ -259,7 +251,7 @@ void initPlayer() {
     player.setScale(3.f);
     //player.setCenter(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f);
     //player.setWorldPosition(player.getPosition());
-    player.setWorldPosition({24.0f,24.0f});
+    player.setWorldPosition({400.0f, 400.0f});
     // player.setWorldPosition({0.0f,0.0f});
     player.setRoom(&game->rooms[game->roomID]);
     game->game_move(0.0f,0.0f); // init step, positioning

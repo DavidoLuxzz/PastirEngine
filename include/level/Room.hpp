@@ -7,7 +7,10 @@
 #include <sprite/StaticEntity.hpp>
 
 class Room {
+    // layering
     std::vector<int> entityTopIDs;
+    std::vector<int> drawableTopIDs;
+    // --------
     float2 translate = {0,0};
 public:
     std::vector<Drawable::DrawableData> objects;

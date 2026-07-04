@@ -23,7 +23,6 @@ void __audio_loadStreams() {
     ALLEGRO_AUDIO_STREAM* stream = al_load_audio_stream(assman::getasset("audio/Audio07.wav").c_str(), 4, 1024);
     if (!stream) printf("[AUDIO] Stream fail\n");
     audio::streams[audio::Stream::AUDIO_07] = stream;
-    printf("ERRNO: %d\n", al_get_errno());
 }
 
 int audio::init() {
