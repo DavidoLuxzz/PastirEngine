@@ -41,6 +41,12 @@ int Game::run(){
                     case ALLEGRO_KEY_F3:
                         f3 = !f3;
                         break;
+                    case ALLEGRO_KEY_R: {
+                        loadRooms();
+                        bank::destroyAll();
+                        loadAssets();
+                        break;
+                    }
                     case ALLEGRO_KEY_Q:
                         player.setInvincible(!player.isInvincible());
                         break;
@@ -82,16 +88,12 @@ int Game::run(){
 #pragma region game::draw
 
 void Game::debugText() {
-    const float __px_scale = Display::getPixelScale()/2.0f;
+    constexpr float __px_scale = 2.0f;
     Display::useCustomScale(__px_scale, __px_scale);
 
-    Rectf drw = StaticEntity::createHitbox(rooms[roomID].entities[0]);
     Rectf playerHitbox = player.getHitbox();
 
     al_draw_textf(font, al_map_rgb(255,255,255), 0, 0, 0, "Player pos: %.1f %.1f [%.0fx%.0f]", playerHitbox.min.x,playerHitbox.min.y, playerHitbox.size.x,playerHitbox.size.y);
-    al_draw_textf(font, al_map_rgb(255,255,255), 0, 10.0f, 0, "Ent pos: %.1f %.1f [%.0fx%.0f]", drw.min.x,drw.min.y, drw.size.x,drw.size.y);
-    bool t = playerHitbox.intersects(drw);
-    al_draw_textf(font, al_map_rgb(255,255,255), 0, 20.0f, 0, "Intersects: %s", t?"true":"false");
     al_draw_textf(font, al_map_rgb(255,255,255), 0, 30.0f, 0, "Debug (show hitboxes): %s", f3?"true":"false");
 
     Display::useScale();
@@ -100,7 +102,7 @@ void Game::debugText() {
 inline void drawRectf(const Rectf rect, ALLEGRO_COLOR color, float2 translate={0,0}) {
     float x = rect.min.x + translate.x;
     float y = rect.min.y + translate.y;
-    al_draw_rectangle(x,y, x+rect.size.x,y+rect.size.y, color, 1.0f);
+    al_draw_rectangle(x,y, x+rect.size.x,y+rect.size.y, color, 4.0f);
 }
 void Game::draw() {
     Display::clear(0,0,0);
@@ -119,6 +121,9 @@ void Game::draw() {
 
     // Debug hitboxes
     if (f3) {
+        for (const Drawable::DrawableData& drw : rooms[roomID].objects) {
+            drawRectf(Drawable::createHitbox(drw), al_map_rgb(255,255,50), rooms[roomID].getTranslate());
+        }
         drawRectf(player.getHitbox(), al_map_rgb(50,255,50), rooms[roomID].getTranslate());
         for (int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
             drawRectf(
@@ -251,7 +256,7 @@ void initPlayer() {
     player.setTexturesBankType(bank::TILESET);
     player.setTexturesBankID(bank::tileset::PLAYER);
     // player.setScale(0.5f);
-    player.setScale(0.5f*DEFAULT_PIXEL_SCALE);
+    player.setScale(3.f);
     //player.setCenter(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f);
     //player.setWorldPosition(player.getPosition());
     player.setWorldPosition({24.0f,24.0f});

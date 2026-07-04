@@ -11,7 +11,7 @@
 #define WINDOW_WIDTH  1152 // in game pixels
 #define WINDOW_HEIGHT 768 // in game pixels
 /// @brief Used in rooms
-#define DEFAULT_PIXEL_SCALE 4.0f
+#define DEFAULT_PIXEL_SCALE 1.0f
 
 #define TRIGGERS_FILE "triggers.txt"
 #define ENTITIES_FILE "ent.txt"

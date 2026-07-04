@@ -108,8 +108,6 @@ int __lvl_loader_ent(const std::string& filepath, unsigned int roomID) {
 
     file.close();
 
-    std::cout << "Loaded " << room_loader::room.entities.size() << " entities\n";
-
     return 0;
 
 }

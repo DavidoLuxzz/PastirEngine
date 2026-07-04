@@ -1,4 +1,9 @@
 area   Valjevo Brdjani   
 # texture x y solid layer group angle scalex scaley hue saturation brightness special
-0 0 0 0 0 0 0 50 50
+0 0 -50 0 0 0 0 50 50
+1 280 120 1 0 0 0 60 40
+1 -50 500 1 0 0 0 60 40
+#2 500 550 1 0 0 0 40 40
+
+
 box 2000 1000
