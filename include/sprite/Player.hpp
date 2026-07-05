@@ -62,6 +62,7 @@ public:
     /// @param pos the top left corner of room
     void positionRoom(float2 roomPos);
     float2 getScreenPosition() const;
+    Rectf getScreenHitbox() const;
 
     void setWorldPosition(float2 pos);
     float2 getWorldPosition() const;

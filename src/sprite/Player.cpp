@@ -66,6 +66,20 @@ Rectf Player::getHitbox() const {
     return hitbox;
 }
 
+Rectf Player::getScreenHitbox() const {
+    float2 size = {(float) texInfo.tileRect.size.x,(float) texInfo.tileRect.size.y};
+    if (texInfo.bankType == bank::TILESET){
+        size.x = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.x;
+        size.y = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.y;
+    }
+    size *= scale;
+    Rectf hitbox = {
+        getScreenPosition(),
+        {size.x, size.y}
+    };
+    return hitbox;
+}
+
 #define JUST_A_NICE_COLLISION_DISTANCE 0.2f
 #define JANCD JUST_A_NICE_COLLISION_DISTANCE
 
