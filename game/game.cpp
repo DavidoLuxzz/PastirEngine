@@ -113,7 +113,7 @@ void Game::draw() {
     // Draw player
     float2 shadowPos = {
         player.getScreenPosition().x+player.getScreenHitbox().size.x/2.0f,
-        player.getWorldFeetY()
+        player.getScreenFeetY()
     };
     al_draw_filled_ellipse(shadowPos.x,shadowPos.y,40.f,10.f, al_map_rgba(0,0,0,20));
     player.draw();
@@ -183,7 +183,7 @@ void Game::update(float ms) {
     player.setSpeedMul(speedmul);
     game_move(dx,dy);
 
-    // triggers::check_update();
+    triggers::check_update();
 }
 
 #pragma endregion
@@ -253,7 +253,7 @@ void initPlayer() {
     player.setTexturesBankType(bank::TILESET);
     player.setTexturesBankID(bank::tileset::PLAYER);
     // player.setScale(0.5f);
-    player.setScale(0.2f);
+    player.setScale(0.25f);
     //player.setCenter(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f);
     //player.setWorldPosition(player.getPosition());
     player.setWorldPosition({400.0f, 340.0f});

@@ -24,11 +24,15 @@ float Player::getWorldFeetY() const {
     return worldPos.y + (float)bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.y * scale.y;
 }
 
+
 void Player::positionRoom(float2 roomPos) {
     setPosition(worldPos+roomPos);
 }
 float2 Player::getScreenPosition() const {
     return position+translate;
+}
+float Player::getScreenFeetY() const {
+    return position.y+translate.y + (float)bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.y * scale.y;
 }
 
 float Player::getSpeed() const {

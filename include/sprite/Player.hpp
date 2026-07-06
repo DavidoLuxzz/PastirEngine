@@ -63,6 +63,7 @@ public:
     void positionRoom(float2 roomPos);
     float2 getScreenPosition() const;
     Rectf getScreenHitbox() const;
+    float getScreenFeetY() const;
 
     void setWorldPosition(float2 pos);
     float2 getWorldPosition() const;
