@@ -16,4 +16,4 @@ area   Valjevo Brdjani
 1 -50 500 0 1 0 0 60 40
 
 
-box 2000 1000
+box 2000 600

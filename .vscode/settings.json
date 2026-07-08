@@ -3,7 +3,8 @@
     "code-runner.showRunIconInEditorTitleMenu": true,
     "code-runner.ignoreSelection": true,
     "code-runner.executorMap": {
-        "cpp": "./build.sh && ./a.out",
+//        "cpp": "./build.sh && ./a.out",  // Prebacio sam se na Makefile, pa je ovo sada nepotrebno
+        "cpp": "make && ./a.out",
         "shellscript": "cd $dir && bash $fileName"
     },
     "code-runner.customCommand": "./a.out",

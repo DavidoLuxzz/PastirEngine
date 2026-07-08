@@ -30,7 +30,7 @@ int Display::create(int _w, int _h, const char* title, bool use_scale) {
 
     if (use_scale) useScale();
 
-    fadeAnim.init(0.1, 160);
+    fadeAnim.init(0.1, 80);
     fadeAnim.frame = -1;
 
 
