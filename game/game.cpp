@@ -27,7 +27,7 @@ int Game::run(){
     while (true) {
         double deltaTime = al_get_time() - lastTime; // seconds?
         lastTime = al_get_time();
-        // printf("%f\n", deltaTime);
+        // printf("%f\n", deltaTime);a
         /* handle events: */ {
             ALLEGRO_EVENT evt;
             while (display.getEventQueue().popNext(&evt)) {

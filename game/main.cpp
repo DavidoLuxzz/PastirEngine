@@ -7,12 +7,15 @@
 #include <allegro5/allegro_acodec.h>
 #include <game.hpp>
 
+#define LOG_MAIN_LOADING false
+
 void assertInit(int ret, const char* name){
     if (!ret){
         std::cerr << name << " nece da radi >:c\n";
         exit(EXIT_FAILURE);
     }
-    std::cout << "Ucitao " << name << std::endl;
+    if (LOG_MAIN_LOADING)
+        std::cout << "Ucitao " << name << std::endl;
 }
 
 void init(){
@@ -28,7 +31,7 @@ void init(){
 }
 
 void uninstall(){
-    std::cout << "Uninstalling allegro addons\n";
+    std::cout << "Shutting down allegro addons\n";
     al_uninstall_mouse();
     al_uninstall_keyboard();
     al_uninstall_audio();
@@ -45,6 +48,7 @@ void uninstall(){
  * medjutim on meni vrati sa greskom. mangup
  */
 int main(int argc, char** argv) {
+    putchar(0xa);
     init();
     std::cout << "--> game::init()\n";
     Game game;
