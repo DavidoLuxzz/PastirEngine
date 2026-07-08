@@ -113,7 +113,7 @@ void Game::draw() {
     // Draw player
     float2 shadowPos = {
         player.getScreenPosition().x+player.getScreenHitbox().size.x/2.0f,
-        player.getScreenFeetY()
+        player.getScreenFeetY()-8.0f
     };
     al_draw_filled_ellipse(shadowPos.x,shadowPos.y,40.f,10.f, al_map_rgba(0,0,0,20));
     player.draw();
@@ -215,13 +215,14 @@ int initDisplay() {
 }
 
 int Game::loadAssets() {
+    int commonFlags = ALLEGRO_MAG_LINEAR | ALLEGRO_MIN_LINEAR | ALLEGRO_MIPMAP;
     /* Bank loading */{
         bank::tileset::init(bank::tileset::NUM_KNOWN_BANKS);
         // Map drawables
-        bank::tileset::getBank(bank::tileset::MAP_DRAWABLES).loadTexture("drawables.png");
+        bank::tileset::getBank(bank::tileset::MAP_DRAWABLES).loadTexture("drawables.png", ALLEGRO_VIDEO_BITMAP | commonFlags);
         bank::tileset::getBank(bank::tileset::MAP_DRAWABLES).loadTileRects("drawable_rects.txt");
         // Player tilesheet
-        bank::tileset::getBank(bank::tileset::PLAYER).loadTexture("player.png");
+        bank::tileset::getBank(bank::tileset::PLAYER).loadTexture("player.png", commonFlags);
         bank::tileset::getBank(bank::tileset::PLAYER).loadTileRects("player_rects.txt");
         // Dialog box
         bank::tileset::getBank(bank::tileset::DIALOG_BOX).loadTexture("dialog_box.png");
@@ -253,7 +254,7 @@ void initPlayer() {
     player.setTexturesBankType(bank::TILESET);
     player.setTexturesBankID(bank::tileset::PLAYER);
     // player.setScale(0.5f);
-    player.setScale(0.25f);
+    player.setScale(3.f);
     //player.setCenter(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f);
     //player.setWorldPosition(player.getPosition());
     player.setWorldPosition({400.0f, 340.0f});

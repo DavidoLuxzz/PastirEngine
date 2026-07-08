@@ -53,7 +53,7 @@ public:
      * @param id the texture ID that will get destroyed
      */
     void destroy(TextureID);
-    /// @brief destroys all textures (will NOT empty the bank)
+    /// @brief destroys all textures (will NOT empty the bank. Call free() after)
     void destroyAll();
     /**
      * frees the texture heap array buffer.

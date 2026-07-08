@@ -78,6 +78,12 @@ public:
      * @param scaleOn1080p - Scale that is used in 1080p resolution
      */
     static void setupPixelScale(float scaleOn1080p);
+    /**
+     * Returns fixed scale based on scale that is used on 1080p.
+     * @param scaleOn1080p - Scale that is used in 1080p resolution
+     * @returns Fixed scaled scale that respects the current resolution
+     */
+    static float fixedScale1080p(float scaleOn1080p);
 
     /**
      * Sets the title for this display
