@@ -16,9 +16,12 @@
 #define TRIGGERS_FILE "triggers.txt"
 #define ENTITIES_FILE "ent.txt"
 
+/**
+ * U ovoj klasi su sve komponente vezane *samo* za gameplay.
+ * Znaci u ovoj klasi *nema* komponenata za npr. main menu.
+ */
 class Game {
 public:
-    Display display;
     #define NUM_ROOMS 4
     Room rooms[NUM_ROOMS];
     int roomID = 0, requestRoomID = 0; // requestRoomID - kada change room
@@ -62,12 +65,10 @@ public:
     /// @param ms time passed since last update (should equal to 1/FPS)
     void update(float ms);
 
-}; // namespace game
 
+    static void makeCurrent(Game*);
+    static Game* getGame();
 
-namespace game {
-    void makeCurrent(Game*);
-    Game* getGame();
-}
+}; // class Game
 
 #endif

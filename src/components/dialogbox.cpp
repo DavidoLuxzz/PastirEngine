@@ -67,8 +67,8 @@ void dialogbox::draw() {
     if (!showing) return;
     Display::useCustomScale(Display::getPixelScale() * scale);
 
-    const float winHeight = game::getGame()->display.getHeight() / Display::getPixelScale() / scale;
-    if (game::getGame()->player.getScreenPosition().y * Display::getPixelScale() * scale < winHeight) {
+    const float winHeight = Display::getCurrentDisplay()->getHeight() / Display::getPixelScale() / scale;
+    if (Game::getGame()->player.getScreenPosition().y * Display::getPixelScale() * scale < winHeight) {
         view.setPosition(view.getPosition().x, winHeight - view.getTile().size.y*scale);
     } else view.setPosition(view.getPosition().x, 2.0f);
     
@@ -79,7 +79,7 @@ void dialogbox::draw() {
     constexpr static float max_line_width = (float)WINDOW_WIDTH / scale - 40.0f;
 
     al_draw_multiline_textf(
-        game::getGame()->font,
+        Game::getGame()->font,
         al_map_rgb(255,255,255),
         view.getPosition().x+20.0f, view.getPosition().y+10.0f,
         max_line_width, 20.0f,

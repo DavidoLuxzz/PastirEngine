@@ -75,7 +75,7 @@ void Room::move(float _dx, float _dy, void* _player) {
 }
 #include <game.hpp>
 void Room::drawBackLayer() {
-    float playerFeetY = game::getGame()->player.getWorldFeetY();
+    float playerFeetY = Game::getGame()->player.getWorldFeetY();
     al_hold_bitmap_drawing(true);
     drawableTopIDs.clear();
     for (int i=0; i<objects.size(); i++) {

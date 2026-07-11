@@ -30,14 +30,14 @@ bool Trigger::isDisabled(const TriggerData& data) {
 }
 
 void changeRoom(const Trigger::TriggerData& data) {
-    Game* game = game::getGame();
+    Game* game = Game::getGame();
     
     game->requestRoomID = data[Trigger::COMP_SPECIAL];
     game->requestPlayerCoords = {(float)data[Trigger::COMP_SPECIAL2]/DEFAULT_PIXEL_SCALE, (float)data[Trigger::COMP_SPECIAL3]/DEFAULT_PIXEL_SCALE};
 
-    game->display.startFade();
+    Display::getCurrentDisplay()->startFade();
 }
-#define THIS_ROOM game::getGame()->rooms[game::getGame()->roomID]
+#define THIS_ROOM Game::getGame()->rooms[Game::getGame()->roomID]
 void Trigger::execute(const TriggerData& data) {
     switch (data[COMP_ACTION]) {
     case event::CHANGE_ROOM: {
@@ -55,7 +55,7 @@ void Trigger::execute(const TriggerData& data) {
         break;
     }
     case event::GIVE_ITEM_THEN_DISAPPEAR: {
-        game::getGame()->player.inventory.add((Item)data[COMP_SPECIAL]);
+        Game::getGame()->player.inventory.add((Item)data[COMP_SPECIAL]);
         if (data[COMP_SOURCE]==1) // 1=entity
             THIS_ROOM.entities.erase(THIS_ROOM.entities.begin()+data[COMP_ENTITY_ID]);
         break;
@@ -173,7 +173,7 @@ int triggers::load() {
 }
 
 void triggers::check_update() {
-    Game* game = game::getGame();
+    Game* game = Game::getGame();
     bool zDown = game->isZPressedThisFrame();
     for (unsigned int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
         const Trigger::TriggerData& data = triggers::get(i);

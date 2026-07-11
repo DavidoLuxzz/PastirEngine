@@ -22,6 +22,7 @@
 bool ___zPressedThisFrame = false;
 
 int Game::run(){
+    Display* display = Display::getCurrentDisplay();
     // unsigned int frames = 0;
     double lastTime = 0.0;
     while (true) {
@@ -30,7 +31,7 @@ int Game::run(){
         // printf("%f\n", deltaTime);a
         /* handle events: */ {
             ALLEGRO_EVENT evt;
-            while (display.getEventQueue().popNext(&evt)) {
+            while (display->getEventQueue().popNext(&evt)) {
                 if (evt.type==ALLEGRO_EVENT_DISPLAY_CLOSE) return 0;
                 if (evt.type==ALLEGRO_EVENT_KEY_DOWN) switch (evt.keyboard.keycode) {
                     case ALLEGRO_KEY_ESCAPE: return 0;
@@ -60,15 +61,16 @@ int Game::run(){
             }
         } // end handling events
 
-        display.setTitle(  (std::string("DEMO FPS: ")+std::to_string((int)round(1.0/deltaTime))+" Sprites: "+std::to_string(TEST_DRAW_SAMPLES*rooms[roomID].objects.size())).c_str()  );
+        display->setTitle(  (std::string("DEMO FPS: ")+std::to_string((int)round(1.0/deltaTime)) + 
+                            " Sprites: "+std::to_string(TEST_DRAW_SAMPLES*rooms[roomID].objects.size())).c_str()  );
 
         // ## UPDATE ## //
         keyboard::fetchKeyboardState();
-        if (!(dialogbox::isShowing()||display.isFading())) update(deltaTime);
-        display.update(deltaTime*1000.0f);
-        if (display.isFading()) {
-            // printf("Display fade: %d\n", display.getFadeFrame());
-            if (display.getFadeFrame()==display.getFadeCycleCount()/2) {
+        if (!(dialogbox::isShowing()||display->isFading())) update(deltaTime);
+        display->update(deltaTime*1000.0f);
+        if (display->isFading()) {
+            // printf("Display fade: %d\n", display->getFadeFrame());
+            if (display->getFadeFrame()==display->getFadeCycleCount()/2) {
                 immidiatelyChangeRoom();
                 game_move(0.0f,0.0f);
             }
@@ -144,7 +146,7 @@ void Game::draw() {
         debugText();
     }
 
-    display.drawFade();
+    Display::getCurrentDisplay()->drawFade();
     Display::swapBuffers();
 }
 
@@ -195,25 +197,6 @@ void Game::update(float ms) {
 #define LUKA_ASSERT1(x) if (x<0) return -1;
 
 
-void setupAssman() {
-    int __assets_path_err = 0;
-    std::string __assets_path;
-    __assets_path = assman::getallegropathstr(ALLEGRO_RESOURCES_PATH, &__assets_path_err);
-    //__assets_path = std::getenv("HOME");
-    __assets_path += "assets";
-    printf("> Setting resources path to %s [errors=%d, %d]\n", __assets_path.c_str(), __assets_path_err, assman::setcwd(__assets_path));
-}
-
-
-int initDisplay() {
-    Display::setupPixelScale(1.0f);
-    LUKA_ASSERT0(game::getGame()->display.create(WINDOW_WIDTH, WINDOW_HEIGHT, "DEMO", true));
-    game::getGame()->display.getEventQueue().registerKeyboardEventSource();
-
-    // int dpi = al_get_monitor_dpi(al_get_display_adapter(display.getAllegroDisplay()));
-    return 0;
-}
-
 int Game::loadAssets() {
     int commonFlags = ALLEGRO_MAG_LINEAR | ALLEGRO_MIN_LINEAR | ALLEGRO_MIPMAP;
     /* Bank loading */{
@@ -249,7 +232,7 @@ int Game::loadRooms() {
 }
 
 void initPlayer() {
-    Game* game = game::getGame();
+    Game* game = Game::getGame();
     Player& player = game->player;
     player.setTexturesBankType(bank::TILESET);
     player.setTexturesBankID(bank::tileset::PLAYER);
@@ -265,10 +248,6 @@ void initPlayer() {
 
 int Game::init(){
     font = al_create_builtin_font();
-
-    setupAssman();
-    initDisplay();
-    
     LUKA_ASSERT0(loadAssets());
     LUKA_ASSERT0(loadRooms());
     initPlayer();
@@ -290,7 +269,6 @@ void Game::clean(){
     logger::info("Cleaning game components...");
 
     bank::destroyAll();
-    display.destroy();
 }
 #pragma endregion
 
@@ -304,14 +282,11 @@ bool Game::isZPressedThisFrame() {
 
 
 
+Game* ____game;
 
-
-
-namespace game { Game* game; }
-
-void game::makeCurrent(Game* _gm) {
-    game = _gm;
+void Game::makeCurrent(Game* _gm) {
+    ____game = _gm;
 }
-Game* game::getGame() {
-    return game;
+Game* Game::getGame() {
+    return ____game;
 }
