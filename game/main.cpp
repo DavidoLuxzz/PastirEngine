@@ -113,13 +113,16 @@ int run(){
     while (_state.running) {
         double deltaTime = al_get_time() - lastTime; // seconds?
         lastTime = al_get_time();
-        // printf("%f\n", deltaTime);a
-        /* handle events: */ {
-        if (currentScreen == ScreenType::GAME)
+
+        // sve je ovde jasno
+        if (currentScreen == ScreenType::GAME) {
             game.handleEvents();
             game.update(deltaTime);
             game.draw();
-        } // end handling events
+        } // todo: else if (currentScreen == ScreenType::FIGHT) { ... }
+        // ja bi prvo napravio neki fight. cisto onako da se nahajpujem.
+        // da dobijem malo motivacije da nastavim da pravim igricu.
+        // a nadam se da ce Ivana tog pastira nacrtati.
 
         display->setTitle(  (std::string("DEMO FPS: ")+std::to_string((int)round(1.0/deltaTime)) + 
                             " Sprites: "+std::to_string(game.rooms[game.roomID].objects.size())).c_str()  );
