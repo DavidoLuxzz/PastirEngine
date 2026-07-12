@@ -4,7 +4,9 @@
 
 class MainMenu {
 public:
-    int run();
+    void handleEvents();
+    void update();
+    void draw();
 };
 
 

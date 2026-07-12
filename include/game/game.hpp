@@ -16,20 +16,13 @@
 #define TRIGGERS_FILE "triggers.txt"
 #define ENTITIES_FILE "ent.txt"
 
-enum ScreenType {
-    GAME,
-    MAIN_MENU,
-    FIGHT,
-
-    NUM_SCREEN_TYPES
-};
 /**
  * U ovoj klasi su sve komponente vezane *samo* za gameplay.
  * Znaci u ovoj klasi *nema* komponenata za npr. main menu.
  */
 class Game {
 public:
-    ScreenType currentScreen = GAME;
+    
     #define NUM_ROOMS 4
     Room rooms[NUM_ROOMS];
     int roomID = 0, requestRoomID = 0; // requestRoomID - kada change room
@@ -37,6 +30,7 @@ public:
     Player player;
     ALLEGRO_FONT* font;
     bool f3 = false;
+    bool ___zPressedThisFrame = false;
     StaticEntity ent;
     /**
      * Initializes game components and variables.
@@ -51,10 +45,10 @@ public:
     /// @brief clean before exit
     void clean();
     /**
-     * Main game run function
+     * Main game one cycle function
      * @returns exit code
      */
-    int run();
+    int cycle();
     void draw();
 
     void game_move(float dx, float dy);

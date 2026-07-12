@@ -9,10 +9,27 @@
 #include <game/game.hpp>
 #include <game/main_menu.hpp>
 #include <asset_manager.hpp>
+#include <game/global.hpp>
+
+global::vars _state = {
+    .running = true
+};
+
+global::vars& global::get() {
+    return _state;
+}
 
 #define LOG_MAIN_LOADING false
 
 
+enum ScreenType {
+    GAME,
+    MAIN_MENU,
+    FIGHT,
+
+    NUM_SCREEN_TYPES
+};
+ScreenType currentScreen = GAME;
 Display display;
 ALLEGRO_FONT* font;
 MainMenu mainMenu;
@@ -60,6 +77,7 @@ void uninstall(){
     al_uninstall_system();
 }
 
+int run();
 /**
  * ovo allegro sranje ne da mi da prdnem bez ovih parametara. jebiga.
  * napravljeno samo za Mac tako da postujem.
@@ -78,12 +96,34 @@ int main(int argc, char** argv) {
         uninstall();
         return 0;
     }
-    std::cout << "--> game::run()\n";
-    game.run();
+    std::cout << "--> run()\n";
+    run();
     std::cout << "--> game::clean()\n";
     game.clean();
 
     uninstall();
+
+    return 0;
+}
+
+int run(){
+    Display* display = Display::getCurrentDisplay();
+    // unsigned int frames = 0;
+    double lastTime = 0.0;
+    while (_state.running) {
+        double deltaTime = al_get_time() - lastTime; // seconds?
+        lastTime = al_get_time();
+        // printf("%f\n", deltaTime);a
+        /* handle events: */ {
+        if (currentScreen == ScreenType::GAME)
+            game.handleEvents();
+            game.update(deltaTime);
+            game.draw();
+        } // end handling events
+
+        display->setTitle(  (std::string("DEMO FPS: ")+std::to_string((int)round(1.0/deltaTime)) + 
+                            " Sprites: "+std::to_string(game.rooms[game.roomID].objects.size())).c_str()  );
+    }
 
     return 0;
 }

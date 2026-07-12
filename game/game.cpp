@@ -14,44 +14,7 @@
 #include <event.hpp>
 #include <audio.hpp>
 #include <allegro5/allegro_font.h>
-
-#define TEST_DRAW_SAMPLES 1
-
-#pragma region game::run
-
-bool ___zPressedThisFrame = false;
-bool ___running = true;
-
-int Game::run(){
-    Display* display = Display::getCurrentDisplay();
-    // unsigned int frames = 0;
-    double lastTime = 0.0;
-    while (___running) {
-        double deltaTime = al_get_time() - lastTime; // seconds?
-        lastTime = al_get_time();
-        // printf("%f\n", deltaTime);a
-        /* handle events: */ {
-        if (currentScreen == ScreenType::GAME)
-            handleEvents();
-            update(deltaTime);
-            draw();
-        } // end handling events
-
-        display->setTitle(  (std::string("DEMO FPS: ")+std::to_string((int)round(1.0/deltaTime)) + 
-                            " Sprites: "+std::to_string(TEST_DRAW_SAMPLES*rooms[roomID].objects.size())).c_str()  );
-
-        // ## UPDATE ## //
-
-        /* DRAWING */
-        
-
-        ___zPressedThisFrame = false;
-    }
-
-    return 0;
-}
-
-#pragma endregion
+#include <game/global.hpp>
 
 #pragma region game::draw
 
@@ -76,8 +39,7 @@ void Game::draw() {
     Display::clear(0,0,0);
 
     // Draw room back layer
-    for (int i=0; i<TEST_DRAW_SAMPLES; i++)
-        rooms[roomID].drawBackLayer();
+    rooms[roomID].drawBackLayer();
     // Draw player
     float2 shadowPos = {
         player.getScreenPosition().x+player.getScreenHitbox().size.x/2.0f,
@@ -86,8 +48,7 @@ void Game::draw() {
     al_draw_filled_ellipse(shadowPos.x,shadowPos.y,40.f,10.f, al_map_rgba(0,0,0,20));
     player.draw();
     // Draw room top layer
-    for (int i=0; i<TEST_DRAW_SAMPLES; i++)
-        rooms[roomID].drawTopLayer();
+    rooms[roomID].drawTopLayer();
 
     // Show dialogbox (kada treba)
     if (dialogbox::isShowing()) dialogbox::draw();
@@ -124,12 +85,12 @@ void Game::handleEvents() {
     ALLEGRO_EVENT evt;
     while (Display::getCurrentDisplay()->getEventQueue().popNext(&evt)) {
         if (evt.type==ALLEGRO_EVENT_DISPLAY_CLOSE) {
-            ___running = false;
+            global::get().running = false;
             return;
         }
         if (evt.type==ALLEGRO_EVENT_KEY_DOWN) switch (evt.keyboard.keycode) {
             case ALLEGRO_KEY_ESCAPE: {
-                ___running = false;
+                global::get().running = false;
                 return;
             };
             case ALLEGRO_KEY_SPACE: {
@@ -192,6 +153,7 @@ void Game::update(float ms){
             game_move(0.0f,0.0f);
         }
     }
+    ___zPressedThisFrame = false;
 }
 void Game::updateMovement(float ms) {
     // if (requestRoomID != roomID) immidiatelyChangeRoom();
