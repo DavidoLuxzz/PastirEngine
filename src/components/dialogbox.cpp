@@ -2,7 +2,7 @@
 #include <sprite/sprite.hpp>
 #include <allegro5/allegro_font.h>
 #include <components/display.hpp>
-#include <game.hpp>
+#include <game/game.hpp>
 #include <audio.hpp>
 
 namespace dialogbox {

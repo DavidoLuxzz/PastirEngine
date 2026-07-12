@@ -4,7 +4,7 @@
 #include <iostream>
 #include <colors.h>
 #include <sstream>
-#include <game.hpp>
+#include <game/game.hpp>
 #include <event.hpp>
 #include <components/dialogbox.hpp>
 
@@ -156,7 +156,6 @@ void __tr_loader_loadRoomTriggerCounts(const TrData& contents, std::vector<unsig
     }
 }
 
-#include <game.hpp>
 int triggers::load() {
     std::string filepath = assman::getasset(TRIGGERS_FILE);
     // fprintf(stderr, "<TRLOADER> Loading triggers. path=%s\n", filepath.c_str());

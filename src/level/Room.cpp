@@ -73,7 +73,7 @@ void Room::move(float _dx, float _dy, void* _player) {
     translate.y = newy;
     // if (player) player->move(ptrans.x,ptrans.y);
 }
-#include <game.hpp>
+#include <game/game.hpp>
 void Room::drawBackLayer() {
     float playerFeetY = Game::getGame()->player.getWorldFeetY();
     al_hold_bitmap_drawing(true);
@@ -110,7 +110,6 @@ void Room::drawTopLayer() {
     }
 }
 
-#include <game.hpp>
 void Room::position(float2 playerPos) {
     uint2 winSize;
     // window size. no scale (1.0f)

@@ -1,5 +1,5 @@
 #include <sprite/Drawable.hpp>
-#include <game.hpp>
+#include <game/game.hpp>
 
 Drawable::Drawable(TextureID texture, float x, float y) {
     init(texture, x, y);
@@ -57,7 +57,6 @@ float degreesToRadians(float degrees) {
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_color.h>
 #include <components/display.hpp>
-#include <game.hpp>
 void Drawable::drawData(const DrawableData& data, float2 translate) {
     ALLEGRO_BITMAP* bitmap = bank::tileset::getBank(bank::tileset::MAP_DRAWABLES)
                                 .getTexture()

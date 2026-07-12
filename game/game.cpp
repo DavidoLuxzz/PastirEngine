@@ -1,4 +1,4 @@
-#include <game.hpp>
+#include <game/game.hpp>
 #include <iostream>
 #include <components/display.hpp>
 #include <logger.hpp>
@@ -20,64 +20,30 @@
 #pragma region game::run
 
 bool ___zPressedThisFrame = false;
+bool ___running = true;
 
 int Game::run(){
     Display* display = Display::getCurrentDisplay();
     // unsigned int frames = 0;
     double lastTime = 0.0;
-    while (true) {
+    while (___running) {
         double deltaTime = al_get_time() - lastTime; // seconds?
         lastTime = al_get_time();
         // printf("%f\n", deltaTime);a
         /* handle events: */ {
-            ALLEGRO_EVENT evt;
-            while (display->getEventQueue().popNext(&evt)) {
-                if (evt.type==ALLEGRO_EVENT_DISPLAY_CLOSE) return 0;
-                if (evt.type==ALLEGRO_EVENT_KEY_DOWN) switch (evt.keyboard.keycode) {
-                    case ALLEGRO_KEY_ESCAPE: return 0;
-                    case ALLEGRO_KEY_SPACE: {
-                        dialogbox::show(!dialogbox::isShowing());
-                        break;
-                    }
-                    case ALLEGRO_KEY_G:
-                        f3 = !f3;
-                        break;
-                    case ALLEGRO_KEY_R: {
-                        loadRooms();
-                        bank::destroyAll();
-                        loadAssets();
-                        break;
-                    }
-                    case ALLEGRO_KEY_Q:
-                        player.setInvincible(!player.isInvincible());
-                        break;
-                    case ALLEGRO_KEY_Z:
-                        if (dialogbox::isShowing()) dialogbox::hide();
-                        else ___zPressedThisFrame = true;
-                        break;
-                    default:
-                        break;
-                }
-            }
+        if (currentScreen == ScreenType::GAME)
+            handleEvents();
+            update(deltaTime);
+            draw();
         } // end handling events
 
         display->setTitle(  (std::string("DEMO FPS: ")+std::to_string((int)round(1.0/deltaTime)) + 
                             " Sprites: "+std::to_string(TEST_DRAW_SAMPLES*rooms[roomID].objects.size())).c_str()  );
 
         // ## UPDATE ## //
-        keyboard::fetchKeyboardState();
-        if (!(dialogbox::isShowing()||display->isFading())) update(deltaTime);
-        display->update(deltaTime*1000.0f);
-        if (display->isFading()) {
-            // printf("Display fade: %d\n", display->getFadeFrame());
-            if (display->getFadeFrame()==display->getFadeCycleCount()/2) {
-                immidiatelyChangeRoom();
-                game_move(0.0f,0.0f);
-            }
-        }
 
         /* DRAWING */
-        draw();
+        
 
         ___zPressedThisFrame = false;
     }
@@ -90,13 +56,13 @@ int Game::run(){
 #pragma region game::draw
 
 void Game::debugText() {
-    constexpr float __px_scale = 4.0f;
+    constexpr float __px_scale = 2.0f;
     Display::useCustomScale(__px_scale, __px_scale);
 
     Rectf playerHitbox = player.getHitbox();
 
     al_draw_textf(font, al_map_rgb(255,255,255), 0, 0, 0, "Player pos: %.1f %.1f [%.0fx%.0f]", playerHitbox.min.x,playerHitbox.min.y, playerHitbox.size.x,playerHitbox.size.y);
-    al_draw_textf(font, al_map_rgb(255,255,255), 0, 30.0f, 0, "Debug (show hitboxes): %s", f3?"true":"false");
+    al_draw_textf(font, al_map_rgb(255,255,255), 0, 10.0f, 0, "Debug (show hitboxes): %s", f3?"true":"false");
 
     Display::useScale();
 }
@@ -152,6 +118,48 @@ void Game::draw() {
 
 #pragma endregion
 
+#pragma region game::handleEvents
+
+void Game::handleEvents() {
+    ALLEGRO_EVENT evt;
+    while (Display::getCurrentDisplay()->getEventQueue().popNext(&evt)) {
+        if (evt.type==ALLEGRO_EVENT_DISPLAY_CLOSE) {
+            ___running = false;
+            return;
+        }
+        if (evt.type==ALLEGRO_EVENT_KEY_DOWN) switch (evt.keyboard.keycode) {
+            case ALLEGRO_KEY_ESCAPE: {
+                ___running = false;
+                return;
+            };
+            case ALLEGRO_KEY_SPACE: {
+                dialogbox::show(!dialogbox::isShowing());
+                break;
+            }
+            case ALLEGRO_KEY_G:
+                f3 = !f3;
+                break;
+            case ALLEGRO_KEY_R: {
+                loadRooms();
+                bank::destroyAll();
+                loadAssets();
+                break;
+            }
+            case ALLEGRO_KEY_Q:
+                player.setInvincible(!player.isInvincible());
+                break;
+            case ALLEGRO_KEY_Z:
+                if (dialogbox::isShowing()) dialogbox::hide();
+                else ___zPressedThisFrame = true;
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+#pragma endregion
+
 #pragma region game::update
 
 void Game::game_move(float dx, float dy) {
@@ -172,8 +180,20 @@ void Game::immidiatelyChangeRoom() {
     player.setRoom(&rooms[roomID]);
     player.setWorldPosition(requestPlayerCoords);
 }
-
-void Game::update(float ms) {
+void Game::update(float ms){
+    Display* display = Display::getCurrentDisplay();
+    keyboard::fetchKeyboardState();
+    if (!(dialogbox::isShowing()||display->isFading())) updateMovement(ms);
+    display->update(ms);
+    if (display->isFading()) {
+        // printf("Display fade: %d\n", display->getFadeFrame());
+        if (display->getFadeFrame()==display->getFadeCycleCount()/2) {
+            immidiatelyChangeRoom();
+            game_move(0.0f,0.0f);
+        }
+    }
+}
+void Game::updateMovement(float ms) {
     // if (requestRoomID != roomID) immidiatelyChangeRoom();
     float dx = (keyboard::keyDown(ALLEGRO_KEY_RIGHT) - keyboard::keyDown(ALLEGRO_KEY_LEFT))
                 * player.getSpeed() * ms;

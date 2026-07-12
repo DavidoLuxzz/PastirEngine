@@ -35,7 +35,7 @@ Rectf StaticEntity::getHitbox() const {
 
 
 #include <components/display.hpp>
-#include <game.hpp>
+#include <game/game.hpp>
 
 void StaticEntity::drawData(const EntityData& data, float2 translate) {
     ALLEGRO_BITMAP* bitmap = bank::tileset::getBank(bank::tileset::ENTITY0)

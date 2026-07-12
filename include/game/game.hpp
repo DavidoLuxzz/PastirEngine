@@ -16,12 +16,20 @@
 #define TRIGGERS_FILE "triggers.txt"
 #define ENTITIES_FILE "ent.txt"
 
+enum ScreenType {
+    GAME,
+    MAIN_MENU,
+    FIGHT,
+
+    NUM_SCREEN_TYPES
+};
 /**
  * U ovoj klasi su sve komponente vezane *samo* za gameplay.
  * Znaci u ovoj klasi *nema* komponenata za npr. main menu.
  */
 class Game {
 public:
+    ScreenType currentScreen = GAME;
     #define NUM_ROOMS 4
     Room rooms[NUM_ROOMS];
     int roomID = 0, requestRoomID = 0; // requestRoomID - kada change room
@@ -38,8 +46,6 @@ public:
     int init();
     /// @returns error code 
     int loadAssets();
-    /// @returns error code
-    int loadSoundsAndMusic();
     /// @returns error code
     int loadRooms();
     /// @brief clean before exit
@@ -63,7 +69,9 @@ public:
 
     /// @brief used localy
     /// @param ms time passed since last update (should equal to 1/FPS)
+    void updateMovement(float ms);
     void update(float ms);
+    void handleEvents();
 
 
     static void makeCurrent(Game*);

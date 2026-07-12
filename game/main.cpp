@@ -6,21 +6,13 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 
-#include <game.hpp>
-#include <main_menu.hpp>
+#include <game/game.hpp>
+#include <game/main_menu.hpp>
 #include <asset_manager.hpp>
 
 #define LOG_MAIN_LOADING false
 
 
-enum ScreenType {
-    GAME,
-    MAIN_MENU,
-    FIGHT,
-
-    NUM_SCREEN_TYPES
-};
-ScreenType currentScreen = MAIN_MENU;
 Display display;
 ALLEGRO_FONT* font;
 MainMenu mainMenu;
