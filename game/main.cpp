@@ -12,7 +12,8 @@
 #include <game/global.hpp>
 
 global::vars _state = {
-    .running = true
+    .running = true,
+    .currentScreen = global::FIGHT
 };
 
 global::vars& global::get() {
@@ -21,15 +22,6 @@ global::vars& global::get() {
 
 #define LOG_MAIN_LOADING false
 
-
-enum ScreenType {
-    GAME,
-    MAIN_MENU,
-    FIGHT,
-
-    NUM_SCREEN_TYPES
-};
-ScreenType currentScreen = GAME;
 Display display;
 ALLEGRO_FONT* font;
 MainMenu mainMenu;
@@ -115,14 +107,23 @@ int run(){
         lastTime = al_get_time();
 
         // sve je ovde jasno
-        if (currentScreen == ScreenType::GAME) {
+        if (_state.currentScreen == global::GAME) {
             game.handleEvents();
             game.update(deltaTime);
             game.draw();
-        } // todo: else if (currentScreen == ScreenType::FIGHT) { ... }
-        // ja bi prvo napravio neki fight. cisto onako da se nahajpujem.
+        } else if (_state.currentScreen == global::FIGHT) {
+            mainMenu.handleEvents();
+            mainMenu.update();
+            mainMenu.draw();
+        }
+        // ja bih prvo napravio neki fight. cisto onako da se nahajpujem.
         // da dobijem malo motivacije da nastavim da pravim igricu.
-        // a nadam se da ce Ivana tog pastira nacrtati.
+        // a nadam se da ce Ivana tog pastira nacrtati...
+        
+        // Fajt pattern:
+        // napadi[] = random 0-max
+        // delays_izmedju_napada[] = random
+
 
         display->setTitle(  (std::string("DEMO FPS: ")+std::to_string((int)round(1.0/deltaTime)) + 
                             " Sprites: "+std::to_string(game.rooms[game.roomID].objects.size())).c_str()  );

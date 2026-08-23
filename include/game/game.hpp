@@ -29,7 +29,6 @@ public:
     float2 requestPlayerCoords; // za sad samo kada change room
     Player player;
     ALLEGRO_FONT* font;
-    bool f3 = false;
     bool ___zPressedThisFrame = false;
     StaticEntity ent;
     /**

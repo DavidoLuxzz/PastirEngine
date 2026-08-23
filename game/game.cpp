@@ -25,7 +25,7 @@ void Game::debugText() {
     Rectf playerHitbox = player.getHitbox();
 
     al_draw_textf(font, al_map_rgb(255,255,255), 0, 0, 0, "Player pos: %.1f %.1f [%.0fx%.0f]", playerHitbox.min.x,playerHitbox.min.y, playerHitbox.size.x,playerHitbox.size.y);
-    al_draw_textf(font, al_map_rgb(255,255,255), 0, 10.0f, 0, "Debug (show hitboxes): %s", f3?"true":"false");
+    al_draw_textf(font, al_map_rgb(255,255,255), 0, 10.0f, 0, "Debug (show hitboxes): %s", global::get().f3?"true":"false");
 
     Display::useScale();
 }
@@ -54,7 +54,7 @@ void Game::draw() {
     if (dialogbox::isShowing()) dialogbox::draw();
 
     // Debug hitboxes
-    if (f3) {
+    if (global::get().f3) {
         for (const Drawable::DrawableData& drw : rooms[roomID].objects) {
             if (drw[Drawable::COMP_SOLID])
                 drawRectf(Drawable::createHitbox(drw), al_map_rgb(255,255,50), rooms[roomID].getTranslate());
@@ -98,7 +98,7 @@ void Game::handleEvents() {
                 break;
             }
             case ALLEGRO_KEY_G:
-                f3 = !f3;
+                global::get().f3 ^= true;
                 break;
             case ALLEGRO_KEY_R: {
                 loadRooms();
