@@ -13,7 +13,7 @@
 
 global::vars _state = {
     .running = true,
-    .currentScreen = global::FIGHT
+    .currentScreen = global::GAME
 };
 
 global::vars& global::get() {
@@ -113,7 +113,7 @@ int run(){
             game.draw();
         } else if (_state.currentScreen == global::FIGHT) {
             mainMenu.handleEvents();
-            mainMenu.update();
+            mainMenu.update(deltaTime);
             mainMenu.draw();
         }
         // ja bih prvo napravio neki fight. cisto onako da se nahajpujem.

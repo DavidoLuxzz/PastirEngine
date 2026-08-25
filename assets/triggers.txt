@@ -4,3 +4,4 @@
 # trigger sources: 0=level, 1=entity
 # room 0:
 0 1 0 1 0 0 380 40 100 0 100 100
+0 7 1 0 0 400 500 100 50

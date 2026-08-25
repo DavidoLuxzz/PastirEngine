@@ -7,6 +7,7 @@
 #include <game/game.hpp>
 #include <event.hpp>
 #include <components/dialogbox.hpp>
+#include <game/global.hpp>
 
 Trigger::Trigger(TriggerData& _data) {
     data = _data;
@@ -67,6 +68,10 @@ void Trigger::execute(const TriggerData& data) {
         THIS_ROOM.objects[targetID][Drawable::COMP_TEXTURE_ID] = newTexture;
         THIS_ROOM.objects[targetID][Drawable::COMP_SOLID] = solid;
         // printf("Changing texture object=%d to %d. Setting solidity to: %s\n", targetID, newTexture, solid?"yes":"no");
+        break;
+    }
+    case event::GOTO_FIGHT: {
+        global::get().currentScreen = global::FIGHT;
         break;
     }
     

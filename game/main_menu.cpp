@@ -1,7 +1,11 @@
 #include <game/main_menu.hpp>
 #include <allegro5/allegro.h>
+#include <allegro5/allegro_font.h>
 #include <components/display.hpp>
 #include <game/global.hpp>
+#include <game/game.hpp>
+#include <components/dialogbox.hpp>
+#include <input.hpp>
 
 void MainMenu::handleEvents() {
     ALLEGRO_EVENT evt;
@@ -23,6 +27,66 @@ void MainMenu::handleEvents() {
         }
     }
 }
+#define THIS_ROOM Game::getGame()->rooms[Game::getGame()->roomID]
+void MainMenu::update(float ms){
+    Display* display = Display::getCurrentDisplay();
+    Player& player = Game::getGame()->player;
+    keyboard::fetchKeyboardState();
+    if (!(dialogbox::isShowing()||display->isFading())){
+        float dx = (keyboard::keyDown(ALLEGRO_KEY_RIGHT) - keyboard::keyDown(ALLEGRO_KEY_LEFT))
+                    * player.getSpeed() * ms;
+        float dy = (keyboard::keyDown(ALLEGRO_KEY_DOWN)  - keyboard::keyDown(ALLEGRO_KEY_UP))
+                    * player.getSpeed() * ms;
 
-void MainMenu::update(){}
-void MainMenu::draw(){}
+        float speedmul = (keyboard::keyDown(ALLEGRO_KEY_C)&&player.isUsingNikes())? 1.5f:1.0f;
+
+        player.setSpeedMul(speedmul);
+        Game::getGame()->game_move(dx,dy);
+    }
+    display->update(ms);
+}
+void MainMenu::draw(){
+    Display::clear(0,0,0);
+
+    THIS_ROOM.drawBackLayer();
+    THIS_ROOM.drawTopLayer();
+
+    Player& player = Game::getGame()->player;
+    // Draw player
+    float2 shadowPos = {
+        player.getScreenPosition().x+player.getScreenHitbox().size.x/2.0f,
+        player.getScreenFeetY()-8.0f
+    };
+    al_draw_filled_ellipse(shadowPos.x,shadowPos.y,40.f,10.f, al_map_rgba(0,0,0,20));
+    player.draw();
+
+    // Show dialogbox (kada treba)
+    if (dialogbox::isShowing()) dialogbox::draw();
+
+    // Debug hitboxes
+    if (global::get().f3) {
+        for (const Drawable::DrawableData& drw : THIS_ROOM.objects) {
+            if (drw[Drawable::COMP_SOLID])
+                Game::drawRectf(Drawable::createHitbox(drw), al_map_rgb(255,255,50), THIS_ROOM.getTranslate());
+        }
+        Game::drawRectf(player.getHitbox(), al_map_rgb(50,255,50), THIS_ROOM.getTranslate());
+        for (int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
+            Game::drawRectf(
+                Trigger::createHitbox(triggers::get(i), THIS_ROOM.getTranslate()),
+                al_map_rgb(triggers::get(i)[Trigger::COMP_ACTION]!=0?255:50,50,50)
+            );//, room.getTranslate());
+        }
+        for (const StaticEntity::EntityData& ent : THIS_ROOM.entities) {
+            Game::drawRectf(StaticEntity::createHitbox(ent),
+                al_map_rgb(50,50,255), THIS_ROOM.getTranslate());
+        }
+        Game::getGame()->debugText();
+    }
+
+    Display::getCurrentDisplay()->drawFade();
+
+    Display::useCustomScale(4.f);
+    al_draw_text(Game::getGame()->font, al_map_rgb(200,200,200), 55.f,20.f, 0, "THIS IS A FIGHT SCREEN");
+    Display::useScale();
+    Display::swapBuffers();
+}

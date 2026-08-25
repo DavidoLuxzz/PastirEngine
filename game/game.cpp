@@ -29,12 +29,7 @@ void Game::debugText() {
 
     Display::useScale();
 }
-#include <allegro5/allegro_primitives.h>
-inline void drawRectf(const Rectf rect, ALLEGRO_COLOR color, float2 translate={0,0}) {
-    float x = rect.min.x + translate.x;
-    float y = rect.min.y + translate.y;
-    al_draw_rectangle(x,y, x+rect.size.x,y+rect.size.y, color, 4.0f);
-}
+
 void Game::draw() {
     Display::clear(0,0,0);
 

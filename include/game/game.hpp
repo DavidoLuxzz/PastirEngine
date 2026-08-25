@@ -7,6 +7,7 @@
 #include <sprite/Player.hpp>
 #include <sprite/StaticEntity.hpp>
 #include <allegro5/allegro_font.h>
+#include <allegro5/allegro_primitives.h>
 
 #define WINDOW_WIDTH  1152 // in game pixels
 #define WINDOW_HEIGHT 768 // in game pixels
@@ -43,11 +44,7 @@ public:
     int loadRooms();
     /// @brief clean before exit
     void clean();
-    /**
-     * Main game one cycle function
-     * @returns exit code
-     */
-    int cycle();
+
     void draw();
 
     void game_move(float dx, float dy);
@@ -66,6 +63,12 @@ public:
     void update(float ms);
     void handleEvents();
 
+
+    static inline void drawRectf(const Rectf rect, ALLEGRO_COLOR color, float2 translate={0,0}) {
+        float x = rect.min.x + translate.x;
+        float y = rect.min.y + translate.y;
+        al_draw_rectangle(x,y, x+rect.size.x,y+rect.size.y, color, 4.0f);
+    }
 
     static void makeCurrent(Game*);
     static Game* getGame();

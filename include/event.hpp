@@ -11,7 +11,8 @@ namespace event {
         TEXTURE_CHANGE, // 3 (todo rename u PROPERTY_CHANGE)
         DIALOG_INTERRUPT_THEN_DISAPPEAR, // 4
         GIVE_ITEM, // 5
-        GIVE_ITEM_THEN_DISAPPEAR // 6
+        GIVE_ITEM_THEN_DISAPPEAR, // 6
+        GOTO_FIGHT // 7
     };
 } // namespace event
 

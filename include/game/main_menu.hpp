@@ -5,7 +5,7 @@
 class MainMenu {
 public:
     void handleEvents();
-    void update();
+    void update(float);
     void draw();
 };
 
