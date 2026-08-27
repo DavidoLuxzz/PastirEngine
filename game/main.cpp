@@ -14,7 +14,7 @@
 
 global::vars _state = {
     .running = true,
-    .currentScreen = global::FIGHT,
+    .currentScreen = global::GAME,
     .rooms = new Room[NUM_ROOMS]
 };
 
@@ -101,6 +101,9 @@ int main(int argc, char** argv) {
 }
 int run(){
     // audio::playStream(audio::Stream::AUDIO_07);
+
+    // game.requestRoomID = 1;
+    // game.immidiatelyChangeRoom();
 
     Display* display = Display::getCurrentDisplay();
     // unsigned int frames = 0;

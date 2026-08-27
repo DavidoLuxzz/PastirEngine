@@ -12,7 +12,9 @@ typedef vec2<unsigned int> uint2;
 
 template<typename T>
 struct vec3 {
-    T x,y,z;
+    union { T x,r; };
+    union { T y,g; };
+    union { T z,b; };
 };
 typedef vec3<float> float3;
 typedef vec3<int> int3;

@@ -1,3 +1,10 @@
-area Valjevo Peti puk   
-0 0 0 0 0 0 0 0 0
+area Dreamworld Arena
+# texture x y solid layer group angle scalex scaley type width height special
+3 0 0 0 0 0 0 200 204 0
+
+0 0 0 1 0 0 0 100 100 1 2000 50
+0 0 760 1 0 0 0 100 100 1 2000 50
+0 0 0 1 0 0 0 100 100 1 0 1000
+0 1152 0 1 0 0 0 100 100 1 0 1000
+
 box 1152 448 

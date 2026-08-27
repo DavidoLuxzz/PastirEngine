@@ -100,9 +100,10 @@ int __lvl_loader_ent(const std::string& filepath, unsigned int roomID) {
                 std::cout << "token.len = " << token.length() << std::endl;
             }
         }
-        if (data[StaticEntity::COMP_ROOM] == roomID)
+        if (data[StaticEntity::COMP_ROOM] == roomID) {
             room_loader::room.entities.push_back(data);
-        //printf("Loaded object: %d %d 16x16\n", data[Drawable::COMP_X], data[Drawable::COMP_Y]);
+            // printf("(%d) Loaded object: %d %d\n", roomID, data[StaticEntity::COMP_X], data[StaticEntity::COMP_Y]);
+        }
         //break;
     }
 

@@ -50,6 +50,9 @@ void FightScreen::update(float ms){
     display->update(ms);
 }
 #pragma region draw
+
+int3 textRGB = {255,255,255};
+#include <cmath>
 void FightScreen::draw(){
     Display::clear(0,0,0);
 
@@ -91,9 +94,13 @@ void FightScreen::draw(){
     Display::getCurrentDisplay()->drawFade();
 
     Display::useCustomScale(4.f);
-    al_draw_text(Game::getGame()->font, al_map_rgb(200,200,200), 55.f,20.f, 0, "THIS IS A FIGHT SCREEN");
+    al_draw_text(Game::getGame()->font, al_map_rgb(textRGB.r,textRGB.g,textRGB.b), 55.f,20.f, 0, "THIS IS A FIGHT SCREEN");
     Display::useScale();
     Display::swapBuffers();
+
+    textRGB.r = (textRGB.r+1)%256;
+    textRGB.g = (textRGB.g-1)%256;
+    textRGB.b = (textRGB.b+2)%256;
 }
 
 #pragma region game_move
