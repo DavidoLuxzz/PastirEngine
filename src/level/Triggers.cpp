@@ -38,7 +38,7 @@ void changeRoom(const Trigger::TriggerData& data) {
 
     Display::getCurrentDisplay()->startFade();
 }
-#define THIS_ROOM Game::getGame()->rooms[Game::getGame()->roomID]
+#define THIS_ROOM global::get().rooms[Game::getGame()->roomID]
 void Trigger::execute(const TriggerData& data) {
     switch (data[COMP_ACTION]) {
     case event::CHANGE_ROOM: {

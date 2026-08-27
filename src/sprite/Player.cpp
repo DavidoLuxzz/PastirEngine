@@ -2,14 +2,16 @@
 #include <allegro5/allegro.h>
 #include <components/display.hpp>
 #include <cmath>
+#include <game/game.hpp>
+#include <game/global.hpp>
 
 Player::Player() {
     texInfo.tileID = 0;
     animation.init(0.2);
 }
 
-void Player::move(float dx, float dy) {
-    worldPos += getFixedDisplacement(dx,dy);
+void Player::move(float dx, float dy, int roomID) {
+    worldPos += getFixedDisplacement(dx,dy,roomID);
     // worldPos.x += dx;
     // worldPos.y += dy;
 }
@@ -47,10 +49,6 @@ void Player::useNikes(bool t) {
 }
 bool Player::isUsingNikes() const {
     return usingNikes;
-}
-
-void Player::setRoom(Room* r) {
-    room = r;
 }
 
 Rectf Player::getHitbox() const {
@@ -105,31 +103,15 @@ if (d<0.0f) \
                     else \
                         rdx = absmin(d,  drw.min.x - JANCD - (__playerHitbox.min.x+__playerHitbox.size.x));
 */
-float2 Player:: getFixedDisplacement(float dx, float dy) {
+float2 Player:: getFixedDisplacement(float dx, float dy, int roomID) {
     if (invincible) return {dx,dy};
-    /* Algoritam iz Java Pastira
-        boolean canMoveX = true;
-        boolean canMoveY = true;
-        for (Drawable o : cos){
-            if (o.getHitbox().intersects(getHitboxAt(reqx + dx, reqy))){ // X movement check
-                canMoveX = false;
-            }
-            if (o.getHitbox().intersects(getHitboxAt(reqx, reqy + dy))){ // Y movement check
-                canMoveY = false;
-            }
-        }
-        for (Entity e : Main.getEntities().getNodeGroup()) {
-            if (e.getHitbox().intersects(getHitboxAt(reqx + dx, reqy))) canMoveX = false;
-            if (e.getHitbox().intersects(getHitboxAt(reqx, reqy + dy))) canMoveY = false;
-        }
+    
+    if (roomID<0) roomID = Game::getGame()->roomID;
+    const Room& room = global::get().rooms[roomID];
 
-        if (canMoveX) reqx = (getRequestedX() + dx);
-        if (canMoveY) reqy = (getRequestedY() + dy);
-    */
-    // return {getFixedDisplacementX(dx), getFixedDisplacementY(dy)};
     float rdx = dx, rdy = dy;
     const Rectf __playerHitbox = getHitbox();
-    for (const Drawable::DrawableData& data : room->objects) {
+    for (const Drawable::DrawableData& data : room.objects) {
         if (!data[Drawable::COMP_SOLID]) continue;
         Rectf playerHitbox = __playerHitbox;
         Rectf drw = Drawable::createHitbox(data);
@@ -146,7 +128,7 @@ float2 Player:: getFixedDisplacement(float dx, float dy) {
             rdy = AXIS_CHECK(dy,y);
         }
     }
-    for (const StaticEntity::EntityData& ent : room->entities) {
+    for (const StaticEntity::EntityData& ent : room.entities) {
         // assume da su svi solid
         Rectf playerHitbox = __playerHitbox;
         Rectf drw = StaticEntity::createHitbox(ent);

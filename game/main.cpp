@@ -7,13 +7,15 @@
 #include <allegro5/allegro_acodec.h>
 
 #include <game/game.hpp>
-#include <game/main_menu.hpp>
+#include <game/fight_screen.hpp>
 #include <asset_manager.hpp>
 #include <game/global.hpp>
+#include <audio.hpp>
 
 global::vars _state = {
     .running = true,
-    .currentScreen = global::GAME
+    .currentScreen = global::FIGHT,
+    .rooms = new Room[NUM_ROOMS]
 };
 
 global::vars& global::get() {
@@ -24,7 +26,7 @@ global::vars& global::get() {
 
 Display display;
 ALLEGRO_FONT* font;
-MainMenu mainMenu;
+FightScreen mainMenu;
 Game game; // da ne trosi stack
 
 
@@ -97,8 +99,9 @@ int main(int argc, char** argv) {
 
     return 0;
 }
-
 int run(){
+    // audio::playStream(audio::Stream::AUDIO_07);
+
     Display* display = Display::getCurrentDisplay();
     // unsigned int frames = 0;
     double lastTime = 0.0;
@@ -126,7 +129,7 @@ int run(){
 
 
         display->setTitle(  (std::string("DEMO FPS: ")+std::to_string((int)round(1.0/deltaTime)) + 
-                            " Sprites: "+std::to_string(game.rooms[game.roomID].objects.size())).c_str()  );
+                            " Sprites: "+std::to_string(_state.rooms[game.roomID].objects.size())).c_str()  );
     }
 
     return 0;

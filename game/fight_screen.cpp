@@ -1,4 +1,4 @@
-#include <game/main_menu.hpp>
+#include <game/fight_screen.hpp>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
 #include <components/display.hpp>
@@ -7,7 +7,8 @@
 #include <components/dialogbox.hpp>
 #include <input.hpp>
 
-void MainMenu::handleEvents() {
+#pragma region events
+void FightScreen::handleEvents() {
     ALLEGRO_EVENT evt;
     while (Display::getCurrentDisplay()->getEventQueue().popNext(&evt)) {
         if (evt.type==ALLEGRO_EVENT_DISPLAY_CLOSE) {
@@ -16,6 +17,7 @@ void MainMenu::handleEvents() {
         }
         if (evt.type==ALLEGRO_EVENT_KEY_DOWN) switch (evt.keyboard.keycode) {
             case ALLEGRO_KEY_ESCAPE: {
+                global::get().running = false; // quit (debug)
                 global::get().currentScreen = global::GAME;
                 return;
             };
@@ -27,8 +29,10 @@ void MainMenu::handleEvents() {
         }
     }
 }
-#define THIS_ROOM Game::getGame()->rooms[Game::getGame()->roomID]
-void MainMenu::update(float ms){
+#define THIS_ROOM global::get().rooms[roomID]
+
+#pragma region update
+void FightScreen::update(float ms){
     Display* display = Display::getCurrentDisplay();
     Player& player = Game::getGame()->player;
     keyboard::fetchKeyboardState();
@@ -41,11 +45,12 @@ void MainMenu::update(float ms){
         float speedmul = (keyboard::keyDown(ALLEGRO_KEY_C)&&player.isUsingNikes())? 1.5f:1.0f;
 
         player.setSpeedMul(speedmul);
-        Game::getGame()->game_move(dx,dy);
+        game_move(dx,dy);
     }
     display->update(ms);
 }
-void MainMenu::draw(){
+#pragma region draw
+void FightScreen::draw(){
     Display::clear(0,0,0);
 
     THIS_ROOM.drawBackLayer();
@@ -89,4 +94,19 @@ void MainMenu::draw(){
     al_draw_text(Game::getGame()->font, al_map_rgb(200,200,200), 55.f,20.f, 0, "THIS IS A FIGHT SCREEN");
     Display::useScale();
     Display::swapBuffers();
+}
+
+#pragma region game_move
+
+void FightScreen::game_move(float dx, float dy) {
+    Player& player = Game::getGame()->player;
+    // Move player
+    player.move(dx,dy, roomID);
+
+    // Adjust camera
+    THIS_ROOM.position(player.getWorldPosition());
+    player.positionRoom(THIS_ROOM.getTranslate());
+
+    // Orientate player
+    player.orientate(dx,dy);
 }

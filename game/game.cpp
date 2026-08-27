@@ -16,6 +16,8 @@
 #include <allegro5/allegro_font.h>
 #include <game/global.hpp>
 
+#define rooms global::get().rooms
+
 #pragma region game::draw
 
 void Game::debugText() {
@@ -133,7 +135,7 @@ void Game::game_move(float dx, float dy) {
 void Game::immidiatelyChangeRoom() {
     roomID = requestRoomID;
     triggers::prepare(roomID);
-    player.setRoom(&rooms[roomID]);
+    // player.setRoom(&rooms[roomID]);
     player.setWorldPosition(requestPlayerCoords);
 }
 void Game::update(float ms){
@@ -219,7 +221,7 @@ void initPlayer() {
     //player.setWorldPosition(player.getPosition());
     player.setWorldPosition({400.0f, 340.0f});
     // player.setWorldPosition({0.0f,0.0f});
-    player.setRoom(&game->rooms[game->roomID]);
+    // player.setRoom(&game->rooms[game->roomID]);
     game->game_move(0.0f,0.0f); // init step, positioning
 }
 
@@ -231,7 +233,6 @@ int Game::init(){
     LUKA_ASSERT0(dialogbox::init());
     LUKA_ASSERT0(audio::init());
 
-    audio::playStream(audio::Stream::AUDIO_07);
     dialogbox::setVoice(audio::Sound::VOICE01);
 
     // dialogbox::setText("Hallo!!");

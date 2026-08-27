@@ -22,8 +22,6 @@ protected:
      */
     float2 worldPos;
 
-    /* pointer to a [solid drawable pointers] list */ // DrawableData** solids;
-    Room* room=NULL;
 public:
     /// @brief Speed [pixel(s)/60FPS]
     static constexpr float SPEED = 240.0f;
@@ -46,7 +44,7 @@ public:
     void setSpeedMul(float mul);
     float getSpeed() const;
 
-    void setRoom(Room*);
+    // void setRoom(Room*);
 
     Rectf getHitbox() const;
 
@@ -70,9 +68,11 @@ public:
     float getWorldFeetY() const; 
 
     // based on collision checks in current room
-    float2 getFixedDisplacement(float, float);
+    float2 getFixedDisplacement(float, float, int roomID=-1);
 
-    void move(float dx, float dy);
+    /// @brief By default it takes Game's roomID value
+    /// @param roomID specific roomID to compute collision in
+    void move(float dx, float dy, int roomID=-1);
     /**
      * Changes players texture tile according to the current direction.
      * Also contains animation.update().
