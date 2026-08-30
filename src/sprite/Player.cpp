@@ -58,7 +58,7 @@ Rectf Player::getHitbox() const {
         size.y = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.y;
     }
     size *= scale;
-    static const float xoffset = 4*scale.x;
+    static const float xoffset = size.x/4.0f;
     Rectf hitbox = {
         getWorldPosition(),
         {size.x-2*xoffset, size.y/2.0f}
