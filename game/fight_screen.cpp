@@ -7,6 +7,8 @@
 #include <components/dialogbox.hpp>
 #include <input.hpp>
 
+
+
 #pragma region events
 void FightScreen::handleEvents() {
     ALLEGRO_EVENT evt;
@@ -48,6 +50,8 @@ void FightScreen::update(float ms){
         game_move(dx,dy);
     }
     display->update(ms);
+
+    // if (blasts[0].)
 }
 #pragma region draw
 

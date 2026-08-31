@@ -2,7 +2,11 @@
 #ifndef __FIGHT_SCREEN_HPP
 #define __FIGHT_SCREEN_HPP
 
+#include <fight/blast.hpp>
+#include <vector>
+
 class FightScreen {
+    std::vector<Blast> blasts;
 public:
     int roomID = 1;
 

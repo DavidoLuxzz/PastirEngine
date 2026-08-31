@@ -72,6 +72,7 @@ void Trigger::execute(const TriggerData& data) {
     }
     case event::GOTO_FIGHT: {
         global::get().currentScreen = global::FIGHT;
+        triggers::prepare(1); // 1=fight room
         break;
     }
     

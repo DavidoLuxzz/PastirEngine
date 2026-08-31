@@ -20,6 +20,8 @@ public:
     void setTickFunction(AnimationTickFunc func);
     AnimationTickFunc getTickFunction() const;
 
+    inline bool isFinished() { return (cycleCount>0 && frame>cycleCount); }
+
     /**
      * If enough time is passed, it calls tick()
      */

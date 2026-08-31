@@ -13,7 +13,7 @@ AnimationTickFunc Animation::getTickFunction() const {
 }
 
 void Animation::tick() {
-    if (cycleCount>0 && frame>cycleCount) return;
+    if (isFinished()) return;
     if (tickFunc) tickFunc(frame);
     frame++;
 }
