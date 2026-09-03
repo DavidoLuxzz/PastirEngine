@@ -6,8 +6,10 @@
 #include <game/game.hpp>
 #include <components/dialogbox.hpp>
 #include <input.hpp>
+#include <algorithm>
 
-
+#define THIS_ROOM global::get().rooms[roomID]
+#define player Game::getGame()->player
 
 #pragma region events
 void FightScreen::handleEvents() {
@@ -26,17 +28,19 @@ void FightScreen::handleEvents() {
             case ALLEGRO_KEY_G:
                 global::get().f3 ^= true;
                 break;
+            case ALLEGRO_KEY_SPACE: {
+                blasts.push_back(Blast(player.getPositionY(), 100.0f, 50, 0.04f));
+                break;
+            }
             default:
                 break;
         }
     }
 }
-#define THIS_ROOM global::get().rooms[roomID]
 
 #pragma region update
 void FightScreen::update(float ms){
     Display* display = Display::getCurrentDisplay();
-    Player& player = Game::getGame()->player;
     keyboard::fetchKeyboardState();
     if (!(dialogbox::isShowing()||display->isFading())){
         float dx = (keyboard::keyDown(ALLEGRO_KEY_RIGHT) - keyboard::keyDown(ALLEGRO_KEY_LEFT))
@@ -51,7 +55,12 @@ void FightScreen::update(float ms){
     }
     display->update(ms);
 
-    // if (blasts[0].)
+    // Blasts (horizontal dead zones)
+    std::erase_if(blasts, [](Blast& b) { return b.isFinished(); });
+
+    for (Blast& blast : blasts) {
+        blast.update();
+    }
 }
 #pragma region draw
 
@@ -60,10 +69,9 @@ int3 textRGB = {255,255,255};
 void FightScreen::draw(){
     Display::clear(0,0,0);
 
+    // Draw room back layer
     THIS_ROOM.drawBackLayer();
-    THIS_ROOM.drawTopLayer();
 
-    Player& player = Game::getGame()->player;
     // Draw player
     float2 shadowPos = {
         player.getScreenPosition().x+player.getScreenHitbox().size.x/2.0f,
@@ -71,6 +79,13 @@ void FightScreen::draw(){
     };
     al_draw_filled_ellipse(shadowPos.x,shadowPos.y,40.f,10.f, al_map_rgba(0,0,0,20));
     player.draw();
+
+    // Draw blasts
+    for (Blast& b : blasts)
+        b.draw();
+
+    // Draw room top layer
+    THIS_ROOM.drawTopLayer();
 
     // Show dialogbox (kada treba)
     if (dialogbox::isShowing()) dialogbox::draw();
@@ -110,7 +125,6 @@ void FightScreen::draw(){
 #pragma region game_move
 
 void FightScreen::game_move(float dx, float dy) {
-    Player& player = Game::getGame()->player;
     // Move player
     player.move(dx,dy, roomID);
 

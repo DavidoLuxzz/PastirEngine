@@ -42,7 +42,7 @@ int Display::create(int _w, int _h, const char* title, bool use_scale) {
 
     printf("Allegro %s with OpenGL %d.%d; VSync=%d\n", ALLEGRO_VERSION_STR, opt_gl_major,opt_gl_minor,opt_vsync);
 
-
+    al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
 
     return 0;
 }

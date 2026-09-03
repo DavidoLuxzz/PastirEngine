@@ -2,6 +2,8 @@
 #ifndef __ANIMATION_HPP
 #define __ANIMATION_HPP
 
+#include <functional>
+
 typedef void (*AnimationTickFunc)(int frame);
 
 class Animation {
@@ -20,12 +22,13 @@ public:
     void setTickFunction(AnimationTickFunc func);
     AnimationTickFunc getTickFunction() const;
 
-    inline bool isFinished() { return (cycleCount>0 && frame>cycleCount); }
+    bool isFinished() const;
 
     /**
      * If enough time is passed, it calls tick()
+     * @return Returns true if enough time is passed.
      */
-    void update();
+    bool update();
     /// @brief Calls tick function
     void tick();
 

@@ -12,6 +12,8 @@ AnimationTickFunc Animation::getTickFunction() const {
     return tickFunc;
 }
 
+bool Animation::isFinished() const { return (cycleCount>0 && frame>cycleCount); }
+
 void Animation::tick() {
     if (isFinished()) return;
     if (tickFunc) tickFunc(frame);
@@ -19,11 +21,13 @@ void Animation::tick() {
 }
 
 #include <allegro5/timer.h>
-void Animation::update() {
-    if (cycleCount>0 && frame>cycleCount) return;
+bool Animation::update() {
+    if (cycleCount>0 && frame>cycleCount) return false;
     double time = al_get_time();
     if ((time-_lastTime)>=rate) {
         _lastTime = time;
         tick();
+        return true;
     }
+    return false;
 }
