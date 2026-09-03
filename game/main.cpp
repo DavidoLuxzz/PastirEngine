@@ -100,7 +100,7 @@ int main(int argc, char** argv) {
     return 0;
 }
 int run(){
-    // audio::playStream(audio::Stream::AUDIO_07);
+    audio::playStream(audio::Stream::AUDIO_07);
 
     // game.requestRoomID = 1;
     // game.immidiatelyChangeRoom();

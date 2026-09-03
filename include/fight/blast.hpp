@@ -15,12 +15,14 @@ class Blast {
     float increment, decrement;
     int incrementFrames;
 public:
-    Blast(float cy, float height, int idleFrame=-1, float increment=0.01f);
-    void draw();
+    Blast(float cy, float height, int dimFrames=-1, float increment=0.01f);
+    void draw(float2 translate={0.f,0.f}); // translate.x nema znacaj
     void update();
     bool isFinished() const;
 
     void tick(int frame);
+
+    Rectf getHitbox() const;
 };
 
 

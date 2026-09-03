@@ -60,7 +60,7 @@ void Game::draw() {
         for (int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
             drawRectf(
                 Trigger::createHitbox(triggers::get(i), rooms[roomID].getTranslate()),
-                al_map_rgb(triggers::get(i)[Trigger::COMP_ACTION]!=event::NONE?255:50,50,50)
+                al_map_rgb(50,50,triggers::get(i)[Trigger::COMP_ACTION]!=event::NONE?255:50)
             );//, room.getTranslate());
         }
         for (const StaticEntity::EntityData& ent : rooms[roomID].entities) {

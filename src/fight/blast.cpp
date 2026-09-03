@@ -9,6 +9,7 @@
 #define BRIGHT_SHARPNESS 8.0f
 
 Blast::Blast(float cy, float h, int dim, float inc) {
+    printf("%f %f %d %f\n", cy,h,dim,inc);
     centerY = cy; height = h;
     numShades = height/SHADE_OFFSET;
     increment = inc;
@@ -18,6 +19,8 @@ Blast::Blast(float cy, float h, int dim, float inc) {
 
     int cycleCount = -1;
     if (dim>0) cycleCount = incrementFrames + IDLE_FRAMES + dim;
+
+    printf("Cycle count: %d\n", cycleCount);
 
     anim.init(16.6667/1000, cycleCount);
 }
@@ -42,14 +45,16 @@ void Blast::tick(int frame) {
     else if (frame > incrementFrames+IDLE_FRAMES) visibility -= decrement;
 }
 
-void Blast::draw() {
+void Blast::draw(float2 translate) {
+    
     int shades = numShades*visibility;
     shades = numShades;
+
     for (int i=0; i<shades; i++) {
         float yoff = (i+1) * SHADE_OFFSET / 2;
         al_draw_filled_rectangle(
-            0.f, centerY-yoff,
-            2000.f, centerY+yoff,
+           -2000.f, centerY - yoff  + translate.y,
+            2000.f, centerY + yoff  + translate.y,
             al_map_rgba(255,255,255, 
                 (anim.frame > incrementFrames+IDLE_FRAMES)?
                 64*dim(visibility, DIM_SHARPNESS-DIM_SHARPNESS*i/numShades) : // magic
@@ -61,4 +66,13 @@ void Blast::draw() {
 
 bool Blast::isFinished() const {
     return anim.isFinished();
+}
+
+Rectf Blast::getHitbox() const {
+    float h = height * brght(visibility, (anim.frame>incrementFrames)? 2.0f : BRIGHT_SHARPNESS);
+    if (h < 10.f) return {{NAN,NAN},{0,0}};
+    return {
+        {-2000.f, centerY-h/2},
+        { 4000.f, h}
+    };
 }

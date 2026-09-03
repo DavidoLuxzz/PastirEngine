@@ -9,7 +9,7 @@
 #include <algorithm>
 
 #define THIS_ROOM global::get().rooms[roomID]
-#define player Game::getGame()->player
+#define player (Game::getGame()->player)
 
 #pragma region events
 void FightScreen::handleEvents() {
@@ -29,7 +29,8 @@ void FightScreen::handleEvents() {
                 global::get().f3 ^= true;
                 break;
             case ALLEGRO_KEY_SPACE: {
-                blasts.push_back(Blast(player.getPositionY(), 100.0f, 50, 0.04f));
+                Rectf hitbox = player.getHitbox();
+                blasts.push_back(Blast(hitbox.min.y+hitbox.size.y/2, 100.0f, 50, 0.04f));
                 break;
             }
             default:
@@ -82,7 +83,7 @@ void FightScreen::draw(){
 
     // Draw blasts
     for (Blast& b : blasts)
-        b.draw();
+        b.draw(THIS_ROOM.getTranslate());
 
     // Draw room top layer
     THIS_ROOM.drawTopLayer();
@@ -92,21 +93,30 @@ void FightScreen::draw(){
 
     // Debug hitboxes
     if (global::get().f3) {
+        // Solid drawables and room hitboxes
         for (const Drawable::DrawableData& drw : THIS_ROOM.objects) {
             if (drw[Drawable::COMP_SOLID])
                 Game::drawRectf(Drawable::createHitbox(drw), al_map_rgb(255,255,50), THIS_ROOM.getTranslate());
         }
+        // Player hitbox
         Game::drawRectf(player.getHitbox(), al_map_rgb(50,255,50), THIS_ROOM.getTranslate());
+        // Trigger hitboxes
         for (int i=0; i<triggers::getThisRoomTriggerCount(); i++) {
             Game::drawRectf(
                 Trigger::createHitbox(triggers::get(i), THIS_ROOM.getTranslate()),
-                al_map_rgb(triggers::get(i)[Trigger::COMP_ACTION]!=0?255:50,50,50)
+                al_map_rgb(50,50,triggers::get(i)[Trigger::COMP_ACTION]!=0?255:50)
             );//, room.getTranslate());
         }
+        // Entity hitboxes
         for (const StaticEntity::EntityData& ent : THIS_ROOM.entities) {
             Game::drawRectf(StaticEntity::createHitbox(ent),
                 al_map_rgb(50,50,255), THIS_ROOM.getTranslate());
         }
+        // Blast hitboxes
+        for (const Blast& b : blasts) {
+            Game::drawRectf(b.getHitbox(), al_map_rgb(255,50,50), THIS_ROOM.getTranslate());
+        }
+        // Debug text
         Game::getGame()->debugText();
     }
 

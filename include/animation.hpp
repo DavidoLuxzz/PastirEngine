@@ -32,8 +32,8 @@ public:
     /// @brief Calls tick function
     void tick();
 
-    int frame, cycleCount;
-    double rate;
+    int frame=0, cycleCount=-1;
+    double rate=0.0;
 };
 
 
