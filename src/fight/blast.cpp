@@ -30,13 +30,6 @@ void Blast::update() {
         tick(anim.frame);
 }
 
-float brght(float percent, float sharpness) {
-    return powf(percent, sharpness);
-}
-float dim(float percent, float sharpness) {
-    return 1.0f - powf(1.0f-percent, sharpness);
-}
-
 #include <iostream>
 void Blast::tick(int frame) {
     if (frame <= incrementFrames && visibility<0.99f) visibility+=increment;

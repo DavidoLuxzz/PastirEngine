@@ -86,7 +86,38 @@ typedef Rect<float> Rectf;
 typedef Rect<int> Recti;
 typedef Rect<unsigned int> Rectu;
 
+// Circle
+template <typename T>
+struct Circle {
+    vec2<T> center;
+    T radius;
 
+
+    template <typename Q>
+    inline explicit operator Circle<Q>() const {
+        return {{(Q)center.x, (Q)center.y}, (Q)radius};
+    }
+
+    inline bool contains(const vec2<T>& a) const {
+        return contains(a.x,a.y);
+    }
+    inline bool contains(T x, T y) const {
+        return hypotf(x-center.x, y-center.y)<radius;
+    }
+    inline bool intersects(const Circle<T>& c) const {
+        return hypotf(c.center.x-center.x, c.center.y-center.y)<(c.radius+radius);
+    }
+};
+typedef Circle<float> Circf;
+typedef Circle<int> Circi;
+typedef Circle<unsigned int> Circu;
+
+
+
+////////// funkcije 
+
+float brght(float percent, float sharpness);
+float dim(float percent, float sharpness);
 
 
 #endif

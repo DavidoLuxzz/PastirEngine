@@ -66,3 +66,16 @@ void normalize(float2& a) {
     if (c==0.0f) a *= 0.0f;
     else a /= hypotf(a.x,a.y);
 }
+
+
+
+
+
+
+
+float brght(float percent, float sharpness) {
+    return powf(percent, sharpness);
+}
+float dim(float percent, float sharpness) {
+    return 1.0f - powf(1.0f-percent, sharpness);
+}
