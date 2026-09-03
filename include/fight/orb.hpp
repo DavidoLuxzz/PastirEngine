@@ -7,7 +7,9 @@
 
 class Orb {
     Animation anim;
-    Circf hitbox;
+    Circf shape;
+
+    float2 velocity={0.f,0.f};
 
     int numShades;
     float visibility=0.0f;

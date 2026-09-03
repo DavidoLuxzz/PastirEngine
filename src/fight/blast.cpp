@@ -57,7 +57,7 @@ void Blast::draw(float2 translate) {
         al_draw_filled_rectangle(
             xx.x, yy.x,
             xx.y, yy.y,
-            al_map_rgba(255,255,255, 
+            al_map_rgba(0,0,0, 
                 (anim.frame > incrementFrames+IDLE_FRAMES)?
                 64*dim(visibility, DIM_SHARPNESS-DIM_SHARPNESS*i/numShades) : // magic
                 64*brght(visibility, BRIGHT_SHARPNESS+i*BRIGHT_SHARPNESS/2.0f))

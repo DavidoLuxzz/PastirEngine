@@ -3,10 +3,12 @@
 #define __FIGHT_SCREEN_HPP
 
 #include <fight/blast.hpp>
+#include <fight/orb.hpp>
 #include <vector>
 
 class FightScreen {
     std::vector<Blast> blasts;
+    std::vector<Orb> orbs;
 public:
     int roomID = 1;
 

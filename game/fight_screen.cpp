@@ -30,8 +30,10 @@ void FightScreen::handleEvents() {
                 break;
             case ALLEGRO_KEY_SPACE: {
                 Rectf hitbox = player.getHitbox();
-                blasts.push_back(Blast(Blast::HORIZONTAL, hitbox.min.y+hitbox.size.y/2, 100.0f, 50, 0.04f));
-                blasts.push_back(Blast(Blast::VERTICAL, hitbox.min.x+hitbox.size.x/2, 100.0f, 50, 0.04f));
+                float2 center = hitbox.min+hitbox.size/2;
+                // blasts.push_back(Blast(Blast::HORIZONTAL, hitbox.min.y+hitbox.size.y/2, 100.0f, 50, 0.04f));
+                // blasts.push_back(Blast(Blast::VERTICAL, hitbox.min.x+hitbox.size.x/2, 100.0f, 50, 0.04f));
+                orbs.push_back(Orb(center.x,center.y,50.f, -1, 0.01f));
                 break;
             }
             default:
@@ -59,10 +61,12 @@ void FightScreen::update(float ms){
 
     // Blasts (horizontal dead zones)
     std::erase_if(blasts, [](Blast& b) { return b.isFinished(); });
+    std::erase_if(orbs, [](Orb& o) { return o.isFinished(); });
 
-    for (Blast& blast : blasts) {
+    for (Blast& blast : blasts)
         blast.update();
-    }
+    for (Orb& orb : orbs)
+        orb.update();
 }
 #pragma region draw
 
@@ -85,6 +89,9 @@ void FightScreen::draw(){
     // Draw blasts
     for (Blast& b : blasts)
         b.draw(THIS_ROOM.getTranslate());
+    // Draw orbs
+    for (Orb& o : orbs)
+        o.draw(THIS_ROOM.getTranslate());
 
     // Draw room top layer
     THIS_ROOM.drawTopLayer();
@@ -116,6 +123,10 @@ void FightScreen::draw(){
         // Blast hitboxes
         for (const Blast& b : blasts) {
             Game::drawRectf(b.getHitbox(), al_map_rgb(255,50,50), THIS_ROOM.getTranslate());
+        }
+        // Orb hitboxes
+        for (const Orb& o : orbs) {
+            Game::drawCircf(o.getHitbox(), al_map_rgb(255,50,50), THIS_ROOM.getTranslate());
         }
         // Debug text
         Game::getGame()->debugText();

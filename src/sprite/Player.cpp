@@ -22,6 +22,10 @@ void Player::setWorldPosition(float2 pos) {
 float2 Player::getWorldPosition() const {
     return worldPos;
 }
+float2 Player::getWorldCenter() const {
+    Rectf hb = getHitbox();
+    return hb.min + hb.size/2;
+}
 float Player::getWorldFeetY() const {
     return worldPos.y + (float)bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.y * scale.y;
 }

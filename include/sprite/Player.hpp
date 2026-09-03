@@ -66,6 +66,7 @@ public:
     void setWorldPosition(float2 pos);
     float2 getWorldPosition() const;
     float getWorldFeetY() const; 
+    float2 getWorldCenter() const;
 
     // based on collision checks in current room
     float2 getFixedDisplacement(float, float, int roomID=-1);

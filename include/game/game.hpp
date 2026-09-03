@@ -67,6 +67,9 @@ public:
         float y = rect.min.y + translate.y;
         al_draw_rectangle(x,y, x+rect.size.x,y+rect.size.y, color, 4.0f);
     }
+    static inline void drawCircf(const Circf c, ALLEGRO_COLOR color, float2 translate={0,0}) {
+        al_draw_circle(c.center.x+translate.x,c.center.y+translate.y,c.radius,color,4.0f);
+    }
 
     static void makeCurrent(Game*);
     static Game* getGame();
