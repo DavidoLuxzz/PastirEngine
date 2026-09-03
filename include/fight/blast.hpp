@@ -7,15 +7,25 @@
 
 // horizontal blast
 class Blast {
+public:
+    enum BlasterType {
+        HORIZONTAL,
+        VERTICAL
+    };
+private:
     Animation anim;
-    float centerY;
+    float center;
     float height;
     int numShades;
     float visibility=0.0f;
     float increment, decrement;
     int incrementFrames;
+    BlasterType btype;
 public:
-    Blast(float cy, float height, int dimFrames=-1, float increment=0.01f);
+
+    
+
+    Blast(BlasterType type, float cy, float height, int dimFrames=-1, float increment=0.01f);
     void draw(float2 translate={0.f,0.f}); // translate.x nema znacaj
     void update();
     bool isFinished() const;

@@ -30,7 +30,8 @@ void FightScreen::handleEvents() {
                 break;
             case ALLEGRO_KEY_SPACE: {
                 Rectf hitbox = player.getHitbox();
-                blasts.push_back(Blast(hitbox.min.y+hitbox.size.y/2, 100.0f, 50, 0.04f));
+                blasts.push_back(Blast(Blast::HORIZONTAL, hitbox.min.y+hitbox.size.y/2, 100.0f, 50, 0.04f));
+                blasts.push_back(Blast(Blast::VERTICAL, hitbox.min.x+hitbox.size.x/2, 100.0f, 50, 0.04f));
                 break;
             }
             default:

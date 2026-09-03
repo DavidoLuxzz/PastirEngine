@@ -8,9 +8,11 @@
 #define DIM_SHARPNESS 4.0f
 #define BRIGHT_SHARPNESS 8.0f
 
-Blast::Blast(float cy, float h, int dim, float inc) {
-    printf("%f %f %d %f\n", cy,h,dim,inc);
-    centerY = cy; height = h;
+Blast::Blast(BlasterType typ, float cy, float h, int dim, float inc) {
+    btype = typ;
+    center = cy; height = h;
+
+    // animation things
     numShades = height/SHADE_OFFSET;
     increment = inc;
     decrement = 1./dim;
@@ -20,9 +22,7 @@ Blast::Blast(float cy, float h, int dim, float inc) {
     int cycleCount = -1;
     if (dim>0) cycleCount = incrementFrames + IDLE_FRAMES + dim;
 
-    printf("Cycle count: %d\n", cycleCount);
-
-    anim.init(16.6667/1000, cycleCount);
+    anim.init(0.0166667, cycleCount);
 }
 
 void Blast::update() {
@@ -32,10 +32,8 @@ void Blast::update() {
 
 float brght(float percent, float sharpness) {
     return powf(percent, sharpness);
-    return (powf(sharpness, percent) - 1.0f) / (sharpness - 1.0f);
 }
 float dim(float percent, float sharpness) {
-    // printf("dimming %f\n", 1.0f - powf(percent, sharpness));
     return 1.0f - powf(1.0f-percent, sharpness);
 }
 
@@ -47,19 +45,36 @@ void Blast::tick(int frame) {
 
 void Blast::draw(float2 translate) {
     
+    float2 xx,yy;
+    if (btype==HORIZONTAL) {
+        xx.x = -2000.f; xx.y = 2000.f;
+        yy.x = center  + translate.y;
+        yy.y = center  + translate.y;
+    } else { // VERTICAL
+        yy.x = -2000.f; yy.y = 2000.f;
+        xx.x = center  + translate.y;
+        xx.y = center  + translate.y;
+    }
+
+
     int shades = numShades*visibility;
     shades = numShades;
 
     for (int i=0; i<shades; i++) {
-        float yoff = (i+1) * SHADE_OFFSET / 2;
         al_draw_filled_rectangle(
-           -2000.f, centerY - yoff  + translate.y,
-            2000.f, centerY + yoff  + translate.y,
+            xx.x, yy.x,
+            xx.y, yy.y,
             al_map_rgba(255,255,255, 
                 (anim.frame > incrementFrames+IDLE_FRAMES)?
                 64*dim(visibility, DIM_SHARPNESS-DIM_SHARPNESS*i/numShades) : // magic
                 64*brght(visibility, BRIGHT_SHARPNESS+i*BRIGHT_SHARPNESS/2.0f))
         );
+        float off = SHADE_OFFSET / 2;
+        if (btype==HORIZONTAL) {
+            yy.x -= off; yy.y += off;
+        } else {
+            xx.x -= off; xx.y += off;
+        }
     }
 }
 
@@ -71,8 +86,13 @@ bool Blast::isFinished() const {
 Rectf Blast::getHitbox() const {
     float h = height * brght(visibility, (anim.frame>incrementFrames)? 2.0f : BRIGHT_SHARPNESS);
     if (h < 10.f) return {{NAN,NAN},{0,0}};
-    return {
-        {-2000.f, centerY-h/2},
+    
+    if (btype==HORIZONTAL) return {
+        {-2000.f, center-h/2},
         { 4000.f, h}
+    };
+    return {
+        {center-h/2, -2000.f},
+        {h,           4000.f}
     };
 }
