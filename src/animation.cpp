@@ -21,11 +21,11 @@ void Animation::tick() {
 }
 
 #include <allegro5/timer.h>
-bool Animation::update() {
+bool Animation::update(double ms) {
     if (cycleCount>0 && frame>cycleCount) return false;
-    double time = al_get_time();
-    if ((time-_lastTime)>=rate) {
-        _lastTime = time;
+    _time += ms;
+    if (_time>=rate) {
+        _time = 0.0;
         tick();
         return true;
     }

@@ -17,7 +17,7 @@ public:
     void draw();
 
 
-    void game_move(float dx, float dy); // move with collision
+    void game_move(float dx, float dy, float ms); // move with collision
     // might as well end this live stream (kasikom i viljuskom,... pro inglish ;)
 };
 

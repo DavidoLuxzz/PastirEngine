@@ -9,7 +9,7 @@ void Room::setTranslate(float x, float y) {
 float2 Room::getTranslate() const {
     return translate;
 }
-void Room::move(float _dx, float _dy, void* _player) {
+void Room::move(float _dx, float _dy, float ms, void* _player) {
     Player* player = (Player*) _player;
     float2 delta = {_dx,_dy};
     float dx = _dx, dy = _dy;
@@ -43,35 +43,35 @@ void Room::move(float _dx, float _dy, void* _player) {
 
     if (newx>bounds.min.x) {
         newx=bounds.min.x;
-        if (player) player->move(-dx,0.0f);
+        if (player) player->move(-dx,0.0f, ms);
     } else if (player && player->getTranslate().x<0.0f) {
-        player->move(-dx,0.0f);
+        player->move(-dx,0.0f, ms);
         newx = translate.x;
     } else if (-newx > desna_strana) {
         newx = -desna_strana;
-        if (player) player->move(-dx,0.0f);
+        if (player) player->move(-dx,0.0f, ms);
     } else if (player && player->getTranslate().x>0.0f) {
-        player->move(-dx,0.0f);
+        player->move(-dx,0.0f, ms);
         newx = translate.x;
     }
     desna_strana = (bounds.min.y+bounds.size.y-winSize.y) / Display::getPixelScale();
     if (newy>bounds.min.y) {
         newy=bounds.min.y;
-        if (player) player->move(0.0f,-dy);
+        if (player) player->move(0.0f,-dy, ms);
     } else if (player && player->getTranslate().y<0.0f) {
-        player->move(0.0f,-dy);
+        player->move(0.0f,-dy, ms);
         newy = translate.y;
     } else if (-newy > desna_strana) {
         newy = -desna_strana;
-        if (player) player->move(0.0f, -dy);
+        if (player) player->move(0.0f, -dy, ms);
     } else if (player && player->getTranslate().y>0.0f) {
-        player->move(0.0f, -dy);
+        player->move(0.0f, -dy, ms);
         newy = translate.y;
     }
 
     translate.x = newx;
     translate.y = newy;
-    // if (player) player->move(ptrans.x,ptrans.y);
+    // if (player) player->move(ptrans.x,ptrans.y, ms);
 }
 #include <game/game.hpp>
 void Room::drawBackLayer() {

@@ -110,7 +110,7 @@ int run(){
     double lastTime = 0.0;
     while (_state.running) {
         double deltaTime = al_get_time() - lastTime; // seconds?
-        lastTime = al_get_time();
+        lastTime += deltaTime;
 
         // sve je ovde jasno
         if (_state.currentScreen == global::GAME) {

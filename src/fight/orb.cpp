@@ -29,8 +29,8 @@ Orb::Orb(float cx, float cy, float radius, int dim, float inc) {
     anim.init(0.0166667, cycleCount);
 }
 
-void Orb::update() {
-    if (anim.update())
+void Orb::update(float ms) {
+    if (anim.update(ms))
         tick(anim.frame);
 }
 

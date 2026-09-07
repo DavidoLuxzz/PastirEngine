@@ -73,7 +73,8 @@ public:
 
     /// @brief By default it takes Game's roomID value
     /// @param roomID specific roomID to compute collision in
-    void move(float dx, float dy, int roomID=-1);
+    /// @param ms delta time in milliseconds. Used to calculate
+    void move(float dx, float dy, float ms, int roomID=-1);
     /**
      * Changes players texture tile according to the current direction.
      * Also contains animation.update().

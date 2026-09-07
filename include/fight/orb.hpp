@@ -19,7 +19,7 @@ public:
 
     Orb(float cx, float cy, float radius, int dimFrames=-1, float increment=0.01f);
     void draw(float2 translate={0.f,0.f});
-    void update();
+    void update(float ms);
     bool isFinished() const;
 
     void tick(int frame);

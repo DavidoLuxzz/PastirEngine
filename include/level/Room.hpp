@@ -27,7 +27,7 @@ public:
 
     void setTranslate(float tx, float ty);
     float2 getTranslate() const;
-    void move(float dx, float dy, void* player=NULL);
+    void move(float dx, float dy, float ms, void* player=NULL);
 
     uint64_t getMemoryUsage() const;
 };

@@ -10,8 +10,10 @@ Player::Player() {
     animation.init(0.2);
 }
 
-void Player::move(float dx, float dy, int roomID) {
-    worldPos += getFixedDisplacement(dx,dy,roomID);
+void Player::move(float dx, float dy, float ms, int roomID) {
+    worldPos += getFixedDisplacement(dx*ms,dy*ms,roomID);
+    if (!(dx==0.0f && dy==0.0f) || (animation.frame&1))
+        animation.update(ms);
     // worldPos.x += dx;
     // worldPos.y += dy;
 }
@@ -157,8 +159,6 @@ void Player::orientate(float _dx, float _dy) {
     else if (_dy<0.0f) setTileByDirection(DIR_UP);
     else if (_dx>0.0f) setTileByDirection(DIR_RIGHT);
     else if (_dx<0.0f) setTileByDirection(DIR_LEFT);
-    if (!(_dx==0.0f && _dy==0.0f) || (animation.frame&1))
-        animation.update();
 }
 
 void Player::setTileByDirection(directions dir) {

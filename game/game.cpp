@@ -120,9 +120,9 @@ void Game::handleEvents() {
 
 #pragma region game::update
 
-void Game::game_move(float dx, float dy) {
+void Game::game_move(float dx, float dy, float ms) {
     // Move player
-    player.move(dx,dy);
+    player.move(dx,dy,ms);
 
     // Adjust camera
     rooms[roomID].position(player.getWorldPosition());
@@ -138,31 +138,32 @@ void Game::immidiatelyChangeRoom() {
     // player.setRoom(&rooms[roomID]);
     player.setWorldPosition(requestPlayerCoords);
 }
-void Game::update(float ms){
+void Game::update(double ms){
     Display* display = Display::getCurrentDisplay();
     keyboard::fetchKeyboardState();
     if (!(dialogbox::isShowing()||display->isFading())) updateMovement(ms);
     display->update(ms);
+    dialogbox::update(ms);
     if (display->isFading()) {
         // printf("Display fade: %d\n", display->getFadeFrame());
         if (display->getFadeFrame()==display->getFadeCycleCount()/2) {
             immidiatelyChangeRoom();
-            game_move(0.0f,0.0f);
+            game_move(0.0f,0.0f,ms);
         }
     }
     ___zPressedThisFrame = false;
 }
-void Game::updateMovement(float ms) {
+void Game::updateMovement(double ms) {
     // if (requestRoomID != roomID) immidiatelyChangeRoom();
     float dx = (keyboard::keyDown(ALLEGRO_KEY_RIGHT) - keyboard::keyDown(ALLEGRO_KEY_LEFT))
-                * player.getSpeed() * ms;
+                * player.getSpeed();
     float dy = (keyboard::keyDown(ALLEGRO_KEY_DOWN)  - keyboard::keyDown(ALLEGRO_KEY_UP))
-                * player.getSpeed() * ms;
+                * player.getSpeed();
 
     float speedmul = (keyboard::keyDown(ALLEGRO_KEY_C)&&player.isUsingNikes())? 1.5f:1.0f;
 
     player.setSpeedMul(speedmul);
-    game_move(dx,dy);
+    game_move(dx,dy,ms);
 
     triggers::check_update();
 }
@@ -222,7 +223,7 @@ void initPlayer() {
     player.setWorldPosition({400.0f, 340.0f});
     // player.setWorldPosition({0.0f,0.0f});
     // player.setRoom(&game->rooms[game->roomID]);
-    game->game_move(0.0f,0.0f); // init step, positioning
+    game->game_move(0.f,0.f,0.f); // init step, positioning
 }
 
 int Game::init(){

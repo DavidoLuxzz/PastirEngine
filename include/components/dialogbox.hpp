@@ -53,7 +53,7 @@ namespace dialogbox {
     const dialog_t& getDialog(int dialogID);
 
     void draw();
-    void _update();
+    void update(double ms);
 } // namespace dialogbox
 
 

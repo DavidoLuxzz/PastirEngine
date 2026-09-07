@@ -48,14 +48,14 @@ void FightScreen::update(float ms){
     keyboard::fetchKeyboardState();
     if (!(dialogbox::isShowing()||display->isFading())){
         float dx = (keyboard::keyDown(ALLEGRO_KEY_RIGHT) - keyboard::keyDown(ALLEGRO_KEY_LEFT))
-                    * player.getSpeed() * ms;
+                    * player.getSpeed();
         float dy = (keyboard::keyDown(ALLEGRO_KEY_DOWN)  - keyboard::keyDown(ALLEGRO_KEY_UP))
-                    * player.getSpeed() * ms;
+                    * player.getSpeed();
 
         float speedmul = (keyboard::keyDown(ALLEGRO_KEY_C)&&player.isUsingNikes())? 1.5f:1.0f;
 
         player.setSpeedMul(speedmul);
-        game_move(dx,dy);
+        game_move(dx,dy,ms);
     }
     display->update(ms);
 
@@ -64,9 +64,9 @@ void FightScreen::update(float ms){
     std::erase_if(orbs, [](Orb& o) { return o.isFinished(); });
 
     for (Blast& blast : blasts)
-        blast.update();
+        blast.update(ms);
     for (Orb& orb : orbs)
-        orb.update();
+        orb.update(ms);
 }
 #pragma region draw
 
@@ -146,9 +146,9 @@ void FightScreen::draw(){
 
 #pragma region game_move
 
-void FightScreen::game_move(float dx, float dy) {
+void FightScreen::game_move(float dx, float dy, float ms) {
     // Move player
-    player.move(dx,dy, roomID);
+    player.move(dx,dy, ms, roomID);
 
     // Adjust camera
     THIS_ROOM.position(player.getWorldPosition());

@@ -9,15 +9,15 @@ typedef void (*AnimationTickFunc)(int frame);
 class Animation {
 private:
     AnimationTickFunc tickFunc = nullptr;
-    double _lastTime = 0.0;
+    double _time = 0.0; // time since last tick
 public:
     Animation() = default;
     ~Animation() = default;
 
     /// @brief Initialize
-    /// @param rate Animation tick rate in seconds
+    /// @param rate_ms Animation tick rate in milliseconds
     /// @param cycleCount Cycle count. INF = -1
-    void init(double rate, int cycleCount=-1);
+    void init(double rate_ms, int cycleCount=-1);
 
     void setTickFunction(AnimationTickFunc func);
     AnimationTickFunc getTickFunction() const;
@@ -28,7 +28,7 @@ public:
      * If enough time is passed, it calls tick()
      * @return Returns true if enough time is passed.
      */
-    bool update();
+    bool update(double ms);
     /// @brief Calls tick function
     void tick();
 

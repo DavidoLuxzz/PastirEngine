@@ -57,9 +57,9 @@ void dialogbox::setVoice(int sound) {
     voice = static_cast<audio::Sound>(sound);
 }
 
-void dialogbox::_update() {
+void dialogbox::update(double ms) {
     if (showing) {
-        animation.update();
+        animation.update(ms);
     }
 }
 
@@ -88,8 +88,6 @@ void dialogbox::draw() {
     );
 
     Display::useScale();
-
-    _update();
 }
 
 

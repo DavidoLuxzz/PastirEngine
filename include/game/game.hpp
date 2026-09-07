@@ -45,7 +45,7 @@ public:
 
     void draw();
 
-    void game_move(float dx, float dy);
+    void game_move(float dx, float dy, float ms);
 
     void debugText();
 
@@ -57,8 +57,8 @@ public:
 
     /// @brief used localy
     /// @param ms time passed since last update (should equal to 1/FPS)
-    void updateMovement(float ms);
-    void update(float ms);
+    void updateMovement(double ms);
+    void update(double ms);
     void handleEvents();
 
 

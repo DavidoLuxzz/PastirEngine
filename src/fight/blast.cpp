@@ -25,8 +25,8 @@ Blast::Blast(BlasterType typ, float cy, float h, int dim, float inc) {
     anim.init(0.0166667, cycleCount);
 }
 
-void Blast::update() {
-    if (anim.update())
+void Blast::update(float ms) {
+    if (anim.update(ms))
         tick(anim.frame);
 }
 
