@@ -33,7 +33,10 @@ void FightScreen::handleEvents() {
                 float2 center = hitbox.min+hitbox.size/2;
                 // blasts.push_back(Blast(Blast::HORIZONTAL, hitbox.min.y+hitbox.size.y/2, 100.0f, 50, 0.04f));
                 // blasts.push_back(Blast(Blast::VERTICAL, hitbox.min.x+hitbox.size.x/2, 100.0f, 50, 0.04f));
-                orbs.push_back(Orb(center.x,center.y,50.f, -1, 0.01f));
+                srand(time(NULL));
+                for (float x=0.f; x<1000.f; x+=100.f)
+                    for (float y=0.f; y<640.f; y+=100.f)
+                        orbs.push_back(Orb(x,y,30.f+20.f*(float)rand()/RAND_MAX, -1, 0.01f));
                 break;
             }
             default:

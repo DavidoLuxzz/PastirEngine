@@ -4,7 +4,7 @@
 #include <iostream>
 #include <game/game.hpp>
 
-#define MAX_VELOCITY 15.f
+#define MAX_VELOCITY 3000.f
 
 #define IDLE_FRAMES 10
 
@@ -30,12 +30,8 @@ Orb::Orb(float cx, float cy, float radius, int dim, float inc) {
 }
 
 void Orb::update(float ms) {
-    if (anim.update(ms))
-        tick(anim.frame);
-}
-
-void Orb::tick(int frame) {
-    if (frame <= incrementFrames && visibility<0.99f) visibility+=increment;
+    if (!anim.update(ms)) return;
+    if (anim.frame <= incrementFrames && visibility<0.99f) visibility+=increment;
     // else if (frame > incrementFrames+IDLE_FRAMES) visibility -= decrement;
 
     Player& player = Game::getGame()->player;
@@ -43,13 +39,13 @@ void Orb::tick(int frame) {
     float2 dir = player.getWorldCenter()-shape.center;
     normalize(dir);
 
-    velocity += dir;
+    velocity += dir*100.f;
     if (hypotf(velocity.x,velocity.y)>MAX_VELOCITY){
         normalize(velocity);
         velocity*=MAX_VELOCITY;
     }
 
-    shape.center += velocity;
+    shape.center += velocity*ms;
 }
 
 void Orb::draw(float2 translate) {

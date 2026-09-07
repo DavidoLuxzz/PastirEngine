@@ -22,7 +22,7 @@ public:
     void update(float ms);
     bool isFinished() const;
 
-    void tick(int frame);
+    // void tick(int frame);
 
     Circf getHitbox() const;
 };
