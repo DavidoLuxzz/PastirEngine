@@ -22,7 +22,7 @@ Blast::Blast(BlasterType typ, float cy, float h, int dim, float inc) {
     int cycleCount = -1;
     if (dim>0) cycleCount = incrementFrames + IDLE_FRAMES + dim;
 
-    anim.init(0.0166667, cycleCount);
+    anim.init(16.6667, cycleCount);
 }
 
 void Blast::update(float ms) {

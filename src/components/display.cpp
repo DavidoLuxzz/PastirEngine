@@ -85,6 +85,13 @@ const EventQueue& Display::getEventQueue() const {
 
 
 
+void Display::useTranslate(float x, float y) {
+    ALLEGRO_TRANSFORM trans;
+    al_copy_transform(&trans, al_get_current_transform());
+    trans.m[3][0] = x;
+    trans.m[3][1] = y;
+}
+
 void Display::useCustomScale(float sx, float sy){
     ALLEGRO_TRANSFORM trans;
     al_identity_transform(&trans);

@@ -100,7 +100,7 @@ int main(int argc, char** argv) {
     return 0;
 }
 int run(){
-    // audio::playStream(audio::Stream::AUDIO_07);
+    audio::playStream(audio::Stream::AUDIO_07);
 
     // game.requestRoomID = 1;
     // game.immidiatelyChangeRoom();
@@ -115,11 +115,11 @@ int run(){
         // sve je ovde jasno
         if (_state.currentScreen == global::GAME) {
             game.handleEvents();
-            game.update(deltaTime);
+            game.update(deltaTime*1000.);
             game.draw();
         } else if (_state.currentScreen == global::FIGHT) {
             mainMenu.handleEvents();
-            mainMenu.update(deltaTime);
+            mainMenu.update(deltaTime*1000.);
             mainMenu.draw();
         }
         // ja bih prvo napravio neki fight. cisto onako da se nahajpujem.

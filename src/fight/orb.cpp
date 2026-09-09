@@ -26,7 +26,7 @@ Orb::Orb(float cx, float cy, float radius, int dim, float inc) {
     int cycleCount = -1;
     if (dim>0) cycleCount = incrementFrames + IDLE_FRAMES + dim;
 
-    anim.init(0.0166667, cycleCount);
+    anim.init(16.6667, cycleCount);
 }
 
 void Orb::update(float ms) {

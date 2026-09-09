@@ -24,7 +24,7 @@ protected:
 
 public:
     /// @brief Speed [pixel(s)/60FPS]
-    static constexpr float SPEED = 240.0f;
+    static constexpr float SPEED = 0.240f;
 
     Inventory inventory = Inventory(this);
 

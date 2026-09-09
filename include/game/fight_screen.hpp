@@ -13,7 +13,7 @@ public:
     int roomID = 1;
 
     void handleEvents();
-    void update(float);
+    void update(double ms);
     void draw();
 
 

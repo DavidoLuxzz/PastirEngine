@@ -46,7 +46,7 @@ void FightScreen::handleEvents() {
 }
 
 #pragma region update
-void FightScreen::update(float ms){
+void FightScreen::update(double ms){
     Display* display = Display::getCurrentDisplay();
     keyboard::fetchKeyboardState();
     if (!(dialogbox::isShowing()||display->isFading())){

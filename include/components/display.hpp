@@ -65,6 +65,10 @@ public:
     static void useCustomScale(float sx, float sy);
     static void useCustomScale(float scale);
     /**
+     * Translates everything
+     */
+    static void useTranslate(float x, float y);
+    /**
      * Use the static scale set up by Display::setPixelScale(float).
      */
     static void useScale();

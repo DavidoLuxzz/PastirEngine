@@ -7,7 +7,7 @@
 
 Player::Player() {
     texInfo.tileID = 0;
-    animation.init(0.2);
+    animation.init(200.);
 }
 
 void Player::move(float dx, float dy, float ms, int roomID) {
