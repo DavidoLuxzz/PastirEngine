@@ -4,7 +4,12 @@
 
 namespace shake {
     
-    void set(float strength, float freq);
+    /**
+     * @param strength - shake strength (max offset by axis)
+     * @param freq - shake frequency in Hz
+     * @param duration - shake duration in seconds
+     */
+    void set(float strength, float freq, float duration=-1.f);
     void update(double ms);
 
 } // namespace shake

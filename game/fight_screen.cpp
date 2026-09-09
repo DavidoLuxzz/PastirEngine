@@ -31,7 +31,8 @@ void FightScreen::handleEvents() {
                 global::get().f3 ^= true;
                 break;
             case ALLEGRO_KEY_SPACE: {
-                
+                shake::set(100.0f, 10.0f, 2.0f);
+                break;
                 Rectf hitbox = player.getHitbox();
                 float2 center = hitbox.min+hitbox.size/2;
                 // blasts.push_back(Blast(Blast::HORIZONTAL, hitbox.min.y+hitbox.size.y/2, 100.0f, 50, 0.04f));
@@ -66,7 +67,6 @@ void FightScreen::update(double ms){
         game_move(dx,dy,ms);
     }
     display->update(ms);
-    shake::set(1.0f, 10.0f);
     shake::update(ms);
 
     // Blasts (horizontal dead zones)

@@ -3,6 +3,7 @@
 void Animation::init(double _rate, int _cycleCount) {
     rate = _rate;
     cycleCount = _cycleCount;
+    frame = 0;
 }
 
 void Animation::setTickFunction(AnimationTickFunc f) {
