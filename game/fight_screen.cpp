@@ -7,6 +7,8 @@
 #include <components/dialogbox.hpp>
 #include <input.hpp>
 #include <algorithm>
+#include <random>
+#include <shake.hpp>
 
 #define THIS_ROOM global::get().rooms[roomID]
 #define player (Game::getGame()->player)
@@ -29,14 +31,17 @@ void FightScreen::handleEvents() {
                 global::get().f3 ^= true;
                 break;
             case ALLEGRO_KEY_SPACE: {
+                
                 Rectf hitbox = player.getHitbox();
                 float2 center = hitbox.min+hitbox.size/2;
                 // blasts.push_back(Blast(Blast::HORIZONTAL, hitbox.min.y+hitbox.size.y/2, 100.0f, 50, 0.04f));
                 // blasts.push_back(Blast(Blast::VERTICAL, hitbox.min.x+hitbox.size.x/2, 100.0f, 50, 0.04f));
-                srand(time(NULL));
+                std::random_device device;
+                std::mt19937 randGen(device());
+                std::uniform_real_distribution<float> distribution(30.f, 50.f);
                 for (float x=0.f; x<1000.f; x+=100.f)
                     for (float y=0.f; y<640.f; y+=100.f)
-                        orbs.push_back(Orb(x,y,30.f+20.f*(float)rand()/RAND_MAX, -1, 0.01f));
+                        orbs.push_back(Orb(x,y,distribution(randGen), -1, 0.01f));
                 break;
             }
             default:
@@ -61,6 +66,8 @@ void FightScreen::update(double ms){
         game_move(dx,dy,ms);
     }
     display->update(ms);
+    shake::set(1.0f, 10.0f);
+    shake::update(ms);
 
     // Blasts (horizontal dead zones)
     std::erase_if(blasts, [](Blast& b) { return b.isFinished(); });

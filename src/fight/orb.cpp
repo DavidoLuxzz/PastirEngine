@@ -39,7 +39,7 @@ void Orb::update(float ms) {
     float2 dir = player.getWorldCenter()-shape.center;
     normalize(dir);
 
-    velocity += dir*100.f;
+    velocity += dir*0.002f*ms;
     if (hypotf(velocity.x,velocity.y)>MAX_VELOCITY){
         normalize(velocity);
         velocity*=MAX_VELOCITY;
