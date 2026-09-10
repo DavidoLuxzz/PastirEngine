@@ -14,8 +14,8 @@
 /// @brief Used in rooms
 #define DEFAULT_PIXEL_SCALE 1.0f
 
-#define TRIGGERS_FILE "triggers.txt"
-#define ENTITIES_FILE "ent.txt"
+#define TRIGGERS_FILE "rooms/triggers.txt"
+#define ENTITIES_FILE "rooms/ent.txt"
 
 /**
  * U ovoj klasi su sve komponente vezane *samo* za gameplay.

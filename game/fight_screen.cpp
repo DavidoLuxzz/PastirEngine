@@ -31,7 +31,7 @@ void FightScreen::handleEvents() {
                 global::get().f3 ^= true;
                 break;
             case ALLEGRO_KEY_SPACE: {
-                shake::set(100.0f, 10.0f, 2.0f);
+                shake::set(2.0f, 100.0f, 2.0f);
                 break;
                 Rectf hitbox = player.getHitbox();
                 float2 center = hitbox.min+hitbox.size/2;

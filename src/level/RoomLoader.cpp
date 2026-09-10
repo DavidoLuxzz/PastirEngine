@@ -7,6 +7,7 @@
 #include <level/Room.hpp>
 #include <colors.h>
 #include <asset_manager.hpp>
+#include <game/game.hpp>
 
 namespace room_loader {
     Room room;
@@ -114,12 +115,12 @@ int __lvl_loader_ent(const std::string& filepath, unsigned int roomID) {
 }
 
 int room_loader::load(unsigned int roomID) {
-    std::string filepath = assman::getasset(std::to_string(roomID) + ".txt");
+    std::string filepath = assman::getasset("rooms/"+std::to_string(roomID) + ".txt");
     if (!std::filesystem::exists(filepath)) {
-        fprintf(stderr, "<%sLVLLOADER%s> Room %u doesn't exists. path=%s\n",TERMINAL_COLOR_RED_BOLD,TERMINAL_COLOR_RESET, roomID, filepath.c_str());
+        fprintf(stderr, "<%sROOMLOADER%s> Room %u doesn't exists. path=%s\n",TERMINAL_COLOR_RED_BOLD,TERMINAL_COLOR_RESET, roomID, filepath.c_str());
         return -1;
     }
-    __lvl_loader_ent("ent.txt", roomID);
+    __lvl_loader_ent(ENTITIES_FILE, roomID);
     // printf("<LVLLOADER> Loading room %u path=%s\n", roomID, filepath.c_str());
     return __lvl_loader_load(filepath);
 }

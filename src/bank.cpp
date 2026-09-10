@@ -83,12 +83,12 @@ const Texture& MultiTextureBank::getTexture(TextureID id) const {
 
 
 int TilesetBank::loadTexture(const char* file, int al_flags) {
-    if (texture.load(file,al_flags)) return -1;
+    if (texture.load(("textures/"+std::string(file)).c_str(),al_flags)) return -1;
     return 0;
 }
     
 int TilesetBank::loadTileRects(const char* tilerectsfile){
-    tileRects = util::loadTiles(tilerectsfile);
+    tileRects = util::loadTiles(("textures/"+std::string(tilerectsfile)).c_str());
     return 0;
 }
 
