@@ -5,6 +5,16 @@
 #include <asset_manager.hpp>
 
 namespace audio {
+
+    constexpr const char* STREAMS[] = {
+        "audio/Audio07.wav",
+        "audio/project.wav",
+        "audio/PureVessel.wav"
+    };
+    constexpr const char* SOUNDS[] = {
+        "audio/snd/voice1.wav"
+    };
+
     ALLEGRO_SAMPLE* sounds[SOUND_COUNT];
     ALLEGRO_AUDIO_STREAM* streams[STREAM_COUNT];
 } // namespace audio
@@ -13,16 +23,19 @@ namespace audio {
 #define LOAD_STREAM(strm_enum,filename) audio::streams[strm_enum] = al_load_audio_stream(assman::getasset("audio/" filename).c_str(), 4, 2048)
 
 void __audio_loadSounds() {
-    // if (!(LOAD_SOUND(audio::VOICE01,"voice1.wav"))) fprintf(stderr, "[AUDIO] Could not load voice1.wav\n");
-    ALLEGRO_SAMPLE* sample = al_load_sample(assman::getasset("audio/snd/voice1.wav").c_str());
-    if (!sample) printf("[AUDIO] Sample fail\n");
-    audio::sounds[audio::Sound::VOICE01] = sample;
+    for (int i=0; i<audio::Sound::SOUND_COUNT; i++) {
+        ALLEGRO_SAMPLE* sample = al_load_sample(assman::getasset(audio::SOUNDS[i]).c_str());
+        if (!sample) printf("[AUDIO] Sound fail: %s\n", audio::SOUNDS[i]);
+        audio::sounds[i] = sample;
+    }
 }
 void __audio_loadStreams() {
-    // if (!(LOAD_STREAM(audio::AUDIO_07,"project.mp3"))) fprintf(stderr, "[AUDIO] Could not load stream\n");
-    ALLEGRO_AUDIO_STREAM* stream = al_load_audio_stream(assman::getasset("audio/Audio07.wav").c_str(), 4, 1024);
-    if (!stream) printf("[AUDIO] Stream fail\n");
-    audio::streams[audio::Stream::AUDIO_07] = stream;
+    for (int i=0; i<audio::Stream::STREAM_COUNT; i++) {
+        
+        ALLEGRO_AUDIO_STREAM* stream = al_load_audio_stream(assman::getasset(audio::STREAMS[i]).c_str(), 4, 1024);
+        if (!stream) printf("[AUDIO] Stream fail: %s\n", audio::STREAMS[i]);
+        audio::streams[i] = stream;
+    }
 }
 
 int audio::init() {
@@ -69,4 +82,12 @@ void audio::playStream(Stream strm, bool loop) {
     al_attach_audio_stream_to_mixer(streams[strm], al_get_default_mixer());
     al_set_audio_stream_playmode(streams[strm], loop? ALLEGRO_PLAYMODE_LOOP:ALLEGRO_PLAYMODE_ONCE);
     al_set_audio_stream_playing(streams[strm], true);
+}
+
+void audio::stopStream(int stream) {
+    if (stream<0) {
+        for (int i=0; i<STREAM_COUNT; i++)
+            al_set_audio_stream_playing(streams[i], false);
+    } else
+        al_set_audio_stream_playing(streams[stream], false);
 }

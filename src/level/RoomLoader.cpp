@@ -17,7 +17,6 @@ namespace room_loader {
 void __lvl_loader_nonobject(const std::string& line) {
     if (line.starts_with("box ")) {
         std::istringstream _l(line);
-        int index=0;
         std::string token;
         std::getline(_l, token, ' '); // skip first
         

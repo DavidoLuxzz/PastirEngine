@@ -5,12 +5,11 @@
 #include <fight/blast.hpp>
 #include <fight/orb.hpp>
 #include <vector>
+#include <fight/fight.hpp>
 
 class FightScreen {
-    std::vector<Blast> blasts;
-    std::vector<Orb> orbs;
 public:
-    int roomID = 1;
+    Fight fight;
 
     void handleEvents();
     void update(double ms);

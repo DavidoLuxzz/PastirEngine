@@ -4,6 +4,7 @@
 
 #include <audio.hpp>
 #include <vector>
+#include <string>
 #include <data_types.hpp>
 #include <fight/blast.hpp>
 #include <fight/orb.hpp>
@@ -19,6 +20,7 @@
  * u Portable Fight Fajlu (PFF :D)
  */
 class Fight {
+public:
     /**
      * Svi sound efekti stoje ovde.
      */
@@ -35,6 +37,20 @@ class Fight {
      * Mesto gde ce player da bude kada bude poceo fight.
      */
     float2 playerSpawn;
+
+    /**
+     * Lista komandi koji cine jedan napad (attack).
+     */
+    typedef std::vector<std::string> Attack;
+    /**
+     * Lista listi komandi, tj. lista svih napada
+     */
+    std::vector<Attack> attacks;
+
+    int currentAttack=0;
+    int currentCommand=0;
+    double _sleep=0.0;
+    double _timeSinceSleepCommand=0.0;
 
     // drawable Fight komponente
 
@@ -63,6 +79,11 @@ public:
     void prepare();
 
     /**
+     * Izvrsi komandu.
+     */
+    void runCommand(const std::string& line);
+
+    /**
      * Update funkcija. Kontrolise tok fighta.
      */
     void update(double ms);
@@ -71,6 +92,7 @@ public:
      * Nacrta sve.
      */
     void draw();
+    void drawHitboxes();
 };
 
 

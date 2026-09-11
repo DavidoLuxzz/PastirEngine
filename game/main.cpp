@@ -99,8 +99,12 @@ int main(int argc, char** argv) {
 
     return 0;
 }
+#include <fight/fight_loader.hpp>
 int run(){
     audio::playStream(audio::Stream::AUDIO_07);
+
+    fight_loader::load(0);
+    fight_loader::swapData(mainMenu.fight);
 
     // game.requestRoomID = 1;
     // game.immidiatelyChangeRoom();

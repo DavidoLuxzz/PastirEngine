@@ -6,22 +6,21 @@
 
 namespace fight_loader {
     /**
-     * Loads room into memory.
-     * Room is accessible via room_loader::getRoom();
+     * Loads fight into memory.
      * 
-     * @param roomID Room ID
+     * @param fightID - Fight ID
      * 
      * @return 0 if success
      */
     int load(unsigned int fightID);
 
     /**
-     * Swaps the objects vector between the data stored
-     * in room_loader's memory and specified room
+     * Swaps the fight data and information
+     * with the specified Fight object
      * 
-     * @param room - specified room object
+     * @param fight - specified Fight object
      */
-    void swapData(Fight& room);
+    void swapData(Fight& fight);
 
 } // namespace fight_loader
 

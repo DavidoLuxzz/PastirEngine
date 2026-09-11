@@ -7,7 +7,6 @@
 namespace room_loader {
     /**
      * Loads room into memory.
-     * Room is accessible via room_loader::getRoom();
      * 
      * @param roomID Room ID
      * 
