@@ -31,12 +31,17 @@ namespace audio {
     int init();
     void destroy();
 
+    /**
+     * Updates fades and such...
+     */
+    void update(double ms);
+
     /// @return ALLEGRO_SAMPLE_ID
     void playSound(Sound snd, float gain=1.0f, float pan=0.0f, float speed=1.0f, ALLEGRO_SAMPLE_ID *out_id=nullptr);
-    void playStream(Stream strm, bool loop=true);
+    void playStream(Stream strm, bool loop=true, float gain=1.0f, float pan=0.0f, float speed=1.0f);
 
     void stopStream(int stream=-1);
-    void silenceStream(int stream=-1);
+    void silenceStream(Stream stream);
 
 }
 
