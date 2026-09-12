@@ -127,7 +127,7 @@ void FightScreen::draw(){
 
     Display::getCurrentDisplay()->drawFade();
 
-    Display::useCustomScale(4.f);
+    Display::useCustomScale(4.f*Display::fixedScale1080p(4.f));
     al_draw_text(Game::getGame()->font, al_map_rgb(textRGB.r,textRGB.g,textRGB.b), 55.f,20.f, 0, "THIS IS A FIGHT SCREEN");
     Display::useScale();
     Display::swapBuffers();

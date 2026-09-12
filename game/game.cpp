@@ -22,7 +22,7 @@
 
 void Game::debugText() {
     constexpr float __px_scale = 2.0f;
-    Display::useCustomScale(__px_scale, __px_scale);
+    Display::useCustomScale(__px_scale);
 
     Rectf playerHitbox = player.getHitbox();
 
