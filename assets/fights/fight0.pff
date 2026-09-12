@@ -1,8 +1,9 @@
 # za sad nema custom muzike
 # kontrolisanje muzike:
 # 'mus <streamID>' za pustanje
-# 'silence <streamID> [seconds=1]' za linearno utisavanje koje traje za odredjeno vreme
+# 'silence <streamID> [millis=1000]' za linearno utisavanje koje traje za odredjeno vreme
 # 'stopmus [streamID]' nasilno zaustavi muziku
+# 'fademus <streamID> [millis=1000]' za linearni low taper fejd muzike
 
 # pustanje sound efekata:
 # 'snd <soundID> [gain=100] [pan=0] [speed=100]'
@@ -43,9 +44,9 @@ attacks:
 {
 
 sleep 1000
-silence 2 1
+silence 2 1000
 sleep 1000
-mus 2
+fademus 2 1.0 100
 
 }
 

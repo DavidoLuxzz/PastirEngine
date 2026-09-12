@@ -111,5 +111,21 @@ void Fight::runCommand(const std::string& line) {
             if (index>=3) break;
         }
         audio::playSound(snd, prefs[0],prefs[1],prefs[2]);
+    } else if (line.starts_with("silence ")) {
+        std::getline(_l, token, ' ');
+        audio::Stream stm = (audio::Stream) std::stoi(token);
+        if (!std::getline(_l, token, ' '))
+            audio::silenceStream(stm);
+        else
+            audio::silenceStream(stm, std::stof(token));
+    } else if (line.starts_with("fademus ")) {
+        std::getline(_l, token, ' ');
+        audio::Stream stm = (audio::Stream) std::stoi(token);
+        std::getline(_l, token, ' ');
+        float val = std::stof(token);
+        if (!std::getline(_l, token, ' '))
+            audio::fadeStream(stm,val);
+        else
+            audio::fadeStream(stm,1.0f, std::stof(token));
     }
 }

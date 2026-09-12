@@ -41,7 +41,8 @@ namespace audio {
     void playStream(Stream strm, bool loop=true, float gain=1.0f, float pan=0.0f, float speed=1.0f);
 
     void stopStream(int stream=-1);
-    void silenceStream(Stream stream);
+    void silenceStream(Stream stream, float millis=1000.f);
+    void fadeStream(Stream stream, float val, float millis=1000.f);
 
 }
 

@@ -34,7 +34,8 @@ namespace audio {
     };
 
     float gains[STREAM_COUNT] = {1.f};
-    float targetGains[STREAM_COUNT] = {1.f};
+    float oldGains[STREAM_COUNT] = {1.f};
+    float deltaGains[STREAM_COUNT] = {0.f};
     float timers[STREAM_COUNT] = {0};
     float durations[STREAM_COUNT] = {0};
 
@@ -79,7 +80,8 @@ int audio::init() {
 
     for (int i=1; i<STREAM_COUNT; i++){
         gains[i] = gains[0];
-        targetGains[i] = targetGains[0];
+        oldGains[i] = oldGains[0];
+        deltaGains[i] = deltaGains[0];
         timers[i] = timers[0];
         durations[i] = durations[0];
     }
@@ -102,6 +104,19 @@ void audio::update(double ms) {
     for (int i=0; i<STREAM_COUNT; i++) {
         // ... todo neki dan
         // silence fade
+        if (timers[i]<durations[i]) {
+            if ((timers[i]+ms)>durations[i]) {
+                gains[i] = oldGains[i] + deltaGains[i];
+                al_set_audio_stream_gain(streams[i], gains[i]);
+                // printf("Gain: %.2f\nTimer=%.1f, Duration=%.1f\n", gains[i], timers[i], durations[i]);
+                timers[i]+=ms;
+                continue;
+            }
+            gains[i] = oldGains[i] + deltaGains[i]*timers[i]/durations[i];
+            al_set_audio_stream_gain(streams[i],gains[i]);
+            // printf("Gain: %.2f\nTimer=%.1f, Duration=%.1f\n", gains[i], timers[i], durations[i]);
+            timers[i]+=ms;
+        }
     }
 }
 
@@ -132,6 +147,16 @@ void audio::stopStream(int stream) {
         al_set_audio_stream_playing(streams[stream], false);
 }
 
-void audio::silenceStream(audio::Stream stream) {
-
+void audio::silenceStream(audio::Stream stream, float millis) {
+    durations[stream] = millis;
+    deltaGains[stream] = -gains[stream];
+    oldGains[stream] = gains[stream];
+    timers[stream] = 0.f;
+}
+void audio::fadeStream(audio::Stream stream, float val, float millis) {
+    durations[stream] = millis;
+    deltaGains[stream] = val-gains[stream];
+    oldGains[stream] = gains[stream];
+    // printf("dg: %.2f\n", deltaGains[stream]);
+    timers[stream] = 0.f;
 }

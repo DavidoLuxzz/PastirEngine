@@ -144,6 +144,7 @@ void Game::update(double ms){
     if (!(dialogbox::isShowing()||display->isFading())) updateMovement(ms);
     display->update(ms);
     dialogbox::update(ms);
+    audio::update(ms);
     if (display->isFading()) {
         // printf("Display fade: %d\n", display->getFadeFrame());
         if (display->getFadeFrame()==display->getFadeCycleCount()/2) {

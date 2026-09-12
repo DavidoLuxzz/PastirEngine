@@ -68,6 +68,7 @@ void FightScreen::update(double ms){
     }
     display->update(ms);
     shake::update(ms);
+    audio::update(ms);
 
     // Blasts (horizontal dead zones)
     fight.update(ms);
