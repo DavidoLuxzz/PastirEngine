@@ -46,7 +46,7 @@ attacks:
 sleep 1000
 silence 2 1000
 sleep 1000
-fademus 2 1.0 100
+fademus 2 1.0 200
 
 }
 

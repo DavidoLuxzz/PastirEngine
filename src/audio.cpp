@@ -3,6 +3,7 @@
 #include <allegro5/allegro_acodec.h>
 #include <iostream>
 #include <asset_manager.hpp>
+#include <colors.h>
 
 namespace audio {
 
@@ -148,12 +149,14 @@ void audio::stopStream(int stream) {
 }
 
 void audio::silenceStream(audio::Stream stream, float millis) {
-    durations[stream] = millis;
-    deltaGains[stream] = -gains[stream];
-    oldGains[stream] = gains[stream];
-    timers[stream] = 0.f;
+    fadeStream(stream, 0.f, millis);
 }
+
 void audio::fadeStream(audio::Stream stream, float val, float millis) {
+    if (stream<0 || stream>=STREAM_COUNT) {
+        printf("%s[WARNING] fadeStream(3) called with stream out of bounds: %d%s\n",
+            TERMINAL_COLOR_YELLOW_BOLD, stream, TERMINAL_COLOR_RESET);
+    } 
     durations[stream] = millis;
     deltaGains[stream] = val-gains[stream];
     oldGains[stream] = gains[stream];

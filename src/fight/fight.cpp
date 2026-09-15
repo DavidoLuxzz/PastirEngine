@@ -60,72 +60,68 @@ void Fight::runCommand(const std::string& line) {
     if (line[0]=='{') return;
     if (line[0]=='}') return;
     if (line.starts_with("attacks:")) return;
+    if (line.size()<1) return;
 
     // std::cout << line << std::endl;
     std::istringstream _l(line);
     std::string token;
+
+    std::vector<std::string> args;
+    while (std::getline(_l, token, ' ')) {
+        args.push_back(token);
+        // std::cout << token << " | ";
+    }
+    // putchar(0xa);
     
-    std::getline(_l, token, ' ');
+    // std::getline(_l, token, ' ');
     if (line.starts_with("room ")) {
-        std::getline(_l, token, ' ');
-        fightRoomID = std::stoi(token);
+        fightRoomID = std::stoi(args[1]);
     } else if (line.starts_with("spawn ")) {
-        std::getline(_l, token, ' ');
-        playerSpawn.x = std::stof(token);
-        std::getline(_l, token, ' ');
-        playerSpawn.y = std::stof(token);
+        playerSpawn.x = std::stof(args[1]);
+        playerSpawn.y = std::stof(args[2]);
         player.setWorldPosition(playerSpawn);
     } else if (line.starts_with("print ")) {
         std::cout << line.substr(6) << std::endl;
     } else if (line.starts_with("sleep ")) {
-        std::getline(_l, token, ' ');
-        _sleep = std::stod(token);
+        _sleep = std::stod(args[1]);
         _timeSinceSleepCommand = 0.0;
     } else if (line.starts_with("shake ")) {
-        std::getline(_l, token, ' ');
-        float strength = std::stof(token);
-        std::getline(_l, token, ' ');
-        float freq = std::stof(token);
-        std::getline(_l, token, ' ');
-        float duration = std::stof(token);
+        float strength = std::stof(args[1]);
+        float freq = std::stof(args[2]);
+        float duration = std::stof(args[3]);
         shake::set(strength,freq,duration);
     } else if (line.starts_with("stopmus")) {
-        if (!std::getline(_l, token, ' ')) {
+        if (args.size()<2) {
             audio::stopStream(); return;
         }
-        audio::stopStream(std::stoi(token));
+        audio::stopStream(std::stoi(args[1]));
     } else if (line.starts_with("mus ")) {
-        std::getline(_l, token, ' ');
-        audio::Stream mus = (audio::Stream)std::stoi(token);
-        if (!std::getline(_l,token,' ')) {
+        audio::Stream mus = (audio::Stream)std::stoi(args[1]);
+        if (args.size()<3) {
             audio::playStream(mus); return;
         }
-        audio::playStream(mus,std::stoi(token));
+        audio::playStream(mus,std::stoi(args[2]));
     } else if (line.starts_with("snd ")) {
-        std::getline(_l, token, ' ');
-        audio::Sound snd = (audio::Sound)std::stoi(token);
+        audio::Sound snd = (audio::Sound)std::stoi(args[1]);
         float prefs[] = {1.0f, 0.0f, 1.0f}; // gain, pan, speed
-        int index = 0;
-        while (std::getline(_l, token, ' ')) {
-            prefs[index++] = std::stof(token);
-            if (index>=3) break;
+        for (int i=0; i<3; i++) {
+            if (args.size()<(i+3)) break;
+            prefs[i] = std::stof(args[2+i]);
+            std::cout << args[2+i] << std::endl;
         }
         audio::playSound(snd, prefs[0],prefs[1],prefs[2]);
     } else if (line.starts_with("silence ")) {
-        std::getline(_l, token, ' ');
-        audio::Stream stm = (audio::Stream) std::stoi(token);
-        if (!std::getline(_l, token, ' '))
+        audio::Stream stm = (audio::Stream) std::stoi(args[1]);
+        if (args.size()<3)
             audio::silenceStream(stm);
         else
-            audio::silenceStream(stm, std::stof(token));
+            audio::silenceStream(stm, std::stof(args[2]));
     } else if (line.starts_with("fademus ")) {
-        std::getline(_l, token, ' ');
-        audio::Stream stm = (audio::Stream) std::stoi(token);
-        std::getline(_l, token, ' ');
-        float val = std::stof(token);
-        if (!std::getline(_l, token, ' '))
+        audio::Stream stm = (audio::Stream) std::stoi(args[1]);
+        float val = std::stof(args[2]);
+        if (args.size()<4)
             audio::fadeStream(stm,val);
         else
-            audio::fadeStream(stm,1.0f, std::stof(token));
+            audio::fadeStream(stm,val, std::stof(args[3]));
     }
 }
