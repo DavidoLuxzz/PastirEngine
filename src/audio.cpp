@@ -122,6 +122,11 @@ void audio::update(double ms) {
 }
 
 void audio::playSound(Sound snd, float gain, float pan, float speed, ALLEGRO_SAMPLE_ID *out_id) {
+    if (snd<0 || snd>=STREAM_COUNT) {
+        printf("%s[WARNING] audio::playSound(5) called with sound out of bounds: %d%s\n",
+            TERMINAL_COLOR_YELLOW_BOLD, snd, TERMINAL_COLOR_RESET);
+        return;
+    } 
     // ALLEGRO_SAMPLE_INSTANCE* instance = al_create_sample_instance(sounds[snd]);
     // al_attach_sample_instance_to_mixer(instance, al_get_default_mixer());
     // al_play_sample_instance(instance);
@@ -130,6 +135,11 @@ void audio::playSound(Sound snd, float gain, float pan, float speed, ALLEGRO_SAM
     al_play_sample(sounds[snd], gain, pan, speed, ALLEGRO_PLAYMODE_ONCE, out_id);
 }
 void audio::playStream(Stream strm, bool loop, float gain, float pan, float speed) {
+    if (strm<0 || strm>=STREAM_COUNT) {
+        printf("%s[WARNING] audio::playStream(5) called with stream out of bounds: %d%s\n",
+            TERMINAL_COLOR_YELLOW_BOLD, strm, TERMINAL_COLOR_RESET);
+        return;
+    } 
     al_attach_audio_stream_to_mixer(streams[strm], al_get_default_mixer());
     al_set_audio_stream_playmode(streams[strm], loop? ALLEGRO_PLAYMODE_LOOP:ALLEGRO_PLAYMODE_ONCE);
     al_set_audio_stream_gain(streams[strm], gain);
@@ -138,9 +148,14 @@ void audio::playStream(Stream strm, bool loop, float gain, float pan, float spee
     al_set_audio_stream_playing(streams[strm], true);
 
     gains[strm] = gain;
+    oldGains[strm] = gain;
+    timers[strm] = 0;
+    durations[strm] = 0;
+    deltaGains[strm] = 0;
 }
 
 void audio::stopStream(int stream) {
+    if (stream>=STREAM_COUNT) return; // koga boli uvo
     if (stream<0) {
         for (int i=0; i<STREAM_COUNT; i++)
             al_set_audio_stream_playing(streams[i], false);
@@ -154,8 +169,9 @@ void audio::silenceStream(audio::Stream stream, float millis) {
 
 void audio::fadeStream(audio::Stream stream, float val, float millis) {
     if (stream<0 || stream>=STREAM_COUNT) {
-        printf("%s[WARNING] fadeStream(3) called with stream out of bounds: %d%s\n",
+        printf("%s[WARNING] audio::fadeStream(3) called with stream out of bounds: %d%s\n",
             TERMINAL_COLOR_YELLOW_BOLD, stream, TERMINAL_COLOR_RESET);
+        return;
     } 
     durations[stream] = millis;
     deltaGains[stream] = val-gains[stream];
