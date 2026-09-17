@@ -74,7 +74,31 @@ void Fight::runCommand(const std::string& line) {
     // putchar(0xa);
     
     // std::getline(_l, token, ' ');
-    if (line.starts_with("room ")) {
+    if (line.starts_with("snd ")) {
+        audio::Sound snd = (audio::Sound)std::stoi(args[1]);
+        float prefs[] = {1.0f, 0.0f, 1.0f}; // gain, pan, speed
+        for (int i=0; i<3; i++) {
+            if (args.size()<(i+3)) break;
+            prefs[i] = std::stof(args[2+i]);
+            std::cout << args[2+i] << std::endl;
+        }
+        audio::playSound(snd, prefs[0],prefs[1],prefs[2]);
+    } else if (line.starts_with("orb ")) {
+        float x = std::stoi(args[1]);
+        float y = std::stoi(args[2]);
+        orbs.push_back(Orb(x,y,10.f));
+    } else if (line.starts_with("blast")) {
+        float xy = std::stoi(args[1]);
+        float h = std::stoi(args[2]);
+
+        if (line[5]=='v') blasts.push_back(Blast(Blast::VERTICAL, xy, h, 10));
+        else if (line[5]=='h') blasts.push_back(Blast(Blast::HORIZONTAL, xy, h, 10));
+
+    } else if (line.starts_with("orb ")) {
+        float x = std::stoi(args[1]);
+        float y = std::stoi(args[2]);
+        orbs.push_back(Orb(x,y,10.f));
+    } else if (line.starts_with("room ")) {
         fightRoomID = std::stoi(args[1]);
     } else if (line.starts_with("spawn ")) {
         playerSpawn.x = std::stof(args[1]);
@@ -101,15 +125,6 @@ void Fight::runCommand(const std::string& line) {
             audio::playStream(mus); return;
         }
         audio::playStream(mus,std::stoi(args[2]));
-    } else if (line.starts_with("snd ")) {
-        audio::Sound snd = (audio::Sound)std::stoi(args[1]);
-        float prefs[] = {1.0f, 0.0f, 1.0f}; // gain, pan, speed
-        for (int i=0; i<3; i++) {
-            if (args.size()<(i+3)) break;
-            prefs[i] = std::stof(args[2+i]);
-            std::cout << args[2+i] << std::endl;
-        }
-        audio::playSound(snd, prefs[0],prefs[1],prefs[2]);
     } else if (line.starts_with("silence ")) {
         audio::Stream stm = (audio::Stream) std::stoi(args[1]);
         if (args.size()<3)

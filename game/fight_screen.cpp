@@ -13,6 +13,8 @@
 #define THIS_ROOM global::get().rooms[fight.fightRoomID]
 #define player (Game::getGame()->player)
 
+bool slowDown = false;
+
 #pragma region events
 void FightScreen::handleEvents() {
     ALLEGRO_EVENT evt;
@@ -31,7 +33,8 @@ void FightScreen::handleEvents() {
                 global::get().f3 ^= true;
                 break;
             case ALLEGRO_KEY_SPACE: {
-                shake::set(2.0f, 100.0f, 2.0f);
+                slowDown=!slowDown;
+                // shake::set(2.0f, 100.0f, 2.0f);
                 break;
                 Rectf hitbox = player.getHitbox();
                 float2 center = hitbox.min+hitbox.size/2;
@@ -69,6 +72,8 @@ void FightScreen::update(double ms){
     display->update(ms);
     shake::update(ms);
     audio::update(ms);
+
+    if (slowDown) al_rest(0.5);
 
     // Blasts (horizontal dead zones)
     fight.update(ms);

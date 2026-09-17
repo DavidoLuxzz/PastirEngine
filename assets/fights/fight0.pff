@@ -15,6 +15,10 @@
 # '}' - kraj attacka
 # Fight sistem nasumicno bira koji ce od ovih attackova da performuje
 
+# napadi
+# 'blasth <x> <y>' - horizontalni blast
+# 'blastv <x> <y>' - vertikalni blast
+# 'orb <x> <y>'
 
 
 # komande za debug:
@@ -42,12 +46,11 @@ print init hello
 attacks:
 
 {
-
-sleep 1000
-silence 2 1000
-sleep 1000
-fademus 2 1.0 200
-
+# orb 100 100
+blasth 100 100
+sleep 100
+blastv 100 100
+sleep 1500
 }
 
 {

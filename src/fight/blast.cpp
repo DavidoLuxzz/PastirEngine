@@ -15,7 +15,8 @@ Blast::Blast(BlasterType typ, float cy, float h, int dim, float inc) {
     // animation things
     numShades = height/SHADE_OFFSET;
     increment = inc;
-    decrement = 1./dim;
+    if (dim<0) decrement=0.f;
+    else decrement = 1./dim;
 
     incrementFrames = 1./inc;
 

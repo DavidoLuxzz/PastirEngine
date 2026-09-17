@@ -122,7 +122,7 @@ void audio::update(double ms) {
 }
 
 void audio::playSound(Sound snd, float gain, float pan, float speed, ALLEGRO_SAMPLE_ID *out_id) {
-    if (snd<0 || snd>=STREAM_COUNT) {
+    if (snd<0 || snd>=SOUND_COUNT) {
         printf("%s[WARNING] audio::playSound(5) called with sound out of bounds: %d%s\n",
             TERMINAL_COLOR_YELLOW_BOLD, snd, TERMINAL_COLOR_RESET);
         return;
@@ -139,7 +139,7 @@ void audio::playStream(Stream strm, bool loop, float gain, float pan, float spee
         printf("%s[WARNING] audio::playStream(5) called with stream out of bounds: %d%s\n",
             TERMINAL_COLOR_YELLOW_BOLD, strm, TERMINAL_COLOR_RESET);
         return;
-    } 
+    }
     al_attach_audio_stream_to_mixer(streams[strm], al_get_default_mixer());
     al_set_audio_stream_playmode(streams[strm], loop? ALLEGRO_PLAYMODE_LOOP:ALLEGRO_PLAYMODE_ONCE);
     al_set_audio_stream_gain(streams[strm], gain);
