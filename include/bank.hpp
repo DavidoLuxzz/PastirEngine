@@ -147,6 +147,7 @@ namespace bank {
             PLAYER,
             DIALOG_BOX,
             ENTITY0,
+            PASTIR, // for testing, uglavnom
 
             NUM_KNOWN_BANKS
         };

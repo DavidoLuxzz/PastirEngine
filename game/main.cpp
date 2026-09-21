@@ -14,7 +14,7 @@
 
 global::vars _state = {
     .running = true,
-    .currentScreen = global::FIGHT,
+    .currentScreen = global::GAME,
     .rooms = new Room[NUM_ROOMS]
 };
 

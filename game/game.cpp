@@ -188,6 +188,9 @@ int Game::loadAssets() {
         // Player tilesheet
         bank::tileset::getBank(bank::tileset::PLAYER).loadTexture("player.png", commonFlags);
         bank::tileset::getBank(bank::tileset::PLAYER).loadTileRects("player_rects.txt");
+        // Pastir tilesheet
+        bank::tileset::getBank(bank::tileset::PASTIR).loadTexture("pastir.png", commonFlags);
+        bank::tileset::getBank(bank::tileset::PASTIR).loadTileRects("pastir_rects.txt");
         // Dialog box
         bank::tileset::getBank(bank::tileset::DIALOG_BOX).loadTexture("dialog_box.png");
         bank::tileset::getBank(bank::tileset::DIALOG_BOX).registerTile({{0,0},{236,128}});
@@ -216,9 +219,9 @@ void initPlayer() {
     Game* game = Game::getGame();
     Player& player = game->player;
     player.setTexturesBankType(bank::TILESET);
-    player.setTexturesBankID(bank::tileset::PLAYER);
-    // player.setScale(0.5f);
-    player.setScale(3.f);
+    player.setTexturesBankID(bank::tileset::PASTIR);
+    player.setScale(0.5f);
+    // player.setScale(3.f); // za pixel je 3
     //player.setCenter(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f);
     //player.setWorldPosition(player.getPosition());
     player.setWorldPosition({400.0f, 340.0f});

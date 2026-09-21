@@ -168,7 +168,7 @@ void Player::draw() {
     ALLEGRO_BITMAP* bitmap = bank::getTexture(texInfo).getAllegroBitmap();
     if (!bitmap) return;
     Rectu rect = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID);
-    rect.min.x += (animation.frame%4)*rect.size.x;
+    // rect.min.x += (animation.frame%4)*rect.size.x;
     if (usingNikes) rect.min.y += rect.size.y*2;
 
     al_draw_tinted_scaled_rotated_bitmap_region(bitmap,
