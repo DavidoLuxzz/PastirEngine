@@ -1,5 +1,7 @@
 area   Valjevo Brdjani   
 # texture x y solid layer group angle scalex scaley type width height special
+# types: 0=normal; 1=hitbox; 2=old
+
 # prvo idu prekriveni blokovi. Hitboxovi
 0 0 0 1 0 0 0 100 100 1 250 370
 0 0 490 1 0 0 0 100 100 1 150 200
@@ -14,6 +16,9 @@ area   Valjevo Brdjani
 2 0 -50 0 1 0 0 50 50
 1 280 120 0 1 0 0 60 40
 1 -50 500 0 1 0 0 60 40
+
+# old texture
+1 1000 300 1 0 0 0 400 400 2
 
 
 box 2000 600

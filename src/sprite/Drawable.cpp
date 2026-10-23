@@ -34,7 +34,8 @@ Rectf Drawable::createHitbox(const DrawableData& data, float2 translate) {
         //printf("Hitbox w,h: %.1f %.1f\n", hitbox);
         return hitbox;
     }
-    Rectu tile = bank::tileset::getBank(bank::tileset::MAP_DRAWABLES).getTile(data[COMP_TEXTURE_ID]);
+    unsigned int banka = data[COMP_TYPE]==2? bank::tileset::MAP_DRAWABLES_OLD : bank::tileset::MAP_DRAWABLES;
+    Rectu tile = bank::tileset::getBank(banka).getTile(data[COMP_TEXTURE_ID]);
     Rectf hitbox = {
         {coords.x+translate.x, coords.y+translate.y},
         {tile.size.x * data[COMP_SCALEX]/100.0f, tile.size.y * data[COMP_SCALEY]/100.0f}
@@ -43,7 +44,8 @@ Rectf Drawable::createHitbox(const DrawableData& data, float2 translate) {
 }
 
 float Drawable::getWorldFeetY(const DrawableData& data) {
-    return data[COMP_Y]/DEFAULT_PIXEL_SCALE + bank::tileset::getBank(bank::tileset::MAP_DRAWABLES).getTile(data[COMP_TEXTURE_ID]).size.y * data[COMP_SCALEY] / 100.0f;
+    unsigned int banka = data[COMP_TYPE]==2? bank::tileset::MAP_DRAWABLES_OLD : bank::tileset::MAP_DRAWABLES;
+    return data[COMP_Y]/DEFAULT_PIXEL_SCALE + bank::tileset::getBank(banka).getTile(data[COMP_TEXTURE_ID]).size.y * data[COMP_SCALEY] / 100.0f;
 }
 
 void Drawable::draw() {
@@ -58,11 +60,12 @@ float degreesToRadians(float degrees) {
 #include <allegro5/allegro_color.h>
 #include <components/display.hpp>
 void Drawable::drawData(const DrawableData& data, float2 translate) {
-    ALLEGRO_BITMAP* bitmap = bank::tileset::getBank(bank::tileset::MAP_DRAWABLES)
+    unsigned int banka = data[COMP_TYPE]==2? bank::tileset::MAP_DRAWABLES_OLD : bank::tileset::MAP_DRAWABLES;
+    ALLEGRO_BITMAP* bitmap = bank::tileset::getBank(banka)
                                 .getTexture()
                                 .getAllegroBitmap();
     if (!bitmap) return;
-    Rectu rect = bank::tileset::getBank(bank::tileset::MAP_DRAWABLES).getTile(data[COMP_TEXTURE_ID]);
+    Rectu rect = bank::tileset::getBank(banka).getTile(data[COMP_TEXTURE_ID]);
 
     float PIXEL_SCALE = Display::getPixelScale();
 

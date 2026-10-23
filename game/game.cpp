@@ -199,6 +199,9 @@ int Game::loadAssets() {
         // Map drawables
         bank::tileset::getBank(bank::tileset::MAP_DRAWABLES).loadTexture("drawables.png", ALLEGRO_VIDEO_BITMAP | commonFlags);
         bank::tileset::getBank(bank::tileset::MAP_DRAWABLES).loadTileRects("drawable_rects.txt");
+        // Map drawables, stari iz Sheepa
+        bank::tileset::getBank(bank::tileset::MAP_DRAWABLES_OLD).loadTexture("drawabless.png", ALLEGRO_VIDEO_BITMAP);
+        bank::tileset::getBank(bank::tileset::MAP_DRAWABLES_OLD).loadTileRects("drawable_rectss.txt");
         // Player tilesheet
         bank::tileset::getBank(bank::tileset::PLAYER).loadTexture("player.png", commonFlags);
         bank::tileset::getBank(bank::tileset::PLAYER).loadTileRects("player_rects.txt");

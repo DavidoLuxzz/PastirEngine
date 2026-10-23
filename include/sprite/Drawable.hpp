@@ -43,6 +43,10 @@ public:
          * Samo kod ovog tipa se koriste COMP_WIDTH i COMP_HEIGHT.
          */
         TYPE_HITBOX,
+        /**
+         * Stari drawable map.
+         */
+        TYPE_OLD,
 
         NUM_DRAWABLE_TYPES
     };

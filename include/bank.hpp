@@ -144,6 +144,7 @@ namespace bank {
     namespace tileset {
         enum tileset_banks {
             MAP_DRAWABLES,
+            MAP_DRAWABLES_OLD,
             PLAYER,
             DIALOG_BOX,
             ENTITY0,
