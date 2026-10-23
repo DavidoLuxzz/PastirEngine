@@ -13,7 +13,10 @@ namespace audio {
         "audio/PureVessel.wav"
     };
     constexpr const char* SOUNDS[] = {
-        "audio/snd/voice1.wav"
+        "audio/snd/voice1.wav",
+        "audio/snd/step1.wav",
+        "audio/snd/step2.wav",
+        "audio/snd/grass.ogg"
     };
 
     ALLEGRO_SAMPLE* sounds[SOUND_COUNT];
@@ -34,8 +37,8 @@ namespace audio {
         float dGain, dPan, dSpeed;
     };
 
-    float gains[STREAM_COUNT] = {1.f};
-    float oldGains[STREAM_COUNT] = {1.f};
+    float gains[STREAM_COUNT] = {0.f};
+    float oldGains[STREAM_COUNT] = {0.f};
     float deltaGains[STREAM_COUNT] = {0.f};
     float timers[STREAM_COUNT] = {0};
     float durations[STREAM_COUNT] = {0};
@@ -54,10 +57,12 @@ void __audio_loadSounds() {
 }
 void __audio_loadStreams() {
     for (int i=0; i<audio::Stream::STREAM_COUNT; i++) {
-        
         ALLEGRO_AUDIO_STREAM* stream = al_load_audio_stream(assman::getasset(audio::STREAMS[i]).c_str(), 4, 1024);
         if (!stream) printf("[AUDIO] Stream fail: %s\n", audio::STREAMS[i]);
         audio::streams[i] = stream;
+        al_attach_audio_stream_to_mixer(stream, al_get_default_mixer());
+        al_set_audio_stream_playing(stream, false);
+        al_set_audio_stream_gain(stream, 0.f);
     }
 }
 
@@ -121,18 +126,23 @@ void audio::update(double ms) {
     }
 }
 
-void audio::playSound(Sound snd, float gain, float pan, float speed, ALLEGRO_SAMPLE_ID *out_id) {
+void audio::playSound(Sound snd, float gain, float pan, float speed, ALLEGRO_SAMPLE_INSTANCE *out_id) {
     if (snd<0 || snd>=SOUND_COUNT) {
         printf("%s[WARNING] audio::playSound(5) called with sound out of bounds: %d%s\n",
             TERMINAL_COLOR_YELLOW_BOLD, snd, TERMINAL_COLOR_RESET);
         return;
-    } 
-    // ALLEGRO_SAMPLE_INSTANCE* instance = al_create_sample_instance(sounds[snd]);
-    // al_attach_sample_instance_to_mixer(instance, al_get_default_mixer());
-    // al_play_sample_instance(instance);
+    }
+    ALLEGRO_SAMPLE_INSTANCE* instance = al_create_sample_instance(sounds[snd]);
+    al_set_sample_instance_gain(instance, gain);
+    al_set_sample_instance_pan(instance, pan);
+    al_set_sample_instance_speed(instance, speed);
+    al_attach_sample_instance_to_mixer(instance, al_get_default_mixer());
+    al_play_sample_instance(instance);
+
+    // printf("Played sound %s\n", SOUNDS[snd]);
 
     // or just...
-    al_play_sample(sounds[snd], gain, pan, speed, ALLEGRO_PLAYMODE_ONCE, out_id);
+    //al_play_sample(sounds[snd], gain, pan, speed, ALLEGRO_PLAYMODE_ONCE, out_id);
 }
 void audio::playStream(Stream strm, bool loop, float gain, float pan, float speed) {
     if (strm<0 || strm>=STREAM_COUNT) {
@@ -140,7 +150,7 @@ void audio::playStream(Stream strm, bool loop, float gain, float pan, float spee
             TERMINAL_COLOR_YELLOW_BOLD, strm, TERMINAL_COLOR_RESET);
         return;
     }
-    al_attach_audio_stream_to_mixer(streams[strm], al_get_default_mixer());
+    // al_attach_audio_stream_to_mixer(streams[strm], al_get_default_mixer());
     al_set_audio_stream_playmode(streams[strm], loop? ALLEGRO_PLAYMODE_LOOP:ALLEGRO_PLAYMODE_ONCE);
     al_set_audio_stream_gain(streams[strm], gain);
     al_set_audio_stream_pan(streams[strm], pan);
@@ -172,10 +182,21 @@ void audio::fadeStream(audio::Stream stream, float val, float millis) {
         printf("%s[WARNING] audio::fadeStream(3) called with stream out of bounds: %d%s\n",
             TERMINAL_COLOR_YELLOW_BOLD, stream, TERMINAL_COLOR_RESET);
         return;
-    } 
+    }
+    // gains[stream] = al_get_audio_stream_gain(streams[stream]);
     durations[stream] = millis;
     deltaGains[stream] = val-gains[stream];
     oldGains[stream] = gains[stream];
     // printf("dg: %.2f\n", deltaGains[stream]);
     timers[stream] = 0.f;
+    if (val>0) al_set_audio_stream_playing(streams[stream], true);
+}
+
+
+ALLEGRO_AUDIO_STREAM* audio::getStream(Stream s) {
+    return streams[s];
+}
+
+bool audio::isStreamPlaying(Stream s) {
+    return al_get_audio_stream_playing(streams[s]) && al_get_audio_stream_attached(streams[s]);
 }

@@ -106,6 +106,7 @@ void Game::handleEvents() {
             case ALLEGRO_KEY_Q:
                 player.setInvincible(!player.isInvincible());
                 break;
+            case ALLEGRO_KEY_ENTER:
             case ALLEGRO_KEY_Z:
                 if (dialogbox::isShowing()) dialogbox::hide();
                 else ___zPressedThisFrame = true;
@@ -120,12 +121,14 @@ void Game::handleEvents() {
 
 #pragma region game::update
 
+float __roomChangeTime = -1.f;
+
 void Game::game_move(float dx, float dy, float ms) {
     // Move player
     player.move(dx,dy,ms);
 
     // Adjust camera
-    rooms[roomID].position(player.getWorldPosition());
+    rooms[roomID].position(player.getWorldPosition()+player.getHitbox().size/2.f);
     player.positionRoom(rooms[roomID].getTranslate());
 
     // Orientate player
@@ -150,11 +153,20 @@ void Game::update(double ms){
         if (display->getFadeFrame()==display->getFadeCycleCount()/2) {
             immidiatelyChangeRoom();
             game_move(0.0f,0.0f,ms);
+            __roomChangeTime = 1000.f;
         }
+    }
+    for (std::unique_ptr<RoomController>& rc : rooms[roomID].controllers) {
+        rc->update(ms);
     }
     ___zPressedThisFrame = false;
 }
 void Game::updateMovement(double ms) {
+    if ((roomID==2||roomID==0) && __roomChangeTime>=0.f) {
+        game_move(player.getSpeed()/2.f, 0.f, ms);
+        __roomChangeTime-=ms;
+        return;
+    }
     // if (requestRoomID != roomID) immidiatelyChangeRoom();
     float dx = (keyboard::keyDown(ALLEGRO_KEY_RIGHT) - keyboard::keyDown(ALLEGRO_KEY_LEFT))
                 * player.getSpeed();
@@ -163,6 +175,8 @@ void Game::updateMovement(double ms) {
 
     float speedmul = (keyboard::keyDown(ALLEGRO_KEY_C)&&player.isUsingNikes())? 1.5f:1.0f;
 
+
+    
     player.setSpeedMul(speedmul);
     game_move(dx,dy,ms);
 
@@ -198,6 +212,12 @@ int Game::loadAssets() {
         // Entities
         bank::tileset::getBank(bank::tileset::ENTITY0).loadTexture("nike_shoes.png");
         bank::tileset::getBank(bank::tileset::ENTITY0).registerTile({{0,0},{100,65}});
+        // Piza
+        bank::tileset::getBank(bank::tileset::PIZA).loadTexture("piza.png");
+        bank::tileset::getBank(bank::tileset::PIZA).registerTile({{0,0},{40,81}});
+        // Gramofon
+        bank::tileset::getBank(bank::tileset::GRAMOFON).loadTexture("gramofon.png");
+        bank::tileset::getBank(bank::tileset::GRAMOFON).registerTile({{0,0},{158,210}});
     }
     return 0;
 }
@@ -219,12 +239,12 @@ void initPlayer() {
     Game* game = Game::getGame();
     Player& player = game->player;
     player.setTexturesBankType(bank::TILESET);
-    player.setTexturesBankID(bank::tileset::PASTIR);
-    player.setScale(0.5f);
-    // player.setScale(3.f); // za pixel je 3
+    player.setTexturesBankID(bank::tileset::PLAYER);
+    // player.setScale(0.5f);
+    player.setScale(3.f); // za pixel je 3
     //player.setCenter(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f);
     //player.setWorldPosition(player.getPosition());
-    player.setWorldPosition({400.0f, 340.0f});
+    player.setWorldPosition({400.0f, 400.0f});
     // player.setWorldPosition({0.0f,0.0f});
     // player.setRoom(&game->rooms[game->roomID]);
     game->game_move(0.f,0.f,0.f); // init step, positioning
@@ -257,7 +277,7 @@ void Game::clean(){
 
 
 bool Game::isZPressed() {
-    return keyboard::keyDown(ALLEGRO_KEY_Z);
+    return keyboard::keyDown(ALLEGRO_KEY_Z) || keyboard::keyDown(ALLEGRO_KEY_ENTER);
 }
 bool Game::isZPressedThisFrame() {
     return ___zPressedThisFrame;

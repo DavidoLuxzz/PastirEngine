@@ -7,6 +7,7 @@
 #include <array>
 
 class StaticEntity : public Sprite {
+    static constexpr unsigned int banks[] = {bank::tileset::ENTITY0, bank::tileset::PIZA, bank::tileset::GRAMOFON};
 public:
     enum data_components {
         COMP_X,

@@ -8,6 +8,7 @@
 #include <colors.h>
 #include <asset_manager.hpp>
 #include <game/game.hpp>
+#include <level/Room2Controller.hpp>
 
 namespace room_loader {
     Room room;
@@ -31,6 +32,8 @@ void __lvl_loader_nonobject(const std::string& line) {
         index = room_loader::room.areaName.size();
         while (room_loader::room.areaName[--index]==' ');
         room_loader::room.areaName = room_loader::room.areaName.substr(0,index+1);
+    } else if (line.starts_with("ctl ")) {
+        if (line[4]=='0') room_loader::room.controllers.push_back(std::make_unique<Room2Controller>());
     }
 }
 
@@ -38,6 +41,7 @@ int __lvl_loader_load(const std::string& filepath) {
     std::ifstream file(filepath);
 
     room_loader::room.objects.clear();
+    room_loader::room.controllers.clear();
     
     std::string line;
     while (std::getline(file, line)) {
@@ -127,6 +131,7 @@ int room_loader::load(unsigned int roomID) {
 void room_loader::swapData(Room& _room) {
     _room.objects.swap(room.objects);
     _room.entities.swap(room.entities);
+    _room.controllers.swap(room.controllers);
     _room.areaName = room.areaName;
     _room.bounds = room.bounds;
 }

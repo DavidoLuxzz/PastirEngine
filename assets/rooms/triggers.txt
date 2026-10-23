@@ -3,5 +3,13 @@
 # change texture: (spec,spec2,spec3) = (targetID, newTexture, solid)
 # trigger sources: 0=level, 1=entity
 # room 0:
-0 1 0 1 0 0 380 40 100 0 100 100
+0 1 0 2 0 0 380 40 100 0 0 320
 0 7 1 0 0 400 500 100 50
+
+# room 2:
+# ovaj mora da bude prvi u room 2       (piza)
+2 9 1 1 0 2990 320 100 100
+# a ovaj mora da bude drugi u room 2    (gramofon)
+2 8 1 0 0 3390 340 100 80
+# a ovaj mora da bude treci u room 2    (exit)
+2 1 0 0 0 0 0 2 1000 0 10 400

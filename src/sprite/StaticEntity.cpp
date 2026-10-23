@@ -38,11 +38,11 @@ Rectf StaticEntity::getHitbox() const {
 #include <game/game.hpp>
 
 void StaticEntity::drawData(const EntityData& data, float2 translate) {
-    ALLEGRO_BITMAP* bitmap = bank::tileset::getBank(bank::tileset::ENTITY0)
+    ALLEGRO_BITMAP* bitmap = bank::tileset::getBank(banks[data[COMP_TEXTURE]])
                                 .getTexture()
                                 .getAllegroBitmap();
     if (!bitmap) return;
-    Rectu rect = bank::tileset::getBank(bank::tileset::ENTITY0).getTile(data[COMP_TEXTURE]);
+    Rectu rect = bank::tileset::getBank(banks[data[COMP_TEXTURE]]).getTile(0);
 
     float PIXEL_SCALE = Display::getPixelScale();
 
@@ -82,7 +82,7 @@ void StaticEntity::drawData(const EntityData& data, float2 translate) {
 }
 
 Rectf StaticEntity::createHitbox(const EntityData& data, float2 translate) {
-    Rectu tile = bank::tileset::getBank(bank::tileset::ENTITY0).getTile(data[COMP_TEXTURE]);
+    Rectu tile = bank::tileset::getBank(banks[data[COMP_TEXTURE]]).getTile(0);
     // Drawable::worldCoordinates(2) radi za sve: position/DEFAULT_PIXEL_SCALE
     float2 coords = Drawable::worldCoordinates(data[COMP_X],data[COMP_Y]);
     float scalex = data[COMP_SCALEX]/100.0f, scaley = data[COMP_SCALEY]/100.0f;
@@ -94,5 +94,5 @@ Rectf StaticEntity::createHitbox(const EntityData& data, float2 translate) {
 }
 
 float StaticEntity::getFeetY(const EntityData& data) {
-    return data[COMP_Y]/DEFAULT_PIXEL_SCALE + bank::tileset::getBank(bank::tileset::ENTITY0).getTile(data[COMP_TEXTURE]).size.y * data[COMP_SCALEY] / 100.0f;
+    return data[COMP_Y]/DEFAULT_PIXEL_SCALE + bank::tileset::getBank(banks[data[COMP_TEXTURE]]).getTile(0).size.y * data[COMP_SCALEY] / 100.0f;
 }

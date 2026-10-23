@@ -5,6 +5,7 @@
 #include <vector>
 #include <sprite/Drawable.hpp>
 #include <sprite/StaticEntity.hpp>
+#include <level/RoomController.hpp>
 
 class Room {
     // layering
@@ -17,6 +18,7 @@ public:
     std::vector<StaticEntity::EntityData> entities;
     Rectu bounds;
     std::string areaName;
+    std::vector<std::unique_ptr<RoomController>> controllers;
 
     /// @brief Draw pre player.draw()
     void drawBackLayer();

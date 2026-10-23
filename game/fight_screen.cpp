@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <random>
 #include <shake.hpp>
+#include <fight/fight_loader.hpp>
 
 #define THIS_ROOM global::get().rooms[fight.fightRoomID]
 #define player (Game::getGame()->player)
@@ -143,6 +144,12 @@ void FightScreen::draw(){
     textRGB.b = (textRGB.b+2)%256;
 }
 
+
+void FightScreen::loadFight(int f) {
+    fight_loader::load(f);
+    fight_loader::swapData(fight);
+}
+
 #pragma region game_move
 
 void FightScreen::game_move(float dx, float dy, float ms) {
@@ -155,4 +162,15 @@ void FightScreen::game_move(float dx, float dy, float ms) {
 
     // Orientate player
     player.orientate(dx,dy);
+}
+
+
+
+FightScreen* ____fightscreen = nullptr;
+
+void FightScreen::makeCurrent(FightScreen* fs) {
+    ____fightscreen = fs;
+}
+FightScreen* FightScreen::getFightScreen() {
+    return ____fightscreen;
 }

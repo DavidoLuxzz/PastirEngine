@@ -89,6 +89,11 @@ void Room::drawBackLayer() {
         }
     }
     al_hold_bitmap_drawing(false);
+
+    for (std::unique_ptr<RoomController>& rc : controllers) {
+        rc->drawBackLayer();
+    }
+
     entityTopIDs.clear();
     for (int i=0; i<entities.size(); i++) {
         const StaticEntity::EntityData& ent = entities.at(i);
@@ -102,8 +107,13 @@ void Room::drawBackLayer() {
 }
 
 void Room::drawTopLayer() {
+    al_hold_bitmap_drawing(true);
     for (int i : drawableTopIDs) {
         Drawable::drawData(objects.at(i), translate);
+    }
+    al_hold_bitmap_drawing(false);
+    for (std::unique_ptr<RoomController>& rc : controllers) {
+        rc->drawTopLayer();
     }
     for (int i : entityTopIDs) {
         StaticEntity::drawData(entities.at(i), translate);

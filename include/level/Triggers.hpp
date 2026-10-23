@@ -58,7 +58,7 @@ namespace triggers {
      * Get certain trigger from room
      * @returns Trigger Data
      */
-    const Trigger::TriggerData& get(unsigned int trID);
+    Trigger::TriggerData& get(unsigned int trID);
     /**
      * Creates a list with pointers to all the triggers from room.
      */

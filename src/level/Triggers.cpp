@@ -5,9 +5,12 @@
 #include <colors.h>
 #include <sstream>
 #include <game/game.hpp>
+#include <game/fight_screen.hpp>
 #include <event.hpp>
 #include <components/dialogbox.hpp>
 #include <game/global.hpp>
+#include <audio.hpp>
+#include <allegro5/allegro_audio.h>
 
 Trigger::Trigger(TriggerData& _data) {
     data = _data;
@@ -46,10 +49,12 @@ void Trigger::execute(const TriggerData& data) {
         break;
     }
     case event::DIALOG_INTERRUPT: {
+        dialogbox::setDialog(data[COMP_SPECIAL]);
         dialogbox::show();
         break;
     }
     case event::DIALOG_INTERRUPT_THEN_DISAPPEAR: {
+        dialogbox::setDialog(data[COMP_SPECIAL]);
         dialogbox::show();
         if (data[COMP_SOURCE]==1) // 1=entity
             THIS_ROOM.entities.erase(THIS_ROOM.entities.begin()+data[COMP_ENTITY_ID]);
@@ -72,7 +77,35 @@ void Trigger::execute(const TriggerData& data) {
     }
     case event::GOTO_FIGHT: {
         global::get().currentScreen = global::FIGHT;
-        triggers::prepare(1); // 1=fight room
+        FightScreen::getFightScreen()->loadFight(data[Trigger::COMP_SPECIAL]);
+        triggers::prepare(FightScreen::getFightScreen()->fight.fightRoomID); // 1=fight room
+        break;
+    }
+    case event::ROOM2_GRAMOFON: {
+        printf("Ran\n");
+        // audio::playStream((audio::Stream) data[COMP_SPECIAL]);
+        audio::fadeStream((audio::Stream) data[COMP_SPECIAL], 1.f, 1000.f);
+        triggers::get(1)[COMP_ACTION] = event::TOGGLE_MUSIC;
+        triggers::get(2)[COMP_X] += 10.f;
+        triggers::disable(0);
+        THIS_ROOM.entities.erase(THIS_ROOM.entities.begin()); // namenjeno da se exec samo jednom!!!
+        break;
+    }
+    case event::ROOM2_PIZA: {
+        dialogbox::setDialog(data[COMP_SPECIAL]);
+        dialogbox::show();
+        int args[] = {3800};
+        THIS_ROOM.controllers[0]->func0(args, 1);
+        // THIS_ROOM.bounds.size.x = 4000;
+        THIS_ROOM.objects[3][Drawable::COMP_X] = 3800;
+        break;
+    }
+    case event::TOGGLE_MUSIC: {
+        audio::Stream s = (audio::Stream) data[COMP_SPECIAL];
+        if (audio::isStreamPlaying(s))
+            audio::stopStream(s);
+        else
+            audio::playStream((audio::Stream) data[COMP_SPECIAL]);
         break;
     }
     
@@ -103,7 +136,7 @@ void triggers::prepare(unsigned int room) {
     }
 }
 
-const Trigger::TriggerData& triggers::get(unsigned int triggerID) {
+Trigger::TriggerData& triggers::get(unsigned int triggerID) {
     return __triggers[__thisRoomTriggers[triggerID]];
 }
 
@@ -170,6 +203,7 @@ int triggers::load() {
         return -1;
     }
 
+    __triggers.clear();
     __tr_loader_getAll(filepath, __triggers);
     // __tr_loader_sortByRoom(__triggers);
     // __tr_loader_loadRoomTriggerCounts(__triggers, __roomTrCounts);

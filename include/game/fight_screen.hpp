@@ -15,9 +15,14 @@ public:
     void update(double ms);
     void draw();
 
+    void loadFight(int fight);
+
 
     void game_move(float dx, float dy, float ms); // move with collision
     // might as well end this live stream (kasikom i viljuskom,... pro inglish ;)
+
+    static void makeCurrent(FightScreen*);
+    static FightScreen* getFightScreen();
 };
 
 

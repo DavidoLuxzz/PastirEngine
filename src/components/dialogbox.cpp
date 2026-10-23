@@ -9,7 +9,7 @@ namespace dialogbox {
     Sprite view;
     bool showing = false;
     int currentDialog = 0;
-    constexpr float scale = 3.0f/4.0f;
+    constexpr float scale = 3.0f;
     dialog_t GAME_DIALOGS[NUM_GAME_DIALOGS];
     Animation animation;
     audio::Sound voice = audio::Sound::SOUND_NONE;
@@ -18,7 +18,7 @@ namespace dialogbox {
 void __dialogbox_tick(int frame) {
     if (dialogbox::voice>=audio::Sound::SOUND_COUNT) return;
     if (isalnum(dialogbox::GAME_DIALOGS[dialogbox::currentDialog].pages[0][frame])) {
-        audio::playSound(dialogbox::voice, 3.0f);
+        audio::playSound(dialogbox::voice, 1.0f);
     }
 }
 
@@ -30,8 +30,8 @@ int dialogbox::init() {
         .tileID = 0
     };
     view.setTexture(dialogboxTexture);
-    view.setScale(0.8f / scale, 0.5f / scale);
-    view.setPosition(6.0f/scale, 2.0f);
+    view.setScale(1.6f, 1.0f);
+    view.setPosition(9.0f/scale, 2.0f);
 
     // init dialogs
     _loadDialogs(GAME_DIALOGS);
@@ -68,9 +68,10 @@ void dialogbox::draw() {
     Display::useCustomScale(Display::getPixelScale() * scale);
 
     const float winHeight = Display::getCurrentDisplay()->getHeight() / Display::getPixelScale() / scale;
-    if (Game::getGame()->player.getScreenPosition().y * Display::getPixelScale() * scale < winHeight) {
-        view.setPosition(view.getPosition().x, winHeight - view.getTile().size.y*scale);
-    } else view.setPosition(view.getPosition().x, 2.0f);
+    // Gore ili dole?:
+    // if (Game::getGame()->player.getScreenPosition().y * Display::getPixelScale() * scale < winHeight) {
+        view.setPosition(view.getPosition().x, winHeight - view.getTile().size.y);
+    // } else view.setPosition(view.getPosition().x, 2.0f);
     
     view.drawWhole();
 

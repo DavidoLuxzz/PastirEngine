@@ -4,6 +4,9 @@
 #include <cmath>
 #include <game/game.hpp>
 #include <game/global.hpp>
+#include <audio.hpp>
+
+#define CURRENT_TILE bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID)
 
 Player::Player() {
     texInfo.tileID = 0;
@@ -12,14 +15,23 @@ Player::Player() {
 
 void Player::move(float dx, float dy, float ms, int roomID) {
     worldPos += getFixedDisplacement(dx*ms,dy*ms,roomID);
-    if (!(dx==0.0f && dy==0.0f) || (animation.frame&1))
-        animation.update(ms);
+    if (!(dx==0.0f && dy==0.0f) || (animation.frame&1)) {
+        bool _tick = animation.update(ms);
+        if (_tick && !(animation.frame&1)) {
+            if (Game::getGame()->roomID == 2) {
+                if (animation.frame%4==0) audio::playSound(audio::Sound::STEP02);
+                else audio::playSound(audio::Sound::STEP01);
+            } else 
+                audio::playSound(audio::Sound::GRASS);
+        }
+    }
     // worldPos.x += dx;
     // worldPos.y += dy;
 }
 
 void Player::setWorldPosition(float2 pos) {
-    worldPos = pos;
+    worldPos.x = pos.x - CURRENT_TILE.size.x*scale.x/4.f;
+    worldPos.y = pos.y - CURRENT_TILE.size.y*scale.y/2.f;
 }
 float2 Player::getWorldPosition() const {
     return worldPos;
@@ -29,6 +41,7 @@ float2 Player::getWorldCenter() const {
     return hb.min + hb.size/2;
 }
 float Player::getWorldFeetY() const {
+    // printf("%.1f\n",worldPos.y);
     return worldPos.y + (float)bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.y * scale.y;
 }
 
@@ -77,7 +90,7 @@ Rectf Player::getHitbox() const {
 Rectf Player::getScreenHitbox() const {
     float2 size = {(float) texInfo.tileRect.size.x,(float) texInfo.tileRect.size.y};
     if (texInfo.bankType == bank::TILESET){
-        size.x = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.x;
+        size.x = CURRENT_TILE.size.x;
         size.y = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.y;
     }
     size *= scale;
@@ -168,7 +181,7 @@ void Player::draw() {
     ALLEGRO_BITMAP* bitmap = bank::getTexture(texInfo).getAllegroBitmap();
     if (!bitmap) return;
     Rectu rect = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID);
-    // rect.min.x += (animation.frame%4)*rect.size.x;
+    rect.min.x += (animation.frame%4)*rect.size.x;
     if (usingNikes) rect.min.y += rect.size.y*2;
 
     al_draw_tinted_scaled_rotated_bitmap_region(bitmap,

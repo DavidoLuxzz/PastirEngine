@@ -12,7 +12,10 @@ namespace event {
         DIALOG_INTERRUPT_THEN_DISAPPEAR, // 4
         GIVE_ITEM, // 5
         GIVE_ITEM_THEN_DISAPPEAR, // 6
-        GOTO_FIGHT // 7
+        GOTO_FIGHT, // 7
+        ROOM2_GRAMOFON, // 8
+        ROOM2_PIZA, // 9
+        TOGGLE_MUSIC // 10
     };
 } // namespace event
 

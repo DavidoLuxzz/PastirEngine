@@ -26,7 +26,7 @@ global::vars& global::get() {
 
 Display display;
 ALLEGRO_FONT* font;
-FightScreen mainMenu;
+FightScreen fightScreen;
 Game game; // da ne trosi stack
 
 
@@ -84,6 +84,7 @@ int main(int argc, char** argv) {
 
     std::cout << "--> game::init()\n";
     Game::makeCurrent(&game);
+    FightScreen::makeCurrent(&fightScreen);
     if (game.init()) {
         std::cerr << "Ne moze da ucita gejm >:(\n";
         game.clean();
@@ -101,10 +102,7 @@ int main(int argc, char** argv) {
 }
 #include <fight/fight_loader.hpp>
 int run(){
-    audio::playStream(audio::Stream::AUDIO_07);
-
-    fight_loader::load(0);
-    fight_loader::swapData(mainMenu.fight);
+    // audio::playStream(audio::Stream::AUDIO_07);
 
     // game.requestRoomID = 1;
     // game.immidiatelyChangeRoom();
@@ -122,9 +120,9 @@ int run(){
             game.update(deltaTime*1000.);
             game.draw();
         } else if (_state.currentScreen == global::FIGHT) {
-            mainMenu.handleEvents();
-            mainMenu.update(deltaTime*1000.);
-            mainMenu.draw();
+            fightScreen.handleEvents();
+            fightScreen.update(deltaTime*1000.);
+            fightScreen.draw();
         }
         // ja bih prvo napravio neki fight. cisto onako da se nahajpujem.
         // da dobijem malo motivacije da nastavim da pravim igricu.
