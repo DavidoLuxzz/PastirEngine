@@ -92,6 +92,9 @@ int main(int argc, char** argv) {
         return 0;
     }
     std::cout << "--> run()\n";
+    // game.requestRoomID = 2;
+    // game.requestPlayerCoords = {2700.f,350.f};
+    // game.immidiatelyChangeRoom();
     run();
     std::cout << "--> game::clean()\n";
     game.clean();

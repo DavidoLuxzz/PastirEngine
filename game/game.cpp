@@ -18,6 +18,10 @@
 
 #define rooms global::get().rooms
 
+inline bool Game::isRoomChanging() const {
+    return (Display::getCurrentDisplay()->isFading() && requestRoomID!=roomID);
+}
+
 #pragma region game::draw
 
 void Game::debugText() {
@@ -136,6 +140,8 @@ void Game::game_move(float dx, float dy, float ms) {
 }
 
 void Game::immidiatelyChangeRoom() {
+    rooms[roomID].disableControllers();
+    rooms[requestRoomID].enableControllers();
     roomID = requestRoomID;
     triggers::prepare(roomID);
     // player.setRoom(&rooms[roomID]);
@@ -144,12 +150,13 @@ void Game::immidiatelyChangeRoom() {
 void Game::update(double ms){
     Display* display = Display::getCurrentDisplay();
     keyboard::fetchKeyboardState();
-    if (!(dialogbox::isShowing()||display->isFading())) updateMovement(ms);
+    if (!(dialogbox::isShowing()||isRoomChanging())) updateMovement(ms);
     display->update(ms);
     dialogbox::update(ms);
     audio::update(ms);
     if (display->isFading()) {
         // printf("Display fade: %d\n", display->getFadeFrame());
+        if (isRoomChanging())
         if (display->getFadeFrame()==display->getFadeCycleCount()/2) {
             immidiatelyChangeRoom();
             game_move(0.0f,0.0f,ms);
@@ -221,6 +228,9 @@ int Game::loadAssets() {
         // Gramofon
         bank::tileset::getBank(bank::tileset::GRAMOFON).loadTexture("gramofon.png");
         bank::tileset::getBank(bank::tileset::GRAMOFON).registerTile({{0,0},{158,210}});
+        // Sheep
+        bank::tileset::getBank(bank::tileset::SHEEP).loadTexture("sheep_right.png");
+        bank::tileset::getBank(bank::tileset::SHEEP).registerTile({{0,0},{24,20}});
     }
     return 0;
 }

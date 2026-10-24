@@ -7,7 +7,12 @@
 #include <array>
 
 class StaticEntity : public Sprite {
-    static constexpr unsigned int banks[] = {bank::tileset::ENTITY0, bank::tileset::PIZA, bank::tileset::GRAMOFON};
+    static constexpr unsigned int banks[] = {
+        bank::tileset::ENTITY0,
+        bank::tileset::PIZA,
+        bank::tileset::GRAMOFON,
+        bank::tileset::SHEEP,
+    };
 public:
     enum data_components {
         COMP_X,
@@ -24,7 +29,7 @@ public:
     };
 
     typedef std::array<int, COMPONENT_COUNT> EntityData;
-    #define DEFAULT_ENTITY_DATA {0,0,0,0,0,0,0,0}
+    #define DEFAULT_ENTITY_DATA {0,0,0,0,0,0,0,255}
 
     StaticEntity();
     StaticEntity(const EntityData&);

@@ -9,6 +9,8 @@ class Room2Controller : public RoomController {
     unsigned int expand = 3200;
     ALLEGRO_VERTEX gradient[4];
     const float gradientXs[4] = {0.f,300.f,300.f,0.f};
+    bool playing = false;
+    unsigned int sheepOpacity = 0; // 0 - 255
 public:
 
     Room2Controller();
@@ -17,6 +19,10 @@ public:
     void update(double) override;
     void drawTopLayer() override;
     void drawBackLayer() override;
+    /// @brief Called on room enter
+    void enter() override;
+    /// @brief Called on room exit
+    void exit() override;
 
     /** Expand room */
     void func0(void* args, int argc) override;

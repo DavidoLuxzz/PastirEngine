@@ -148,6 +148,17 @@ void Room::position(float2 playerPos) {
     // printf("2: %f %f\n", newx, newy);
 }
 
+void Room::enableControllers() {
+    for (std::unique_ptr<RoomController>& rc : controllers) {
+        rc->enter();
+    }
+}
+void Room::disableControllers() {
+    for (std::unique_ptr<RoomController>& rc : controllers) {
+        rc->exit();
+    }
+}
+
 #define __KILOBYTE 1024
 #define __MEGABYTE 1048576
 #define __GIGABYTE 1073741824

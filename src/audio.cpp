@@ -23,30 +23,14 @@ namespace audio {
     ALLEGRO_AUDIO_STREAM* streams[STREAM_COUNT];
 
 
-    struct Preference {
-        float gain,pan,speed;
-    };
-
-    struct PrefDurations {
-        float T_gain, T_pan, T_speed;
-    };
-    struct PrefTimer {
-        float t_gain, t_pan, t_speed;
-    };
-    struct DeltaPreference {
-        float dGain, dPan, dSpeed;
-    };
-
     float gains[STREAM_COUNT] = {0.f};
     float oldGains[STREAM_COUNT] = {0.f};
     float deltaGains[STREAM_COUNT] = {0.f};
     float timers[STREAM_COUNT] = {0};
     float durations[STREAM_COUNT] = {0};
+    bool stopWhenSilenced[STREAM_COUNT] = {false};
 
 } // namespace audio
-
-#define LOAD_SOUND(snd_enum,filename) audio::sounds[snd_enum] = al_load_sample(assman::getasset("audio/snd/" filename).c_str())
-#define LOAD_STREAM(strm_enum,filename) audio::streams[strm_enum] = al_load_audio_stream(assman::getasset("audio/" filename).c_str(), 4, 2048)
 
 void __audio_loadSounds() {
     for (int i=0; i<audio::Sound::SOUND_COUNT; i++) {
@@ -90,6 +74,7 @@ int audio::init() {
         deltaGains[i] = deltaGains[0];
         timers[i] = timers[0];
         durations[i] = durations[0];
+        stopWhenSilenced[i] = stopWhenSilenced[0];
     }
 
     for (int i=0; i<al_get_num_audio_output_devices(); i++)
@@ -111,10 +96,14 @@ void audio::update(double ms) {
         // ... todo neki dan
         // silence fade
         if (timers[i]<durations[i]) {
-            if ((timers[i]+ms)>durations[i]) {
+            if ((timers[i]+ms)>=durations[i]) {
                 gains[i] = oldGains[i] + deltaGains[i];
                 al_set_audio_stream_gain(streams[i], gains[i]);
                 // printf("Gain: %.2f\nTimer=%.1f, Duration=%.1f\n", gains[i], timers[i], durations[i]);
+                if (stopWhenSilenced[i]) {
+                    if (gains[i]<0.001f) stopStream(i);
+                    stopWhenSilenced[i] = false;
+                }
                 timers[i]+=ms;
                 continue;
             }
@@ -173,11 +162,11 @@ void audio::stopStream(int stream) {
         al_set_audio_stream_playing(streams[stream], false);
 }
 
-void audio::silenceStream(audio::Stream stream, float millis) {
-    fadeStream(stream, 0.f, millis);
+void audio::silenceStream(audio::Stream stream, float millis, bool stop) {
+    fadeStream(stream, 0.f, millis, stop);
 }
 
-void audio::fadeStream(audio::Stream stream, float val, float millis) {
+void audio::fadeStream(audio::Stream stream, float val, float millis, bool stop) {
     if (stream<0 || stream>=STREAM_COUNT) {
         printf("%s[WARNING] audio::fadeStream(3) called with stream out of bounds: %d%s\n",
             TERMINAL_COLOR_YELLOW_BOLD, stream, TERMINAL_COLOR_RESET);
@@ -189,6 +178,7 @@ void audio::fadeStream(audio::Stream stream, float val, float millis) {
     oldGains[stream] = gains[stream];
     // printf("dg: %.2f\n", deltaGains[stream]);
     timers[stream] = 0.f;
+    stopWhenSilenced[stream] = stop;
     if (val>0) al_set_audio_stream_playing(streams[stream], true);
 }
 
@@ -199,4 +189,8 @@ ALLEGRO_AUDIO_STREAM* audio::getStream(Stream s) {
 
 bool audio::isStreamPlaying(Stream s) {
     return al_get_audio_stream_playing(streams[s]) && al_get_audio_stream_attached(streams[s]);
+}
+
+float audio::getStreamEngineGain(Stream s) {
+    return gains[s];
 }

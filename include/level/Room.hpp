@@ -31,6 +31,9 @@ public:
     float2 getTranslate() const;
     void move(float dx, float dy, float ms, void* player=NULL);
 
+    void enableControllers();
+    void disableControllers();
+
     uint64_t getMemoryUsage() const;
 };
 

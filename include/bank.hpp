@@ -151,6 +151,7 @@ namespace bank {
             PIZA,
             GRAMOFON,
             PASTIR, // for testing, uglavnom
+            SHEEP,
 
             NUM_KNOWN_BANKS
         };

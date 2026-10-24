@@ -41,6 +41,8 @@ int __lvl_loader_load(const std::string& filepath) {
     std::ifstream file(filepath);
 
     room_loader::room.objects.clear();
+    // for (int i=0; i<room_loader::room.controllers.size(); i++)
+    //     room_loader::room.controllers[i].reset();
     room_loader::room.controllers.clear();
     
     std::string line;

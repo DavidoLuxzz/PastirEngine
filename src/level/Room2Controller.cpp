@@ -10,6 +10,7 @@
 #include <components/dialogbox.hpp>
 
 #define THIS_ROOM (global::get().rooms[Game::getGame()->roomID])
+#define stream ((audio::Stream) triggers::get(1)[Trigger::COMP_SPECIAL])
 
 Room2Controller::Room2Controller() {
     init();
@@ -29,22 +30,36 @@ void Room2Controller::init() {
     gradient[3].y = 800.f;
 }
 
+void Room2Controller::enter() {
+    // nothing spec
+    if (playing) audio::playStream(stream,true,0.f,0.f);
+}
+
+void Room2Controller::exit() {
+    playing = audio::isStreamPlaying(stream);
+    audio::stopStream(stream);
+}
+
 Room2Controller::~Room2Controller() {
-    audio::stopStream((audio::Stream) triggers::get(1)[Trigger::COMP_SPECIAL]);
+    exit();
+    printf("Room2Controller instance disabled\n");
 }
 
 void Room2Controller::update(double ms) {
     timer++;
-    
-    audio::Stream stream = (audio::Stream) triggers::get(1)[Trigger::COMP_SPECIAL];
+
     const float gramofonX = triggers::get(1)[Trigger::COMP_X]; // moze i da se nacentrira, al valjda nema potrebe
 
     if (audio::isStreamPlaying(stream)) {
+        playing = true;
         float dist = (gramofonX - Game::getGame()->player.getWorldPosition().x) / 500.f;
         float pan = fmin(fmax(dist/5.f, -1.f), 1.f);
         al_set_audio_stream_pan(audio::getStream(stream), pan);
-        if (dist*dist>1.f) al_set_audio_stream_gain(audio::getStream(stream), 1.f/(dist*dist));
-        else al_set_audio_stream_gain(audio::getStream(stream), 1.f);    
+
+        float engineFadeGain = audio::getStreamEngineGain(stream);
+
+        if (dist*dist>1.f) al_set_audio_stream_gain(audio::getStream(stream), engineFadeGain/(dist*dist));
+        else al_set_audio_stream_gain(audio::getStream(stream), engineFadeGain);
     }
 
     if (expand != THIS_ROOM.bounds.size.x){
@@ -77,7 +92,7 @@ void Room2Controller::drawBackLayer() {
 
     for (int i=0; i<12; i++) {
         int col = (_col+i*47)%255;
-        float2 pos = positions[i] + global::get().rooms[Game::getGame()->roomID].getTranslate();
+        float2 pos = positions[i] + THIS_ROOM.getTranslate();
         al_draw_filled_ellipse(pos.x, pos.y, 20.f+i*3%7, 10.f, al_map_rgb(col,col,col));
     }
 }

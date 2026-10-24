@@ -45,11 +45,16 @@ namespace audio {
     void playStream(Stream strm, bool loop=true, float gain=1.0f, float pan=0.0f, float speed=1.0f);
 
     void stopStream(int stream=-1);
-    void silenceStream(Stream stream, float millis=1000.f);
-    void fadeStream(Stream stream, float val, float millis=1000.f);
+    void silenceStream(Stream stream, float millis=1000.f, bool stop=false);
+    void fadeStream(Stream stream, float val, float millis=1000.f, bool stop=false);
 
     ALLEGRO_AUDIO_STREAM* getStream(Stream strm);
     bool isStreamPlaying(Stream strm);
+    /**
+     * Returns the gain stored by the audio engine.
+     * Doesn't have to mean that al_get_audio_stream_gain(1) == audio::getStreamEngineGain(1) !!!
+     */
+    float getStreamEngineGain(Stream strm);
 }
 
 #endif

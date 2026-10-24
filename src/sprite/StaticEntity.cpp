@@ -71,8 +71,8 @@ void StaticEntity::drawData(const EntityData& data, float2 translate) {
     if (pos.x*PIXEL_SCALE >= __winw || pos.y*PIXEL_SCALE >= __winh) return; // clip (won't be visible on screen anyway)
     
     // final draw with calculated parameters
-    al_draw_scaled_bitmap(
-        bitmap,
+    al_draw_tinted_scaled_bitmap(
+        bitmap, al_map_rgba(255,255,255,data[COMP_SPEC3]),
         (float) rect.min.x, (float) rect.min.y,
         (float) rect.size.x, (float) rect.size.y,
         pos.x, pos.y,

@@ -53,6 +53,7 @@ public:
     bool isZPressedThisFrame(); // is z pressed that frame
 
     void immidiatelyChangeRoom();
+    bool isRoomChanging() const;
 
 
     /// @brief used localy

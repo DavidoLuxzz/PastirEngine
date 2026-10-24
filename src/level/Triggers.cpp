@@ -39,6 +39,7 @@ void changeRoom(const Trigger::TriggerData& data) {
     game->requestRoomID = data[Trigger::COMP_SPECIAL];
     game->requestPlayerCoords = {(float)data[Trigger::COMP_SPECIAL2]/DEFAULT_PIXEL_SCALE, (float)data[Trigger::COMP_SPECIAL3]/DEFAULT_PIXEL_SCALE};
 
+    // okidac; bez ovog se room nece promeniti
     Display::getCurrentDisplay()->startFade();
 }
 #define THIS_ROOM global::get().rooms[Game::getGame()->roomID]
@@ -82,8 +83,7 @@ void Trigger::execute(const TriggerData& data) {
         break;
     }
     case event::ROOM2_GRAMOFON: {
-        printf("Ran\n");
-        // audio::playStream((audio::Stream) data[COMP_SPECIAL]);
+        audio::playStream((audio::Stream) data[COMP_SPECIAL], true, 0.f);
         audio::fadeStream((audio::Stream) data[COMP_SPECIAL], 1.f, 1000.f);
         triggers::get(1)[COMP_ACTION] = event::TOGGLE_MUSIC;
         triggers::get(2)[COMP_X] += 10.f;
@@ -103,9 +103,9 @@ void Trigger::execute(const TriggerData& data) {
     case event::TOGGLE_MUSIC: {
         audio::Stream s = (audio::Stream) data[COMP_SPECIAL];
         if (audio::isStreamPlaying(s))
-            audio::stopStream(s);
+            audio::silenceStream(s, 1000.f*audio::getStreamEngineGain(s), true);
         else
-            audio::playStream((audio::Stream) data[COMP_SPECIAL]);
+            audio::fadeStream((audio::Stream) data[COMP_SPECIAL], 1.f, 1000.f-1000.f*audio::getStreamEngineGain(s));
         break;
     }
     
