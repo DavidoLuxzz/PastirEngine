@@ -258,6 +258,7 @@ void initPlayer() {
     //player.setCenter(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f);
     //player.setWorldPosition(player.getPosition());
     player.setWorldPosition({400.0f, 400.0f});
+    player.useNikes(true);
     // player.setWorldPosition({0.0f,0.0f});
     // player.setRoom(&game->rooms[game->roomID]);
     game->game_move(0.f,0.f,0.f); // init step, positioning

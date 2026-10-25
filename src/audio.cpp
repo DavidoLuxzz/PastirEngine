@@ -104,6 +104,7 @@ void audio::update(double ms) {
                     if (gains[i]<0.001f) stopStream(i);
                     stopWhenSilenced[i] = false;
                 }
+                // printf("Zavrsio\n");
                 timers[i]+=ms;
                 continue;
             }
@@ -171,6 +172,12 @@ void audio::fadeStream(audio::Stream stream, float val, float millis, bool stop)
         printf("%s[WARNING] audio::fadeStream(3) called with stream out of bounds: %d%s\n",
             TERMINAL_COLOR_YELLOW_BOLD, stream, TERMINAL_COLOR_RESET);
         return;
+    }
+
+    if (millis<=1.f){ // instant
+        al_set_audio_stream_gain(streams[stream], val);
+        if (stop && val<0.001f) stopStream(stream);
+        else if (val>0.001f) al_set_audio_stream_playing(streams[stream], true);
     }
     // gains[stream] = al_get_audio_stream_gain(streams[stream]);
     durations[stream] = millis;

@@ -7,6 +7,7 @@
 #include <animation.hpp>
 #include <level/Room.hpp>
 #include <inventory.hpp>
+#include <list>
 
 class Player : public Sprite {
 protected:
@@ -21,6 +22,18 @@ protected:
      * Player world position.
      */
     float2 worldPos;
+
+    // cool effect 25.10.2026: Parlamentarni izbori: >>Studenti su pobedili<<
+    bool trailEnabled = false;
+    Animation trailAnim;
+    static constexpr int TRAIL_INSTANCE_COUNT = 10;
+    struct trail {
+        float2 pos;
+        bank::TextureInfo texInfo;
+    };
+    std::list<trail> trailPositions;
+
+    void drawInstance(float2 screenPos, bank::TextureInfo texInfo, float2 scale, ALLEGRO_COLOR tint);
 
 public:
     /// @brief Speed [pixel(s)/60FPS]
@@ -84,6 +97,9 @@ public:
 
     void useNikes(bool);
     bool isUsingNikes() const;
+
+    void enableTrail(bool);
+    bool isTrailEnabled() const;
 
     void draw();
 };

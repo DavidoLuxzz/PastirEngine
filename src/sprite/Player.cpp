@@ -8,12 +8,16 @@
 
 #define CURRENT_TILE bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID)
 
+#define DEFAULT_WALK_ANIM_RATE 200.
+
 Player::Player() {
     texInfo.tileID = 0;
-    animation.init(200.);
+    animation.init(DEFAULT_WALK_ANIM_RATE);
+    trailAnim.init(50.);
 }
 
 void Player::move(float dx, float dy, float ms, int roomID) {
+    animation.rate = DEFAULT_WALK_ANIM_RATE/speedmul;
     worldPos += getFixedDisplacement(dx*ms,dy*ms,roomID);
     if (!(dx==0.0f && dy==0.0f) || (animation.frame&1)) {
         bool _tick = animation.update(ms);
@@ -24,6 +28,10 @@ void Player::move(float dx, float dy, float ms, int roomID) {
             } else 
                 audio::playSound(audio::Sound::GRASS);
         }
+    }
+    if (trailAnim.update(ms) && trailEnabled) {
+        trailPositions.push_front({getWorldPosition(),texInfo});
+        while (trailPositions.size()>TRAIL_INSTANCE_COUNT) trailPositions.pop_back();
     }
     // worldPos.x += dx;
     // worldPos.y += dy;
@@ -177,21 +185,40 @@ void Player::orientate(float _dx, float _dy) {
 void Player::setTileByDirection(directions dir) {
     texInfo.tileID = dir;
 }
-void Player::draw() {
-    ALLEGRO_BITMAP* bitmap = bank::getTexture(texInfo).getAllegroBitmap();
+void Player::drawInstance(float2 pos, bank::TextureInfo ti, float2 scale, ALLEGRO_COLOR tint) {
+    ALLEGRO_BITMAP* bitmap = bank::getTexture(ti).getAllegroBitmap();
     if (!bitmap) return;
-    Rectu rect = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID);
+
+    Rectu rect = bank::tileset::getBank(ti.bankID).getTile(ti.tileID);
     rect.min.x += (animation.frame%4)*rect.size.x;
     if (usingNikes) rect.min.y += rect.size.y*2;
 
     al_draw_tinted_scaled_rotated_bitmap_region(bitmap,
                                         (float)rect.min.x,(float)rect.min.y,
                                         (float)rect.size.x,(float)rect.size.y,
-                                        al_map_rgb_f(1.0f,1.0f,1.0f),
+                                        tint,
                                         // al_map_rgb(100,100,100),
                                         0.0f, 0.0f,
-                                        position.x+translate.x, position.y+translate.y,
+                                        pos.x, pos.y,
                                         scale.x, scale.y,
                                         0.0f,
                                         0);
+}
+void Player::draw() {
+    int opacity = 100;
+    int dOpacity = -opacity/TRAIL_INSTANCE_COUNT;
+    if (trailEnabled) for (const trail& tr : trailPositions) {
+        drawInstance(tr.pos+position-worldPos, tr.texInfo, scale, al_map_rgba(100,100,100,opacity));
+        opacity += dOpacity;
+    }
+
+    drawInstance(position+translate, texInfo, scale, al_map_rgb_f(1.f,1.f,1.f));
+}
+
+
+void Player::enableTrail(bool t) {
+    trailEnabled = t;
+}
+bool Player::isTrailEnabled() const {
+    return trailEnabled;
 }

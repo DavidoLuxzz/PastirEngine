@@ -102,6 +102,7 @@ void Trigger::execute(const TriggerData& data) {
     }
     case event::TOGGLE_MUSIC: {
         audio::Stream s = (audio::Stream) data[COMP_SPECIAL];
+        // printf("Playing=%d;  engineGain=%f\n", audio::isStreamPlaying(s), audio::getStreamEngineGain(s));
         if (audio::isStreamPlaying(s))
             audio::silenceStream(s, 1000.f*audio::getStreamEngineGain(s), true);
         else

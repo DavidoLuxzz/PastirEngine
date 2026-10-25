@@ -32,12 +32,14 @@ void Room2Controller::init() {
 
 void Room2Controller::enter() {
     // nothing spec
-    if (playing) audio::playStream(stream,true,0.f,0.f);
+    if (playing) audio::fadeStream(stream,1.f);
+    Game::getGame()->player.enableTrail(true);
 }
 
 void Room2Controller::exit() {
     playing = audio::isStreamPlaying(stream);
     audio::stopStream(stream);
+    Game::getGame()->player.enableTrail(false);
 }
 
 Room2Controller::~Room2Controller() {

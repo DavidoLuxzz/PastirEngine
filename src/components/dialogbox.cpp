@@ -37,7 +37,7 @@ int dialogbox::init() {
     _loadDialogs(GAME_DIALOGS);
 
     // init animation
-    animation.init(0.05);
+    animation.init(10.);
     animation.setTickFunction(__dialogbox_tick);
     return 0;
 }
