@@ -14,6 +14,27 @@ Player::Player() {
     texInfo.tileID = 0;
     animation.init(DEFAULT_WALK_ANIM_RATE);
     trailAnim.init(50.);
+    crouchAnim.init(100.);
+}
+
+float d = 0.5f;
+
+void Player::update(double ms) {
+    // trail animation
+    if (trailEnabled && trailAnim.update(ms)) {
+        trailPositions.push_front({getWorldPosition(),texInfo});
+        while (trailPositions.size()>TRAIL_INSTANCE_COUNT) trailPositions.pop_back();
+    }
+    // crouch animation
+    if (crouching) {
+        scale.x = fmaxf(fminf(scale.x+0.01f*ms*d, 2.0f),1.0f);
+        scale.y = fminf(fmaxf(scale.y-0.01f*ms*d, 0.5f),1.0f);
+        if (d>0 && scale.x>=1.999f && scale.y<=0.501f) d=-d;
+        else if (d<0 && scale.x<=1.001f && scale.y>=0.999f) d=-d;
+    } else {
+        scale.x = fmaxf(scale.x-0.01f*ms, 1.0f);
+        scale.y = fminf(scale.y+0.01f*ms, 1.0f);
+    }
 }
 
 void Player::move(float dx, float dy, float ms, int roomID) {
@@ -29,17 +50,15 @@ void Player::move(float dx, float dy, float ms, int roomID) {
                 audio::playSound(audio::Sound::GRASS);
         }
     }
-    if (trailAnim.update(ms) && trailEnabled) {
-        trailPositions.push_front({getWorldPosition(),texInfo});
-        while (trailPositions.size()>TRAIL_INSTANCE_COUNT) trailPositions.pop_back();
-    }
+    
+    // }
     // worldPos.x += dx;
     // worldPos.y += dy;
 }
 
 void Player::setWorldPosition(float2 pos) {
-    worldPos.x = pos.x - CURRENT_TILE.size.x*scale.x/4.f;
-    worldPos.y = pos.y - CURRENT_TILE.size.y*scale.y/2.f;
+    worldPos.x = pos.x - CURRENT_TILE.size.x*scale.x*spriteScale.x/4.f;
+    worldPos.y = pos.y - CURRENT_TILE.size.y*scale.y*spriteScale.y/2.f;
 }
 float2 Player::getWorldPosition() const {
     return worldPos;
@@ -50,7 +69,7 @@ float2 Player::getWorldCenter() const {
 }
 float Player::getWorldFeetY() const {
     // printf("%.1f\n",worldPos.y);
-    return worldPos.y + (float)bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.y * scale.y;
+    return worldPos.y + (float)bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.y * spriteScale.y;
 }
 
 
@@ -61,7 +80,7 @@ float2 Player::getScreenPosition() const {
     return position+translate;
 }
 float Player::getScreenFeetY() const {
-    return position.y+translate.y + (float)bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.y * scale.y;
+    return position.y+translate.y + (float)bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.y * spriteScale.y;
 }
 
 float Player::getSpeed() const {
@@ -78,13 +97,21 @@ bool Player::isUsingNikes() const {
     return usingNikes;
 }
 
+void Player::setSpriteScale(float2 v) {
+    spriteScale = v;
+}
+float2 Player::getSpriteScale() const {
+    return spriteScale;
+}
+
 Rectf Player::getHitbox() const {
     float2 size = {(float) texInfo.tileRect.size.x,(float) texInfo.tileRect.size.y};
     if (texInfo.bankType == bank::TILESET){
         size.x = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.x;
         size.y = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.y;
     }
-    size *= scale;
+    size *= spriteScale;
+    // size *= scale;       // buggy ass
     static const float xoffset = size.x/4.0f;
     Rectf hitbox = {
         getWorldPosition(),
@@ -92,6 +119,7 @@ Rectf Player::getHitbox() const {
     };
     hitbox.min.x += xoffset;
     hitbox.min.y += size.y/2.0f;
+    //printf("%f\n", (1.f-scale.y)*size.y);
     return hitbox;
 }
 
@@ -101,7 +129,8 @@ Rectf Player::getScreenHitbox() const {
         size.x = CURRENT_TILE.size.x;
         size.y = bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID).size.y;
     }
-    size *= scale;
+    size *= spriteScale;
+    // size *= scale;       // buggy ass
     Rectf hitbox = {
         getScreenPosition(),
         {size.x, size.y}
@@ -193,14 +222,19 @@ void Player::drawInstance(float2 pos, bank::TextureInfo ti, float2 scale, ALLEGR
     rect.min.x += (animation.frame%4)*rect.size.x;
     if (usingNikes) rect.min.y += rect.size.y*2;
 
+    float2 posfix = {
+        (1.f-scale.x)*(float)rect.size.x * spriteScale.x / 2.0f,
+        (1.f-scale.y)*(float)rect.size.y * spriteScale.y
+    };
+
     al_draw_tinted_scaled_rotated_bitmap_region(bitmap,
                                         (float)rect.min.x,(float)rect.min.y,
                                         (float)rect.size.x,(float)rect.size.y,
                                         tint,
                                         // al_map_rgb(100,100,100),
                                         0.0f, 0.0f,
-                                        pos.x, pos.y,
-                                        scale.x, scale.y,
+                                        pos.x+posfix.x, pos.y+posfix.y,
+                                        scale.x*spriteScale.x, scale.y*spriteScale.y,
                                         0.0f,
                                         0);
 }
@@ -221,4 +255,11 @@ void Player::enableTrail(bool t) {
 }
 bool Player::isTrailEnabled() const {
     return trailEnabled;
+}
+
+void Player::setCrouching(bool t) {
+    crouching = t;
+}
+bool Player::isCrouching() const {
+    return crouching;
 }

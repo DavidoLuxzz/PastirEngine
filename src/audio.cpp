@@ -10,7 +10,8 @@ namespace audio {
     constexpr const char* STREAMS[] = {
         "audio/Audio07.wav",
         "audio/project.wav",
-        "audio/PureVessel.wav"
+        "audio/PureVessel.wav",
+        "audio/gangnam.wav"
     };
     constexpr const char* SOUNDS[] = {
         "audio/snd/voice1.wav",

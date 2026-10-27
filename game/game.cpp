@@ -29,9 +29,11 @@ void Game::debugText() {
     Display::useCustomScale(__px_scale);
 
     Rectf playerHitbox = player.getHitbox();
+    float2 pworldpos = player.getWorldPosition();
 
-    al_draw_textf(font, al_map_rgb(255,255,255), 0, 0, 0, "Player pos: %.1f %.1f [%.0fx%.0f]", playerHitbox.min.x,playerHitbox.min.y, playerHitbox.size.x,playerHitbox.size.y);
+    al_draw_textf(font, al_map_rgb(255,255,255), 0, 0, 0, "Player hitbox: %.1f %.1f [%.0fx%.0f]", playerHitbox.min.x,playerHitbox.min.y, playerHitbox.size.x,playerHitbox.size.y);
     al_draw_textf(font, al_map_rgb(255,255,255), 0, 10.0f, 0, "Debug (show hitboxes): %s", global::get().f3?"true":"false");
+    al_draw_textf(font, al_map_rgb(255,255,255), 0, 20.0f, 0, "Player worldpos: %.1f %.1f", pworldpos.x, pworldpos.y);
 
     Display::useScale();
 }
@@ -115,6 +117,9 @@ void Game::handleEvents() {
                 if (dialogbox::isShowing()) dialogbox::hide();
                 else ___zPressedThisFrame = true;
                 break;
+            case ALLEGRO_KEY_X:
+                audio::playStream(audio::Stream::GANGNAM_STYLE);
+                break;
             default:
                 break;
         }
@@ -132,7 +137,7 @@ void Game::game_move(float dx, float dy, float ms) {
     player.move(dx,dy,ms);
 
     // Adjust camera
-    rooms[roomID].position(player.getWorldPosition()+player.getHitbox().size/2.f);
+    rooms[roomID].position(player.getWorldCenter());
     player.positionRoom(rooms[roomID].getTranslate());
 
     // Orientate player
@@ -151,6 +156,7 @@ void Game::update(double ms){
     Display* display = Display::getCurrentDisplay();
     keyboard::fetchKeyboardState();
     if (!(dialogbox::isShowing()||isRoomChanging())) updateMovement(ms);
+    player.update(ms);
     display->update(ms);
     dialogbox::update(ms);
     audio::update(ms);
@@ -185,6 +191,7 @@ void Game::updateMovement(double ms) {
 
     
     player.setSpeedMul(speedmul);
+    player.setCrouching(keyboard::keyDown(ALLEGRO_KEY_X));
     game_move(dx,dy,ms);
 
     triggers::check_update();
@@ -254,7 +261,7 @@ void initPlayer() {
     player.setTexturesBankType(bank::TILESET);
     player.setTexturesBankID(bank::tileset::PLAYER);
     // player.setScale(0.5f);
-    player.setScale(3.f); // za pixel je 3
+    player.setSpriteScale({3.f,3.f}); // za pixel je 3
     //player.setCenter(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f);
     //player.setWorldPosition(player.getPosition());
     player.setWorldPosition({400.0f, 400.0f});

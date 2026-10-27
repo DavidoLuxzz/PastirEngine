@@ -17,6 +17,10 @@ protected:
     bool usingNikes = false;
     
     float speedmul=1.0f;
+    float2 spriteScale={1.f,1.f};
+
+    bool crouching = false;
+    Animation crouchAnim;
 
     /**
      * Player world position.
@@ -50,9 +54,14 @@ public:
         DIR_UP,
         DIR_DOWN,
         DIR_LEFT,
-        DIR_RIGHT,
-        NUM_ANIMATION_FRAMES // stoji ovde eto jbg posto ce dobiti value 4, pa da sacuvam prostora
+        DIR_RIGHT
     };
+    #define NUM_ANIMATION_FRAMES 4 // stoji ovde eto jbg posto ce dobiti value 4, pa da sacuvam prostora
+    
+    /**
+     * All player updates go here.
+     */
+    void update(double ms);
 
     void setSpeedMul(float mul);
     float getSpeed() const;
@@ -95,11 +104,18 @@ public:
     void orientate(float dx, float dy);
     void setTileByDirection(directions);
 
+    void setSpriteScale(float2);
+    float2 getSpriteScale() const;
+
     void useNikes(bool);
     bool isUsingNikes() const;
 
     void enableTrail(bool);
     bool isTrailEnabled() const;
+
+    void setCrouching(bool);
+    bool isCrouching() const;
+    
 
     void draw();
 };

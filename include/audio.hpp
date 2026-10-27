@@ -23,6 +23,7 @@ namespace audio {
         AUDIO_07,
         PROJECT,
         PURE_VESSEL,
+        GANGNAM_STYLE,
 
         STREAM_COUNT,
         STREAM_NONE
