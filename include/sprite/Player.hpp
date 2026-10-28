@@ -22,6 +22,10 @@ protected:
     bool crouching = false;
     Animation crouchAnim;
 
+    bool superDashing = false;
+    float angle = 0.f;
+    float velo = 0.f;
+
     /**
      * Player world position.
      */
@@ -36,8 +40,6 @@ protected:
         bank::TextureInfo texInfo;
     };
     std::list<trail> trailPositions;
-
-    void drawInstance(float2 screenPos, bank::TextureInfo texInfo, float2 scale, ALLEGRO_COLOR tint);
 
 public:
     /// @brief Speed [pixel(s)/60FPS]
@@ -90,6 +92,9 @@ public:
     float getWorldFeetY() const; 
     float2 getWorldCenter() const;
 
+    void setAngle(float);
+    float getAngle() const;
+
     // based on collision checks in current room
     float2 getFixedDisplacement(float, float, int roomID=-1);
 
@@ -115,9 +120,12 @@ public:
 
     void setCrouching(bool);
     bool isCrouching() const;
-    
 
-    void draw();
+    void activateSuperDash(bool);
+    bool isSuperDashing() const;
+    
+    void drawInstance(float2 screenPos, bank::TextureInfo texInfo, float2 scale, ALLEGRO_COLOR tint, float ang) const;
+    void draw() const;
 };
 
 #endif

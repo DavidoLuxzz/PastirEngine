@@ -8,7 +8,7 @@
 namespace audio {
 
     constexpr const char* STREAMS[] = {
-        "audio/Audio07.wav",
+        "audio/Audio_07.wav",
         "audio/project.wav",
         "audio/PureVessel.wav",
         "audio/gangnam.wav"

@@ -112,11 +112,11 @@ void Room::drawTopLayer() {
         Drawable::drawData(objects.at(i), translate);
     }
     al_hold_bitmap_drawing(false);
-    for (std::unique_ptr<RoomController>& rc : controllers) {
-        rc->drawTopLayer();
-    }
     for (int i : entityTopIDs) {
         StaticEntity::drawData(entities.at(i), translate);
+    }
+    for (std::unique_ptr<RoomController>& rc : controllers) {
+        rc->drawTopLayer();
     }
 }
 

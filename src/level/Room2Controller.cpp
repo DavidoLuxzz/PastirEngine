@@ -11,6 +11,7 @@
 
 #define THIS_ROOM (global::get().rooms[Game::getGame()->roomID])
 #define stream ((audio::Stream) triggers::get(1)[Trigger::COMP_SPECIAL])
+#define player Game::getGame()->player
 
 Room2Controller::Room2Controller() {
     init();
@@ -75,6 +76,38 @@ void Room2Controller::update(double ms) {
 }
 
 void Room2Controller::drawBackLayer() {
+    const float2 roomTranslate = THIS_ROOM.getTranslate();
+    static constexpr Rectf mirrorBounds = {
+        {100.f,10.f},
+        {200.f,80.f}
+    };
+    static constexpr float wallHeight = 120.f;
+    
+    // draw mirrored player
+    float2 screenPos = player.getWorldPosition() + roomTranslate; screenPos.y = -screenPos.y;
+    bank::TextureInfo texInfo = player.getTexture();
+    // 
+    texInfo.tileID ^= (texInfo.tileID>>1)^1;
+    player.drawInstance(screenPos, texInfo, player.getScale(), al_map_rgb(180,190,200), player.getAngle());
+
+    /* gornji zid */
+    al_draw_filled_rectangle(0.f,0.f, mirrorBounds.min.x+roomTranslate.x,wallHeight, al_map_rgb(10,10,10));
+    al_draw_filled_rectangle(mirrorBounds.min.x+mirrorBounds.size.x+roomTranslate.x,0.f, 10000.f,wallHeight, al_map_rgb(10,10,10));
+    al_draw_filled_rectangle(0.f,0.f, 10000.f,mirrorBounds.min.y, al_map_rgb(10,10,10));
+    al_draw_filled_rectangle(0.f,mirrorBounds.min.y+mirrorBounds.size.y, 10000.f,wallHeight, al_map_rgb(10,10,10));
+
+    // al_draw_filled_rectangle(   mirrorBounds.min.x+roomTranslate.x,
+    //                             mirrorBounds.min.y+roomTranslate.y,
+    //                             mirrorBounds.min.x+mirrorBounds.size.x+roomTranslate.x,
+    //                             mirrorBounds.min.y+mirrorBounds.size.y+roomTranslate.y,
+    //                             al_map_rgb(0,0,0));
+    al_draw_rounded_rectangle(  mirrorBounds.min.x+roomTranslate.x,
+                                mirrorBounds.min.y+roomTranslate.y,
+                                mirrorBounds.min.x+mirrorBounds.size.x+roomTranslate.x,
+                                mirrorBounds.min.y+mirrorBounds.size.y+roomTranslate.y,
+                                2.f,2.f,
+                                al_map_rgb(100,100,100), 8.f);
+
     static constexpr float2 positions[] = {
         {900.f, 350.f},
         {1080.f, 400.f},
@@ -94,14 +127,46 @@ void Room2Controller::drawBackLayer() {
 
     for (int i=0; i<12; i++) {
         int col = (_col+i*47)%255;
-        float2 pos = positions[i] + THIS_ROOM.getTranslate();
+        float2 pos = positions[i] + roomTranslate;
         al_draw_filled_ellipse(pos.x, pos.y, 20.f+i*3%7, 10.f, al_map_rgb(col,col,col));
     }
 }
 void Room2Controller::drawTopLayer() {
     // al_draw_textf(Game::getGame()->font, al_map_rgb(200,200,200), 10.f,10.f,0, "Pan: %.2f", test);
-    if (!audio::isStreamPlaying((audio::Stream) triggers::get(1)[Trigger::COMP_SPECIAL])) return;
-    al_draw_prim(gradient, NULL, NULL, 0, 4, ALLEGRO_PRIM_TRIANGLE_FAN);
+    if (audio::isStreamPlaying((audio::Stream) triggers::get(1)[Trigger::COMP_SPECIAL]))
+        al_draw_prim(gradient, NULL, NULL, 0, 4, ALLEGRO_PRIM_TRIANGLE_FAN);
+
+    float2 trans = THIS_ROOM.getTranslate() - player.getWorldPosition()/10.f;
+    static constexpr float2 xw[25] = {
+        {600.f,100.f},
+        {900.f,150.f},
+        {1170.f,170.f},
+        {1500.f,80.f},
+        {1830.f,40.f},
+        {2000.f,100.f},
+        {2400.f,120.f},
+        {2600.f,90.f},
+        {2900.f,150.f},
+        {3170.f,170.f},
+        {3500.f,80.f},
+        {3830.f,70.f},
+        {4000.f,100.f},
+        {4400.f,100.f},
+        {4700.f,50.f},
+        {4970.f,100.f},
+        {5200.f,130.f},
+        {5370.f,150.f},
+        {5600.f,80.f},
+        {5830.f,140.f},
+        {6000.f,100.f},
+        {6400.f,100.f},
+        {6620.f,77.f},
+        {6870.f,90.f},
+        {7100.f,100.f}
+    };
+
+    for (int i=0; i<25; i++)
+        al_draw_filled_rectangle(xw[i].x+2*trans.x,0.f, xw[i].x+2*trans.x+xw[i].y, 10000.f, al_map_rgba(4,4,4,220+(int)xw[i].y%37));
 }
 
 // expand room

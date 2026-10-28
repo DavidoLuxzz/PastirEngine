@@ -118,7 +118,6 @@ void Game::handleEvents() {
                 else ___zPressedThisFrame = true;
                 break;
             case ALLEGRO_KEY_X:
-                audio::playStream(audio::Stream::GANGNAM_STYLE);
                 break;
             default:
                 break;
@@ -130,8 +129,6 @@ void Game::handleEvents() {
 
 #pragma region game::update
 
-float __roomChangeTime = -1.f;
-
 void Game::game_move(float dx, float dy, float ms) {
     // Move player
     player.move(dx,dy,ms);
@@ -139,9 +136,6 @@ void Game::game_move(float dx, float dy, float ms) {
     // Adjust camera
     rooms[roomID].position(player.getWorldCenter());
     player.positionRoom(rooms[roomID].getTranslate());
-
-    // Orientate player
-    player.orientate(dx,dy);
 }
 
 void Game::immidiatelyChangeRoom() {
@@ -165,6 +159,7 @@ void Game::update(double ms){
         if (isRoomChanging())
         if (display->getFadeFrame()==display->getFadeCycleCount()/2) {
             immidiatelyChangeRoom();
+            player.activateSuperDash(false);
             game_move(0.0f,0.0f,ms);
             __roomChangeTime = 1000.f;
         }

@@ -5,10 +5,14 @@
 #include <game/game.hpp>
 #include <game/global.hpp>
 #include <audio.hpp>
+#include <input.hpp>
+#include <shader.hpp>
 
 #define CURRENT_TILE bank::tileset::getBank(texInfo.bankID).getTile(texInfo.tileID)
 
 #define DEFAULT_WALK_ANIM_RATE 200.
+
+#define DIR_X_SIGN(dir) ((dir&1)? 1. : -1.)
 
 Player::Player() {
     texInfo.tileID = 0;
@@ -35,12 +39,30 @@ void Player::update(double ms) {
         scale.x = fmaxf(scale.x-0.01f*ms, 1.0f);
         scale.y = fminf(scale.y+0.01f*ms, 1.0f);
     }
+    // super dash
+    if (keyboard::keyDown(ALLEGRO_KEY_S)) { // charging
+        float da = angle!=0? fminf(0.0015f/(angle*angle),0.005f) : 0.001f;
+        angle = fminf(angle + da*ms, M_PI_2);
+        bool t = superDashing;
+        if ((M_PI_2-angle)<0.01f) superDashing = true;
+        if (t!=superDashing) velo = 0.3f;
+    } else {
+        angle = fmaxf(angle - 0.01f*ms, 0.f);
+        superDashing = false;
+    }
+
+    if (superDashing) velo = fminf(velo+0.01f, 1.f);
+    else velo = fmaxf(velo-0.02f, 0);
 }
 
 void Player::move(float dx, float dy, float ms, int roomID) {
+    if (Game::getGame()->__roomChangeTime < 0){
+        if (superDashing) dx = velo * DIR_X_SIGN(texInfo.tileID);
+        else dx += velo*DIR_X_SIGN(texInfo.tileID);
+    }
     animation.rate = DEFAULT_WALK_ANIM_RATE/speedmul;
     worldPos += getFixedDisplacement(dx*ms,dy*ms,roomID);
-    if (!(dx==0.0f && dy==0.0f) || (animation.frame&1)) {
+    if (!(dx==0.0f && dy==0.0f || superDashing) || (animation.frame&1)) {
         bool _tick = animation.update(ms);
         if (_tick && !(animation.frame&1)) {
             if (Game::getGame()->roomID == 2) {
@@ -54,6 +76,9 @@ void Player::move(float dx, float dy, float ms, int roomID) {
     // }
     // worldPos.x += dx;
     // worldPos.y += dy;
+
+    // Orientate player
+    orientate(dx,dy);
 }
 
 void Player::setWorldPosition(float2 pos) {
@@ -138,6 +163,13 @@ Rectf Player::getScreenHitbox() const {
     return hitbox;
 }
 
+void Player::setAngle(float a) {
+    angle = a;
+}
+float Player::getAngle() const {
+    return angle;
+}
+
 #define JUST_A_NICE_COLLISION_DISTANCE 0.2f
 #define JANCD JUST_A_NICE_COLLISION_DISTANCE
 
@@ -205,6 +237,11 @@ float2 Player:: getFixedDisplacement(float dx, float dy, int roomID) {
 }
 
 void Player::orientate(float _dx, float _dy) {
+    if (keyboard::keyDown(ALLEGRO_KEY_S) && Game::getGame()->__roomChangeTime<0) {
+        if (texInfo.tileID&2) return;
+        setTileByDirection(DIR_RIGHT);
+        return;
+    }
     if (_dy>0.0f) setTileByDirection(DIR_DOWN);
     else if (_dy<0.0f) setTileByDirection(DIR_UP);
     else if (_dx>0.0f) setTileByDirection(DIR_RIGHT);
@@ -214,39 +251,47 @@ void Player::orientate(float _dx, float _dy) {
 void Player::setTileByDirection(directions dir) {
     texInfo.tileID = dir;
 }
-void Player::drawInstance(float2 pos, bank::TextureInfo ti, float2 scale, ALLEGRO_COLOR tint) {
+void Player::drawInstance(float2 pos, bank::TextureInfo ti, float2 scale, ALLEGRO_COLOR tint, float angle) const {
     ALLEGRO_BITMAP* bitmap = bank::getTexture(ti).getAllegroBitmap();
     if (!bitmap) return;
 
     Rectu rect = bank::tileset::getBank(ti.bankID).getTile(ti.tileID);
     rect.min.x += (animation.frame%4)*rect.size.x;
     if (usingNikes) rect.min.y += rect.size.y*2;
+    
+    float2 centar = {(float)rect.size.x/2.f, (float)rect.size.y/2.f};
 
     float2 posfix = {
-        (1.f-scale.x)*(float)rect.size.x * spriteScale.x / 2.0f,
-        (1.f-scale.y)*(float)rect.size.y * spriteScale.y
+        0.f + centar.x*spriteScale.x,
+        (1.f-scale.y)*(float)rect.size.y * spriteScale.y/2.f + centar.y*spriteScale.y
     };
+
+    float ang = (texInfo.tileID&1)? angle : -angle;
 
     al_draw_tinted_scaled_rotated_bitmap_region(bitmap,
                                         (float)rect.min.x,(float)rect.min.y,
                                         (float)rect.size.x,(float)rect.size.y,
                                         tint,
-                                        // al_map_rgb(100,100,100),
-                                        0.0f, 0.0f,
+                                        centar.x, centar.y,
+                                        // pos.x,pos.y,
                                         pos.x+posfix.x, pos.y+posfix.y,
                                         scale.x*spriteScale.x, scale.y*spriteScale.y,
-                                        0.0f,
+                                        ang,
                                         0);
 }
-void Player::draw() {
-    int opacity = 100;
-    int dOpacity = -opacity/TRAIL_INSTANCE_COUNT;
+void Player::draw() const {
+    
+    float tint = angle/M_PI_2 + 1.f;
+    float tt = 100/256.f + angle/M_PI_2*160.f/256.f;
+    float opacity = 100/256.f;
+    float dOpacity = -opacity/TRAIL_INSTANCE_COUNT;
+
     if (trailEnabled) for (const trail& tr : trailPositions) {
-        drawInstance(tr.pos+position-worldPos, tr.texInfo, scale, al_map_rgba(100,100,100,opacity));
+        drawInstance(tr.pos+position-worldPos, tr.texInfo, scale, al_map_rgba_f(tt,tt,tt,opacity), angle);
         opacity += dOpacity;
     }
 
-    drawInstance(position+translate, texInfo, scale, al_map_rgb_f(1.f,1.f,1.f));
+    drawInstance(position+translate, texInfo, scale, al_map_rgba_f(tint,tint,tint, 1.f), angle);
 }
 
 
@@ -262,4 +307,15 @@ void Player::setCrouching(bool t) {
 }
 bool Player::isCrouching() const {
     return crouching;
+}
+
+void Player::activateSuperDash(bool t) {
+    superDashing = t;
+    if (!t) {
+        angle = 0;
+        velo = 0;
+    }
+}
+bool Player::isSuperDashing() const {
+    return superDashing;
 }

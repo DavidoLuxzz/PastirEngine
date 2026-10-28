@@ -29,7 +29,7 @@ public:
     Player player;
     ALLEGRO_FONT* font;
     bool ___zPressedThisFrame = false;
-    StaticEntity ent;
+    float __roomChangeTime = -1.f;
     /**
      * Initializes game components and variables.
      * Calls loadAssets().

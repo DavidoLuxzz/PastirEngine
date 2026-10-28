@@ -1,5 +1,7 @@
 #include <components/display.hpp>
+#include <iostream>
 #include <logger.hpp>
+#include <shader.hpp>
 
 float Display::PIXEL_SCALE = 1.0f;
 Display* Display::_currentDisplay = NULL;
@@ -12,7 +14,7 @@ Display::Display(int w, int h, const char* title) {
 int Display::create(int _w, int _h, const char* title, bool use_scale) {
     int w = use_scale?_w*PIXEL_SCALE:_w;
     int h = use_scale?_h*PIXEL_SCALE:_h;
-    al_set_new_display_flags(ALLEGRO_WINDOWED || ALLEGRO_OPENGL || ALLEGRO_OPENGL_FORWARD_COMPATIBLE);
+    al_set_new_display_flags(ALLEGRO_WINDOWED | ALLEGRO_OPENGL | ALLEGRO_OPENGL_FORWARD_COMPATIBLE);
     al_set_new_display_option(ALLEGRO_VSYNC, true, ALLEGRO_SUGGEST);
     al_set_new_display_option(ALLEGRO_OPENGL_MAJOR_VERSION, 4, ALLEGRO_SUGGEST);
     al_set_new_display_option(ALLEGRO_OPENGL_MINOR_VERSION, 1, ALLEGRO_SUGGEST);
@@ -33,6 +35,9 @@ int Display::create(int _w, int _h, const char* title, bool use_scale) {
     fadeAnim.init(0.1, 80);
     fadeAnim.frame = -1;
 
+    shader::buildAll();
+    shader:use(shader::NONE); // default
+
 
     // post initialization
     // if (!al_get_new_display_option(ALLEGRO_VSYNC, NULL)) logger::info("VSync is off");
@@ -40,13 +45,14 @@ int Display::create(int _w, int _h, const char* title, bool use_scale) {
     int opt_gl_major = al_get_new_display_option(ALLEGRO_OPENGL_MAJOR_VERSION, NULL);
     int opt_gl_minor = al_get_new_display_option(ALLEGRO_OPENGL_MINOR_VERSION, NULL);
 
-    printf("Allegro %s with OpenGL %d.%d; VSync=%d\n", ALLEGRO_VERSION_STR, opt_gl_major,opt_gl_minor,opt_vsync);
+    printf("Allegro %s with OpenGL %d.%d; VSync=%d\nShaders: %d\n", ALLEGRO_VERSION_STR, opt_gl_major,opt_gl_minor,opt_vsync,shader::NUM_SHADERS);
 
     al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
 
     return 0;
 }
 void Display::destroy() {
+    shader::destroyAll();
     al_destroy_display(_display);
     _display = NULL;
 }

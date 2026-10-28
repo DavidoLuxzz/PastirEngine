@@ -1,7 +1,7 @@
 area ?
 # texture x y solid layer group angle scalex scaley type width height special
 0 0 0 1 0 0 0 100 100 1 10 1000 0
-0 0 20 1 0 0 0 100 100 1 10000 10 0
+0 0 0 1 0 0 0 100 100 1 10000 100 0
 0 0 700 1 0 0 0 100 100 1 10000 10 0
 0 3200 0 1 0 0 0 100 100 1 10 1000 0
 
